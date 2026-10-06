@@ -325,6 +325,8 @@ a.inline{font-weight:600;text-decoration-color:var(--clay);text-decoration-thick
 .tool-row h2{font-size:1.9rem}
 .tool-row .status{font-weight:700;color:var(--sage);margin:0 0 .5rem}
 .tool-row .fpo{min-height:180px}
+.article-body{max-width:66ch}
+.article-body p{font-size:1.3rem}
 @media (max-width:900px){
   .page-hero .grid,.two-col,.tool-row{grid-template-columns:1fr}
   .related,.ask{grid-template-columns:1fr}

@@ -104,7 +104,8 @@
       }
     }
     list.innerHTML=res.items.map(function(it){
-      return '<li><a href="'+esc(it.url)+'"><span class="sec">'+esc(it.section)+'</span><span><span class="t">'+hl(it.title,res.highlight_terms)+'</span><span class="sm">'+hl(it.summary,res.highlight_terms)+'</span></span></a></li>';
+      var href=it.slug?'/library/article/?slug='+encodeURIComponent(it.slug):it.url;
+      return '<li><a href="'+esc(href)+'"><span class="sec">'+esc(it.section)+'</span><span><span class="t">'+hl(it.title,res.highlight_terms)+'</span><span class="sm">'+hl(it.summary,res.highlight_terms)+'</span></span></a></li>';
     }).join('');
     emptyEl.hidden=!!n;
   }

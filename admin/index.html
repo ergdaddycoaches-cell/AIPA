@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Back office | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Staff back office</small></span></a>
+    <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Back office</h1>
+      <p class="lede">Write a guide, keep it as a draft, then publish it or retire it from the library.</p>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="office wrap" id="desk" hidden>
+    <div class="sec-head">
+      <h1>Guides</h1>
+      <p>Drafts stay off the site. Publishing puts a guide in the library and in search. Retiring takes it back off.</p>
+    </div>
+    <div class="chips" role="group" aria-label="Filter guides">
+      <button class="chip" type="button" data-filter="" aria-pressed="true">All</button>
+      <button class="chip" type="button" data-filter="draft" aria-pressed="false">Drafts</button>
+      <button class="chip" type="button" data-filter="published" aria-pressed="false">Live</button>
+      <button class="chip" type="button" data-filter="retired" aria-pressed="false">Retired</button>
+    </div>
+    <div class="desk">
+      <div>
+        <button class="btn" type="button" id="new-guide">New guide</button>
+        <ul class="guide-list" id="guide-list"></ul>
+      </div>
+      <form class="editor" id="editor">
+        <p class="badge draft" id="editor-status">New draft</p>
+        <label for="title">Title</label>
+        <input id="title" name="title" required>
+        <label for="section">Section</label>
+        <select id="section" name="section_slug" required></select>
+        <label for="slug">Web address</label>
+        <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank">
+        <label for="summary">Summary</label>
+        <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
+        <label for="body">Guide</label>
+        <textarea id="body" name="body" placeholder="Write the guide here. Leave a blank line between paragraphs."></textarea>
+        <label for="tags">Words families might search</label>
+        <input id="tags" name="tags" placeholder="walk-in, mom, how much">
+        <div class="actions">
+          <button class="btn quiet" type="button" id="save-draft">Save draft</button>
+          <button class="btn" type="button" id="publish">Publish</button>
+          <button class="btn danger" type="button" id="retire">Retire</button>
+        </div>
+        <p class="status-line" id="editor-msg" role="status"></p>
+        <p class="note" id="live-link"></p>
+      </form>
+    </div>
+    <form class="password-box" id="password-form">
+      <h2>Change password</h2>
+      <label for="current-password">Current password</label>
+      <input id="current-password" type="password" autocomplete="current-password" required>
+      <label for="next-password">New password</label>
+      <input id="next-password" type="password" autocomplete="new-password" minlength="12" required>
+      <div class="actions"><button class="btn quiet" type="submit">Update password</button></div>
+      <p class="status-line" id="password-status" role="status"></p>
+    </form>
+  </section>
+</main>
+<script src="/assets/js/admin.js"></script>
+</body>
+</html>

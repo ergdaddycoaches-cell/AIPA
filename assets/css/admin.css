@@ -1,0 +1,33 @@
+.office{padding:1.5rem 0 4rem}
+.office h1{font-size:clamp(2.2rem,4vw,3.2rem)}
+.login-card{max-width:32rem;margin:8vh auto;background:var(--card);border:1px solid var(--rule);padding:2rem}
+.login-card label,.editor label{display:block;font-weight:700;margin:1rem 0 .4rem}
+.login-card input,.editor input,.editor textarea,.editor select{
+  width:100%;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);
+  border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px}
+.editor textarea{min-height:16rem;line-height:1.5;resize:vertical}
+.desk{display:grid;grid-template-columns:22rem 1fr;gap:2rem;align-items:start}
+.guide-list{list-style:none;margin:1rem 0 0;padding:0;border-top:1px solid var(--ink)}
+.guide-list button{
+  width:100%;text-align:left;font:inherit;color:inherit;background:transparent;border:0;
+  border-bottom:1px solid var(--rule);padding:1rem .2rem;min-height:56px;cursor:pointer}
+.guide-list button[aria-current="true"]{background:var(--amber-wash)}
+.guide-list .t{display:block;font-family:"Newsreader",Georgia,serif;font-size:1.25rem;line-height:1.25}
+.guide-list .meta{display:block;color:var(--ink-2);font-size:1rem}
+.badge{display:inline-block;font-size:.95rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase}
+.badge.draft{color:var(--ink-2)}
+.badge.published{color:var(--sage)}
+.badge.retired{color:var(--clay)}
+.editor{background:var(--card);border:1px solid var(--rule);padding:1.5rem}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.actions .btn{min-height:56px}
+.btn.quiet{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.btn.quiet:hover{background:var(--paper-2)}
+.btn.danger{background:var(--clay);color:var(--paper)}
+.note{color:var(--ink-2);font-size:1.05rem}
+.status-line{min-height:1.6em;font-weight:700;margin:.5rem 0 0}
+.password-box{margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem}
+.password-box input{max-width:24rem}
+@media (max-width:900px){
+  .desk{grid-template-columns:1fr}
+}
