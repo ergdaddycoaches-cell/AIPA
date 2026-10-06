@@ -1,0 +1,9 @@
+slug,name,sort_order
+bathrooms,Bathrooms,1
+entries-stairs,Entries and stairs,2
+kitchens-bedrooms,Kitchens and bedrooms,3
+materials-lighting,Materials and lighting,4
+costs-financing,Costs and financing,5
+codes-permits,"Codes, permits and HOAs",6
+family,Family conversations,7
+home-value,Home value,8

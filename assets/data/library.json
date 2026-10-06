@@ -1,0 +1,545 @@
+{
+ "sections": {
+  "bathrooms": "Bathrooms",
+  "entries-stairs": "Entries and stairs",
+  "kitchens-bedrooms": "Kitchens and bedrooms",
+  "materials-lighting": "Materials and lighting",
+  "costs-financing": "Costs and financing",
+  "codes-permits": "Codes, permits and HOAs",
+  "family": "Family conversations",
+  "home-value": "Home value"
+ },
+ "articles": [
+  {
+   "id": 1,
+   "slug": "curbless-showers",
+   "title": "Curbless showers: lowering the floor or raising the room",
+   "summary": "The two ways to build a shower with no lip to step over, and how water is kept where it belongs.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "curbless,walk-in,roll-in,zero-entry,shower,slope,drain,wet room",
+   "status": "published",
+   "url": "/library/bathrooms/curbless-showers"
+  },
+  {
+   "id": 2,
+   "slug": "grab-bars",
+   "title": "Where grab bars go, and what holds them up",
+   "summary": "Heights, placement by the toilet and shower, and why the wall behind matters more than the bar.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "grab bar,rail,support,blocking,anchors,towel bar,shower,toilet",
+   "status": "published",
+   "url": "/library/bathrooms/grab-bars"
+  },
+  {
+   "id": 3,
+   "slug": "comfort-height-toilets",
+   "title": "Comfort-height toilets and bidet seats",
+   "summary": "Taller seats that are easier to stand up from, and bidet seats that cut down on reaching and twisting.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "toilet,comfort height,chair height,bidet,seat",
+   "status": "published",
+   "url": "/library/bathrooms/comfort-height-toilets"
+  },
+  {
+   "id": 4,
+   "slug": "sit-down-vanities",
+   "title": "Vanities you can sit at",
+   "summary": "Knee space, sink depth and covered pipes, so a vanity works from a stool or wheelchair.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "vanity,sink,knee space,wheelchair,roll-under,pipes",
+   "status": "published",
+   "url": "/library/bathrooms/sit-down-vanities"
+  },
+  {
+   "id": 5,
+   "slug": "linear-drains",
+   "title": "Linear drains, explained",
+   "summary": "Why a long, narrow drain makes a curbless shower simpler to build and safer to use.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "drain,linear drain,trench drain,curbless,shower,slope",
+   "status": "published",
+   "url": "/library/bathrooms/linear-drains"
+  },
+  {
+   "id": 6,
+   "slug": "shower-benches",
+   "title": "Shower benches that don't look medical",
+   "summary": "Built-in and fold-down benches in teak and stone, and how high to set them.",
+   "section_slug": "bathrooms",
+   "section": "Bathrooms",
+   "tags": "bench,seat,shower chair,teak,fold-down",
+   "status": "published",
+   "url": "/library/bathrooms/shower-benches"
+  },
+  {
+   "id": 7,
+   "slug": "zero-step-entries",
+   "title": "Zero-step entries without a ramp",
+   "summary": "Grading the path up to the door so there's no step at all, and when that's possible.",
+   "section_slug": "entries-stairs",
+   "section": "Entries and stairs",
+   "tags": "entry,threshold,step,front door,no-step,zero-step,porch",
+   "status": "published",
+   "url": "/library/entries-stairs/zero-step-entries"
+  },
+  {
+   "id": 8,
+   "slug": "ramps",
+   "title": "Ramps: slopes, rails and surfaces",
+   "summary": "How long a ramp needs to be, what to build it from, and the rails that make it safe.",
+   "section_slug": "entries-stairs",
+   "section": "Entries and stairs",
+   "tags": "ramp,slope,wheelchair,walker,handrail,porch",
+   "status": "published",
+   "url": "/library/entries-stairs/ramps"
+  },
+  {
+   "id": 9,
+   "slug": "stairlifts",
+   "title": "Straight and curved stairlifts compared",
+   "summary": "Costs, installation time and the questions to ask before choosing a stairlift.",
+   "section_slug": "entries-stairs",
+   "section": "Entries and stairs",
+   "tags": "stairlift,stair chair,chair lift,stairs,lift",
+   "status": "published",
+   "url": "/library/entries-stairs/stairlifts"
+  },
+  {
+   "id": 10,
+   "slug": "home-elevators",
+   "title": "Home elevators and platform lifts",
+   "summary": "Through-the-floor elevators and vertical platform lifts, and what each needs from the house.",
+   "section_slug": "entries-stairs",
+   "section": "Entries and stairs",
+   "tags": "elevator,lift,platform lift,wheelchair,stairs",
+   "status": "published",
+   "url": "/library/entries-stairs/home-elevators"
+  },
+  {
+   "id": 11,
+   "slug": "handrails",
+   "title": "Handrails on both sides of every stair",
+   "summary": "Grip size, height and why a second rail matters on every flight.",
+   "section_slug": "entries-stairs",
+   "section": "Entries and stairs",
+   "tags": "handrail,banister,railing,stairs,steps",
+   "status": "published",
+   "url": "/library/entries-stairs/handrails"
+  },
+  {
+   "id": 12,
+   "slug": "safer-cooking",
+   "title": "Induction cooktops and auto shut-off",
+   "summary": "Cooking with less risk of burns and forgotten burners.",
+   "section_slug": "kitchens-bedrooms",
+   "section": "Kitchens and bedrooms",
+   "tags": "stove,cooktop,induction,oven,auto shut-off,burn,fire,memory",
+   "status": "published",
+   "url": "/library/kitchens-bedrooms/safer-cooking"
+  },
+  {
+   "id": 13,
+   "slug": "reachable-kitchen",
+   "title": "Wall ovens, drawer dishwashers, pull-down shelves",
+   "summary": "Bringing the kitchen within reach, without bending low or reaching high.",
+   "section_slug": "kitchens-bedrooms",
+   "section": "Kitchens and bedrooms",
+   "tags": "kitchen,oven,dishwasher,shelves,cabinets,reach",
+   "status": "published",
+   "url": "/library/kitchens-bedrooms/reachable-kitchen"
+  },
+  {
+   "id": 14,
+   "slug": "main-floor-bedroom",
+   "title": "A bedroom on the main floor",
+   "summary": "Converting a den or adding a suite so daily life doesn't depend on the stairs.",
+   "section_slug": "kitchens-bedrooms",
+   "section": "Kitchens and bedrooms",
+   "tags": "bedroom,main floor,first floor,suite,stairs,addition",
+   "status": "published",
+   "url": "/library/kitchens-bedrooms/main-floor-bedroom"
+  },
+  {
+   "id": 15,
+   "slug": "night-paths",
+   "title": "Clear paths and night lighting",
+   "summary": "Lighting the route from bed to bathroom, and clearing it of trip hazards.",
+   "section_slug": "kitchens-bedrooms",
+   "section": "Kitchens and bedrooms",
+   "tags": "night light,lighting,motion sensor,path,hallway,trip,bathroom",
+   "status": "published",
+   "url": "/library/kitchens-bedrooms/night-paths"
+  },
+  {
+   "id": 16,
+   "slug": "ceiling-lift-planning",
+   "title": "Planning for a ceiling lift later",
+   "summary": "Adding ceiling support now so a lift can go in easily if it's ever needed.",
+   "section_slug": "kitchens-bedrooms",
+   "section": "Kitchens and bedrooms",
+   "tags": "ceiling lift,patient lift,hoyer,caregiver,transfer",
+   "status": "published",
+   "url": "/library/kitchens-bedrooms/ceiling-lift-planning"
+  },
+  {
+   "id": 17,
+   "slug": "dcof-tile",
+   "title": "Slip resistance: reading a tile's DCOF rating",
+   "summary": "What the number on the product sheet means, and the minimum to look for in wet areas.",
+   "section_slug": "materials-lighting",
+   "section": "Materials and lighting",
+   "tags": "tile,slip,slippery,DCOF,floor,grip,wet,shower",
+   "status": "published",
+   "url": "/library/materials-lighting/dcof-tile"
+  },
+  {
+   "id": 18,
+   "slug": "flooring",
+   "title": "Flooring that's kind to walkers and wheels",
+   "summary": "Vinyl, tile, wood and low carpet compared for grip, comfort and smooth rolling.",
+   "section_slug": "materials-lighting",
+   "section": "Materials and lighting",
+   "tags": "floor,flooring,vinyl,LVP,carpet,wood,wheelchair,walker",
+   "status": "published",
+   "url": "/library/materials-lighting/flooring"
+  },
+  {
+   "id": 19,
+   "slug": "more-light",
+   "title": "Why older eyes need more light",
+   "summary": "How eyes change with age, and how much brighter rooms should be as a result.",
+   "section_slug": "materials-lighting",
+   "section": "Materials and lighting",
+   "tags": "lighting,light,vision,eyes,brightness,lamps",
+   "status": "published",
+   "url": "/library/materials-lighting/more-light"
+  },
+  {
+   "id": 20,
+   "slug": "glare-contrast",
+   "title": "Glare, contrast and color temperature",
+   "summary": "Matte finishes, contrasting edges and warm bulbs that make a home easier to see in.",
+   "section_slug": "materials-lighting",
+   "section": "Materials and lighting",
+   "tags": "glare,contrast,color temperature,bulbs,vision,low vision",
+   "status": "published",
+   "url": "/library/materials-lighting/glare-contrast"
+  },
+  {
+   "id": 21,
+   "slug": "easy-hardware",
+   "title": "Lever handles, D-pulls and touch latches",
+   "summary": "Hardware that works for stiff or painful hands.",
+   "section_slug": "materials-lighting",
+   "section": "Materials and lighting",
+   "tags": "handles,knobs,lever,pulls,hardware,arthritis,hands",
+   "status": "published",
+   "url": "/library/materials-lighting/easy-hardware"
+  },
+  {
+   "id": 22,
+   "slug": "typical-costs",
+   "title": "What aging-in-place projects typically cost",
+   "summary": "Price ranges for common projects, and what pushes a job up or down.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "cost,price,budget,how much,quote,estimate",
+   "status": "published",
+   "url": "/library/costs-financing/typical-costs"
+  },
+  {
+   "id": 23,
+   "slug": "medicare-advantage",
+   "title": "Medicare Advantage and in-home benefits",
+   "summary": "Which plans may help with safety items, and what they usually require first.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "Medicare,Medicare Advantage,insurance,benefits,pay,coverage",
+   "status": "published",
+   "url": "/library/costs-financing/medicare-advantage"
+  },
+  {
+   "id": 24,
+   "slug": "medicaid-waivers",
+   "title": "Medicaid waiver home modification programs",
+   "summary": "State programs that can pay for changes so someone can stay at home.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "Medicaid,waiver,HCBS,state program,grant,pay",
+   "status": "published",
+   "url": "/library/costs-financing/medicaid-waivers"
+  },
+  {
+   "id": 25,
+   "slug": "va-grants",
+   "title": "VA housing grants for veterans",
+   "summary": "The VA programs that help veterans adapt a home, and who qualifies.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "VA,veteran,grant,SAH,SHA,HISA,pay",
+   "status": "published",
+   "url": "/library/costs-financing/va-grants"
+  },
+  {
+   "id": 26,
+   "slug": "medical-deduction",
+   "title": "Deducting changes as a medical expense",
+   "summary": "When home changes can count as a medical deduction on taxes.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "tax,deduction,IRS,medical expense,pay",
+   "status": "published",
+   "url": "/library/costs-financing/medical-deduction"
+  },
+  {
+   "id": 27,
+   "slug": "equity-insurance",
+   "title": "Home equity, reverse mortgages and care insurance",
+   "summary": "Ways families use the home itself, or a long-term care policy, to pay for changes.",
+   "section_slug": "costs-financing",
+   "section": "Costs and financing",
+   "tags": "HELOC,reverse mortgage,equity,long-term care insurance,loan,pay",
+   "status": "published",
+   "url": "/library/costs-financing/equity-insurance"
+  },
+  {
+   "id": 28,
+   "slug": "ada-and-homes",
+   "title": "Why the ADA doesn't cover your home, and why we use it anyway",
+   "summary": "What the ADA requires, who it applies to, and why its measurements still help.",
+   "section_slug": "codes-permits",
+   "section": "Codes, permits and HOAs",
+   "tags": "ADA,law,standards,code,accessibility",
+   "status": "published",
+   "url": "/library/codes-permits/ada-and-homes"
+  },
+  {
+   "id": 29,
+   "slug": "permits",
+   "title": "Which projects need a permit",
+   "summary": "The kinds of changes that usually need one, and who should pull it.",
+   "section_slug": "codes-permits",
+   "section": "Codes, permits and HOAs",
+   "tags": "permit,inspection,code,city,county",
+   "status": "published",
+   "url": "/library/codes-permits/permits"
+  },
+  {
+   "id": 30,
+   "slug": "hoa-rights",
+   "title": "Your rights when an HOA says no",
+   "summary": "How fair housing law protects reasonable changes, and how to ask.",
+   "section_slug": "codes-permits",
+   "section": "Codes, permits and HOAs",
+   "tags": "HOA,homeowners association,fair housing,rights,approval",
+   "status": "published",
+   "url": "/library/codes-permits/hoa-rights"
+  },
+  {
+   "id": 31,
+   "slug": "contractor-questions",
+   "title": "Questions to ask any contractor",
+   "summary": "What a careful contractor should be able to answer before you sign.",
+   "section_slug": "codes-permits",
+   "section": "Codes, permits and HOAs",
+   "tags": "contractor,questions,quote,estimate,hire,checklist",
+   "status": "published",
+   "url": "/library/codes-permits/contractor-questions"
+  },
+  {
+   "id": 32,
+   "slug": "raising-it",
+   "title": "Raising it with a parent who says they're fine",
+   "summary": "Ways to start the conversation without making it about decline.",
+   "section_slug": "family",
+   "section": "Family conversations",
+   "tags": "parent,mom,dad,conversation,talk,resistance,denial",
+   "status": "published",
+   "url": "/library/family/raising-it"
+  },
+  {
+   "id": 33,
+   "slug": "siblings",
+   "title": "Getting siblings on the same page",
+   "summary": "Sharing decisions, costs and work among brothers and sisters.",
+   "section_slug": "family",
+   "section": "Family conversations",
+   "tags": "siblings,brother,sister,family,disagreement,costs",
+   "status": "published",
+   "url": "/library/family/siblings"
+  },
+  {
+   "id": 34,
+   "slug": "upgrades-not-decline",
+   "title": "Talking about upgrades, not decline",
+   "summary": "Framing changes as improvements a parent would choose anyway.",
+   "section_slug": "family",
+   "section": "Family conversations",
+   "tags": "conversation,dignity,language,parent,upgrade",
+   "status": "published",
+   "url": "/library/family/upgrades-not-decline"
+  },
+  {
+   "id": 35,
+   "slug": "when-home-isnt-safe",
+   "title": "When staying home is no longer safe",
+   "summary": "Signs that the home can't meet someone's needs, even with changes.",
+   "section_slug": "family",
+   "section": "Family conversations",
+   "tags": "safety,assisted living,memory care,wandering,caregiver,decision",
+   "status": "published",
+   "url": "/library/family/when-home-isnt-safe"
+  },
+  {
+   "id": 36,
+   "slug": "home-vs-assisted-living",
+   "title": "Staying home versus assisted living: the real costs",
+   "summary": "Comparing the cost of adapting a home with monthly care costs over time.",
+   "section_slug": "family",
+   "section": "Family conversations",
+   "tags": "assisted living,cost,nursing home,memory care,compare,decision",
+   "status": "published",
+   "url": "/library/family/home-vs-assisted-living"
+  },
+  {
+   "id": 37,
+   "slug": "buyer-features",
+   "title": "Which features buyers of every age want",
+   "summary": "Changes that tend to appeal to buyers, not only older ones.",
+   "section_slug": "home-value",
+   "section": "Home value",
+   "tags": "resale,home value,buyers,curbless,universal design",
+   "status": "published",
+   "url": "/library/home-value/buyer-features"
+  },
+  {
+   "id": 38,
+   "slug": "resale-risks",
+   "title": "Changes that can hurt resale",
+   "summary": "Changes that can narrow the pool of buyers, and how to avoid them.",
+   "section_slug": "home-value",
+   "section": "Home value",
+   "tags": "resale,home value,tub,remove,buyers",
+   "status": "published",
+   "url": "/library/home-value/resale-risks"
+  },
+  {
+   "id": 39,
+   "slug": "appraisals",
+   "title": "Documenting upgrades for an appraiser",
+   "summary": "Keeping records so an appraiser can see the value in the work.",
+   "section_slug": "home-value",
+   "section": "Home value",
+   "tags": "appraisal,appraiser,home value,records,documents",
+   "status": "published",
+   "url": "/library/home-value/appraisals"
+  }
+ ],
+ "synonyms": [
+  {
+   "term": "walk-in shower",
+   "maps_to": "curbless"
+  },
+  {
+   "term": "roll-in shower",
+   "maps_to": "curbless"
+  },
+  {
+   "term": "no step shower",
+   "maps_to": "curbless"
+  },
+  {
+   "term": "wet room",
+   "maps_to": "curbless"
+  },
+  {
+   "term": "handrail",
+   "maps_to": "grab bar"
+  },
+  {
+   "term": "safety bar",
+   "maps_to": "grab bar"
+  },
+  {
+   "term": "rail",
+   "maps_to": "grab bar"
+  },
+  {
+   "term": "stair chair",
+   "maps_to": "stairlift"
+  },
+  {
+   "term": "chair lift",
+   "maps_to": "stairlift"
+  },
+  {
+   "term": "slippery",
+   "maps_to": "slip"
+  },
+  {
+   "term": "non-slip",
+   "maps_to": "slip"
+  },
+  {
+   "term": "mom",
+   "maps_to": "parent"
+  },
+  {
+   "term": "dad",
+   "maps_to": "parent"
+  },
+  {
+   "term": "mother",
+   "maps_to": "parent"
+  },
+  {
+   "term": "father",
+   "maps_to": "parent"
+  },
+  {
+   "term": "nursing home",
+   "maps_to": "assisted living"
+  },
+  {
+   "term": "price",
+   "maps_to": "cost"
+  },
+  {
+   "term": "how much",
+   "maps_to": "cost"
+  },
+  {
+   "term": "afford",
+   "maps_to": "pay"
+  },
+  {
+   "term": "money",
+   "maps_to": "cost"
+  },
+  {
+   "term": "grants",
+   "maps_to": "grant"
+  },
+  {
+   "term": "tub",
+   "maps_to": "shower"
+  },
+  {
+   "term": "bathtub",
+   "maps_to": "shower"
+  },
+  {
+   "term": "stove",
+   "maps_to": "cooktop"
+  },
+  {
+   "term": "doorway",
+   "maps_to": "door"
+  }
+ ]
+}
