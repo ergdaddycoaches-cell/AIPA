@@ -8,6 +8,9 @@
   var signupFilter = '';
   var fillingSessions = false;
   var current = null;
+  var notesId = 0;
+  var ROLES = [['', 'Not set'], ['parent', 'Parent'], ['adult_child', 'Adult child'], ['spouse', 'Spouse'], ['sibling', 'Sibling'], ['other', 'Other']];
+  var STYLES = [['', 'Not set'], ['protective', 'Protective'], ['minimizing', 'Minimizing'], ['detail', 'Wants the details'], ['action', 'Wants a next step'], ['urgent', 'Urgent'], ['unsure', 'Not enough to tell']];
   var msg = document.getElementById('meeting-msg');
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
@@ -117,6 +120,183 @@
     return guestPeople(row).map(function(person){ return esc(person[field] || ''); }).join('<br>') ;
   }
 
+  function meetingFor(row){
+    return meetings.filter(function(item){ return item.id === row.meeting_id; })[0] || null;
+  }
+  function isFamily(row){
+    var meeting = meetingFor(row);
+    return !!(meeting && meeting.meeting_type === 'family_1_1');
+  }
+  function parseList(value){
+    if (Array.isArray(value)) return value;
+    if (!value) return [];
+    try {
+      var parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+  function optionList(list, selected){
+    return list.map(function(pair){
+      return '<option value="' + esc(pair[0]) + '"' + (pair[0] === (selected || '') ? ' selected' : '') + '>' + esc(pair[1]) + '</option>';
+    }).join('');
+  }
+  function agreed(row){
+    return row.recording_consent === true || row.recording_consent === 1 || row.recording_consent === '1';
+  }
+  function topicText(row){
+    return parseList(row.topics).join('\n');
+  }
+  function seedPeople(row){
+    var stored = parseList(row.attendee_reads);
+    if (stored.length) return stored;
+    var people = [{name: row.name || '', email: row.email || '', role: '', style: '', note: ''}];
+    guestPeople(row).forEach(function(person){
+      people.push({name: person.name || '', email: person.email || '', role: '', style: '', note: ''});
+    });
+    return people;
+  }
+  function addPerson(person){
+    person = person || {name:'', email:'', role:'', style:'', note:''};
+    var block = document.createElement('div');
+    block.className = 'person';
+    block.innerHTML =
+      '<div class="pair"><div><label>Name<input class="person-name" value="' + esc(person.name || '') + '"></label></div>' +
+      '<div><label>Email<input class="person-email" type="email" value="' + esc(person.email || '') + '"></label></div></div>' +
+      '<div class="pair"><div><label>Role<select class="person-role">' + optionList(ROLES, person.role) + '</select></label></div>' +
+      '<div><label>Style<select class="person-style">' + optionList(STYLES, person.style) + '</select></label></div></div>' +
+      '<label>Note<input class="person-note" value="' + esc(person.note || '') + '"></label>' +
+      '<button class="btn quiet" type="button">Remove</button>';
+    block.querySelector('button').addEventListener('click', function(){ block.remove(); });
+    document.getElementById('attendee-reads').appendChild(block);
+  }
+  function addGuide(guide){
+    guide = guide || {article_id:'', slug:'', title:'', reason:''};
+    var block = document.createElement('div');
+    block.className = 'guide';
+    var articleId = guide.article_id ? guide.article_id : '';
+    block.innerHTML =
+      '<div class="pair"><div><label>Title<input class="guide-title" value="' + esc(guide.title || '') + '"></label></div>' +
+      '<div><label>Slug<input class="guide-slug" value="' + esc(guide.slug || '') + '"></label></div></div>' +
+      '<div class="pair"><div><label>Article id<input class="guide-id" type="number" min="0" value="' + esc(articleId) + '"></label></div>' +
+      '<div><label>Why this guide<input class="guide-reason" value="' + esc(guide.reason || '') + '"></label></div></div>' +
+      '<button class="btn quiet" type="button">Remove</button>';
+    block.querySelector('button').addEventListener('click', function(){ block.remove(); });
+    document.getElementById('other-suggestions').appendChild(block);
+  }
+  function closeNotes(){
+    notesId = 0;
+    var panel = document.getElementById('family-notes');
+    if (panel) panel.hidden = true;
+    renderSignups();
+  }
+  function openNotes(id){
+    var row = signups.filter(function(item){ return item.id === id; })[0];
+    var panel = document.getElementById('family-notes');
+    if (!row || !isFamily(row) || !panel) return;
+    notesId = id;
+    var meeting = meetingFor(row);
+    var when = window.AIPA_SEMINAR.format({
+      starts_at: row.occurrence_at,
+      timezone: meeting ? meeting.timezone : 'America/Los_Angeles',
+      kind: 'one_time'
+    });
+    document.getElementById('family-notes-who').textContent = sessionTitle(row) + ' · ' + when + ' · ' + (row.name || '');
+    document.getElementById('notes-consent').checked = agreed(row);
+    document.getElementById('notes-transcript').value = row.transcript || '';
+    document.getElementById('notes-summary').value = row.summary || '';
+    document.getElementById('notes-topics').value = topicText(row);
+    document.getElementById('notes-readiness').value = row.visit_readiness || '';
+    document.getElementById('notes-readiness-note').value = row.readiness_note || '';
+    document.getElementById('suggested-id').value = row.suggested_article_id ? row.suggested_article_id : '';
+    document.getElementById('suggested-slug').value = row.suggested_slug || '';
+    document.getElementById('suggested-title').value = row.suggested_title || '';
+    document.getElementById('suggested-reason').value = row.suggestion_reason || '';
+    document.getElementById('follow-up-note').value = row.follow_up_note || '';
+    document.getElementById('follow-up-status').value = row.follow_up_status || 'none';
+    var meta = [];
+    if (row.notes_at) meta.push('Notes saved ' + row.notes_at + '.');
+    if (row.follow_up_status === 'sent' && row.follow_up_sent_at) meta.push('Follow-up marked sent ' + row.follow_up_sent_at + '.');
+    document.getElementById('notes-meta').textContent = meta.join(' ');
+    document.getElementById('notes-msg').textContent = '';
+    var people = document.getElementById('attendee-reads');
+    var guides = document.getElementById('other-suggestions');
+    people.innerHTML = '';
+    guides.innerHTML = '';
+    seedPeople(row).forEach(addPerson);
+    parseList(row.other_suggestions).forEach(addGuide);
+    panel.hidden = false;
+    renderSignups();
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function saveNotes(event){
+    event.preventDefault();
+    var msg = document.getElementById('notes-msg');
+    if (!notesId) return;
+    var people = [];
+    document.querySelectorAll('#attendee-reads .person').forEach(function(block){
+      people.push({
+        name: block.querySelector('.person-name').value.trim(),
+        email: block.querySelector('.person-email').value.trim(),
+        role: block.querySelector('.person-role').value,
+        style: block.querySelector('.person-style').value,
+        note: block.querySelector('.person-note').value.trim()
+      });
+    });
+    var guides = [];
+    document.querySelectorAll('#other-suggestions .guide').forEach(function(block){
+      guides.push({
+        article_id: Number(block.querySelector('.guide-id').value) || 0,
+        title: block.querySelector('.guide-title').value.trim(),
+        slug: block.querySelector('.guide-slug').value.trim(),
+        reason: block.querySelector('.guide-reason').value.trim()
+      });
+    });
+    var topics = document.getElementById('notes-topics').value.split(/\n+/).map(function(line){
+      return line.trim();
+    }).filter(Boolean);
+    var payload = {
+      id: notesId,
+      recording_consent: document.getElementById('notes-consent').checked,
+      transcript: document.getElementById('notes-transcript').value,
+      summary: document.getElementById('notes-summary').value,
+      topics: JSON.stringify(topics),
+      visit_readiness: document.getElementById('notes-readiness').value,
+      readiness_note: document.getElementById('notes-readiness-note').value,
+      suggested_article_id: Number(document.getElementById('suggested-id').value) || 0,
+      suggested_slug: document.getElementById('suggested-slug').value.trim(),
+      suggested_title: document.getElementById('suggested-title').value.trim(),
+      suggestion_reason: document.getElementById('suggested-reason').value,
+      other_suggestions: JSON.stringify(guides),
+      follow_up_note: document.getElementById('follow-up-note').value,
+      follow_up_status: document.getElementById('follow-up-status').value,
+      attendee_reads: JSON.stringify(people)
+    };
+    msg.textContent = 'Saving notes…';
+    var keep = notesId;
+    api('/office/family-notes', {method:'POST', body:payload}).then(function(saved){
+      if (saved && saved.id) {
+        var replaced = false;
+        signups = signups.map(function(row){
+          if (row.id !== saved.id) return row;
+          replaced = true;
+          return saved;
+        });
+        if (!replaced) signups.push(saved);
+        openNotes(saved.id);
+        document.getElementById('notes-msg').textContent = 'Notes saved. They stay in the back office.';
+        return;
+      }
+      return load().then(function(){
+        openNotes(keep);
+        document.getElementById('notes-msg').textContent = 'Notes saved. They stay in the back office.';
+      });
+    }).catch(function(err){
+      msg.textContent = err.message;
+    });
+  }
+
   function renderSignups(){
     var table = document.getElementById('signup-table');
     var body = document.getElementById('signup-rows');
@@ -136,12 +316,15 @@
       ? 'No one has signed up for this session.'
       : 'No one has signed up yet.';
     body.innerHTML = rows.map(function(row){
-      var meeting = meetings.filter(function(item){ return item.id === row.meeting_id; })[0];
+      var meeting = meetingFor(row);
       var session = window.AIPA_SEMINAR.format({
         starts_at: row.occurrence_at,
         timezone: meeting ? meeting.timezone : 'America/Los_Angeles',
         kind: 'one_time'
       });
+      var notes = isFamily(row)
+        ? '<button class="notes-open" type="button" data-notes="' + row.id + '" aria-pressed="' + (notesId === row.id) + '">Notes</button>'
+        : '';
       return '<tr>' +
         '<td>' + esc(sessionTitle(row)) + '</td>' +
         '<td>' + esc(session) + '</td>' +
@@ -151,8 +334,16 @@
         '<td>' + guestCell(row, 'name') + '</td>' +
         '<td>' + guestCell(row, 'email') + '</td>' +
         '<td>' + guestCell(row, 'phone') + '</td>' +
+        '<td>' + notes + '</td>' +
       '</tr>';
     }).join('');
+    body.querySelectorAll('[data-notes]').forEach(function(button){
+      button.addEventListener('click', function(){
+        var id = Number(button.dataset.notes);
+        if (notesId === id) closeNotes();
+        else openNotes(id);
+      });
+    });
   }
 
   function render(){
@@ -266,6 +457,10 @@
     signupFilter = document.getElementById('signup-session').value;
     renderSignups();
   });
+  document.getElementById('family-notes-form').addEventListener('submit', saveNotes);
+  document.getElementById('notes-close').addEventListener('click', closeNotes);
+  document.getElementById('add-attendee').addEventListener('click', function(){ addPerson(); });
+  document.getElementById('add-suggestion').addEventListener('click', function(){ addGuide(); });
 
   window.AIPA_SEMINARS = { load: load };
   if (token()) load();

@@ -33,6 +33,7 @@
       '<div id="guest-list"></div>' +
       '<button class="btn quiet add-guest" type="button" id="add-guest">Add a family member</button>' +
       '<p class="note">The more the merrier.</p>' +
+      '<label class="check consent"><input id="signup-consent" type="checkbox" required> This conversation may be transcribed so we can follow up with a guide from the library. It stays inside Aging in Place Alliance.</label>' +
       '<div class="actions">' +
         '<button class="btn" type="submit">Reserve this time</button>' +
         '<button class="btn quiet" type="button" id="signup-cancel">Cancel</button>' +
@@ -79,7 +80,8 @@
         name: document.getElementById('signup-name').value.trim(),
         email: document.getElementById('signup-email').value.trim(),
         phone: document.getElementById('signup-phone').value.trim(),
-        guests: JSON.stringify(guests)
+        guests: JSON.stringify(guests),
+        recording_consent: document.getElementById('signup-consent').checked
       };
       msg.textContent = 'Reserving this time…';
       button.disabled = true;

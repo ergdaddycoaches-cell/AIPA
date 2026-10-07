@@ -18,7 +18,10 @@
 <header class="mast">
   <div class="wrap">
     <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Staff back office</small></span></a>
-    <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
   </div>
 </header>
 <main id="main">
@@ -184,11 +187,81 @@
                 <th>Family member</th>
                 <th>Their email</th>
                 <th>Their cell</th>
+                <th>Notes</th>
               </tr>
             </thead>
             <tbody id="signup-rows"></tbody>
           </table>
         </div>
+        <section id="family-notes" class="family-notes" hidden aria-labelledby="family-notes-heading">
+          <h3 id="family-notes-heading">Family notes</h3>
+          <p class="note" id="family-notes-who"></p>
+          <form id="family-notes-form">
+            <label class="check" for="notes-consent"><input id="notes-consent" type="checkbox"> This family agreed to a transcript</label>
+            <label for="notes-transcript">Transcript</label>
+            <textarea id="notes-transcript" class="tall"></textarea>
+            <label for="notes-summary">Summary</label>
+            <textarea id="notes-summary" class="tall"></textarea>
+            <label for="notes-topics">Topics, one per line</label>
+            <textarea id="notes-topics"></textarea>
+            <div class="pair">
+              <div>
+                <label for="notes-readiness">Estimator visit</label>
+                <select id="notes-readiness">
+                  <option value="">Not set</option>
+                  <option value="not_ready">Not ready</option>
+                  <option value="unsure">Unsure</option>
+                  <option value="ready">Ready</option>
+                </select>
+              </div>
+              <div>
+                <label for="follow-up-status">Follow-up</label>
+                <select id="follow-up-status">
+                  <option value="none">Not started</option>
+                  <option value="draft">Draft</option>
+                  <option value="sent">Sent</option>
+                </select>
+              </div>
+            </div>
+            <label for="notes-readiness-note">Why that readiness</label>
+            <textarea id="notes-readiness-note"></textarea>
+            <fieldset>
+              <legend>People on the call</legend>
+              <p class="note">Internal only. These reads are not sent to the family.</p>
+              <div id="attendee-reads"></div>
+              <button class="btn quiet" type="button" id="add-attendee">Add a person</button>
+            </fieldset>
+            <h4>Guide to send</h4>
+            <div class="pair">
+              <div>
+                <label for="suggested-id">Article id</label>
+                <input id="suggested-id" type="number" min="0" inputmode="numeric">
+              </div>
+              <div>
+                <label for="suggested-slug">Slug</label>
+                <input id="suggested-slug" autocomplete="off">
+              </div>
+            </div>
+            <label for="suggested-title">Title</label>
+            <input id="suggested-title" autocomplete="off">
+            <label for="suggested-reason">Why this guide</label>
+            <textarea id="suggested-reason"></textarea>
+            <fieldset>
+              <legend>Other guides</legend>
+              <div id="other-suggestions"></div>
+              <button class="btn quiet" type="button" id="add-suggestion">Add a guide</button>
+            </fieldset>
+            <label for="follow-up-note">Follow-up note</label>
+            <textarea id="follow-up-note" class="tall"></textarea>
+            <p class="note">Marking the follow-up sent records that you sent it. Email and text are not connected yet.</p>
+            <p class="note" id="notes-meta"></p>
+            <div class="actions">
+              <button class="btn" type="submit">Save notes</button>
+              <button class="btn quiet" type="button" id="notes-close">Close</button>
+            </div>
+            <p class="status-line" id="notes-msg" role="status"></p>
+          </form>
+        </section>
       </section>
     </div>
 

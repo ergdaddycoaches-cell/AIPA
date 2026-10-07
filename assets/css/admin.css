@@ -1,3 +1,4 @@
+.mast-actions{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
 .office{padding:1.5rem 0 4rem}
 .office h1{font-size:clamp(2.2rem,4vw,3.2rem)}
 .login-card{max-width:32rem;margin:8vh auto;background:var(--card);border:1px solid var(--rule);padding:2rem}
@@ -42,6 +43,26 @@
   border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px;margin-bottom:1rem}
 .signup-panel table{min-width:64rem}
 .signup-panel th,.signup-panel td{white-space:nowrap}
+.signup-panel .notes-open{
+  min-height:44px;padding:.35rem .8rem;font:inherit;font-weight:700;cursor:pointer;
+  background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:3px}
+.signup-panel .notes-open[aria-pressed="true"]{background:var(--amber-wash)}
+.family-notes{margin-top:1.5rem;background:var(--card);border:1px solid var(--rule);padding:1.5rem}
+.family-notes h3{font-size:clamp(1.6rem,3vw,2.1rem);margin:0}
+.family-notes h4{font-size:1.35rem;margin:1.5rem 0 0}
+.family-notes label{display:block;font-weight:700;margin:1rem 0 .4rem}
+.family-notes label.check{display:flex;align-items:flex-start;gap:.6rem;font-weight:600;margin:0}
+.family-notes label.check input{width:1.25rem;height:1.25rem;min-height:0;margin-top:.2rem}
+.family-notes input,.family-notes textarea,.family-notes select{
+  width:100%;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);
+  border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px}
+.family-notes textarea{min-height:8rem;line-height:1.45;resize:vertical}
+.family-notes textarea.tall{min-height:14rem}
+.family-notes fieldset{border:0;margin:1.5rem 0 0;padding:0}
+.family-notes legend{font-weight:700;font-size:1.35rem}
+.family-notes .person,.family-notes .guide{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rule)}
+.family-notes .person .btn,.family-notes .guide .btn,.family-notes fieldset > .btn{margin-top:.75rem}
+.signup-panel .family-notes select{max-width:none;margin-bottom:0}
 @media (max-width:900px){
   .desk,.pair{grid-template-columns:1fr}
 }

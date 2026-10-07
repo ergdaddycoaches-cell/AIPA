@@ -348,7 +348,9 @@ a.inline{font-weight:600;text-decoration-color:var(--clay);text-decoration-thick
 .signup input{width:100%;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px}
 .signup .optional{font-weight:400;color:var(--ink-2)}
 .signup .check{display:flex;align-items:center;gap:.6rem;font-weight:600;margin:1rem 0 0}
+.signup .check.consent{align-items:flex-start;line-height:1.4}
 .signup .check input{width:1.25rem;height:1.25rem;min-height:0}
+.signup .check.consent input{margin-top:.15rem}
 .signup .actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
 .signup .btn.quiet{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
 .signup .btn.quiet:hover{background:var(--paper-2)}
