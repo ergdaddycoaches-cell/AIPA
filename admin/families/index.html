@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Families | Aging in Place Alliance</title>
+<title>Ask Anything 1:1 | Aging in Place Alliance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
 <a class="skip" href="#main">Skip to main content</a>
 <header class="mast">
   <div class="wrap">
-    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Family clock</small></span></a>
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Ask Anything 1:1</small></span></a>
     <div class="mast-actions">
       <a class="btn quiet" href="/admin/">Back office</a>
       <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
@@ -28,7 +28,7 @@
 <main id="main">
   <section class="office wrap" id="login-view">
     <form class="login-card" id="login-form">
-      <h1>Families</h1>
+      <h1>Ask Anything 1:1</h1>
       <p class="lede">Who you have left too long. Sign in with the staff password.</p>
       <label for="password">Staff password</label>
       <input id="password" type="password" autocomplete="current-password" required>
@@ -39,20 +39,20 @@
 
   <section class="clock wrap" id="dash" hidden>
     <header class="clock-head">
-      <p class="kicker">Family 1:1</p>
+      <p class="kicker">Ask Anything 1:1</p>
       <h1>Who you have left too long.</h1>
-      <p class="deck">A touch is the conversation, an email that went out, a text that went out, or a call they answered. A draft does not count. A 1:1 that has not happened yet is not late. Retired families leave this clock.</p>
+      <p class="deck">A touch is the conversation, an email that went out, a text that went out, or a call they answered. A draft does not count. A 1:1 that has not happened yet is not late. Retired people leave this clock.</p>
     </header>
 
     <div class="pulse" role="group" aria-label="Time since last touch">
-      <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All families</span></button>
+      <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
       <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Quiet 7 days</span></button>
       <button type="button" data-age="14" aria-pressed="false"><b id="count-14">0</b><span>Quiet 14 days</span></button>
       <button type="button" data-age="30" aria-pressed="false"><b id="count-30">0</b><span>Quiet 30 days</span></button>
       <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
     </div>
 
-    <div class="life" role="group" aria-label="Whether the family is still on the clock">
+    <div class="life" role="group" aria-label="Whether they are still on the clock">
       <button type="button" data-life="active" aria-pressed="true">Active</button>
       <button type="button" data-life="retired" aria-pressed="false">Retired</button>
       <button type="button" data-callback="yes" aria-pressed="false">Call back <span id="count-callback">0</span></button>
@@ -66,8 +66,8 @@
     </div>
 
     <section id="unmatched" class="unmatched" hidden>
-      <h2>Needs a family</h2>
-      <p>These calls and messages did not match a cell or email on a family record. Attach a voicemail to the family it belongs to. That marks them for a call back.</p>
+      <h2>Needs a name</h2>
+      <p>These calls and messages did not match a cell or email we have. Attach a voicemail to the person it belongs to. That marks them for a call back.</p>
       <ul id="unmatched-list"></ul>
     </section>
     <p class="eyebrow" id="queue-label">Longest silence first</p>
@@ -76,7 +76,7 @@
     <div class="board">
       <div id="queue"></div>
       <article class="detail" id="detail" aria-live="polite">
-        <p class="waiting">Choose a family.</p>
+        <p class="waiting">Choose someone.</p>
       </article>
     </div>
   </section>

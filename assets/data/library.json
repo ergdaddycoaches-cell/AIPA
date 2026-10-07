@@ -6,13 +6,14 @@
   "materials-lighting": "Materials and lighting",
   "costs-financing": "Costs and financing",
   "codes-permits": "Codes, permits and HOAs",
-  "family": "Family conversations",
+  "family": "The conversation",
   "home-value": "Home value"
  },
  "articles": [
   {
    "id": 1,
    "slug": "curbless-showers",
+   "pdf_url": "/library/pdf/curbless-showers.pdf",
    "title": "Curbless showers: lowering the floor or raising the room",
    "summary": "The two ways to build a shower with no lip to step over, and how water is kept where it belongs.",
    "section_slug": "bathrooms",
@@ -24,6 +25,7 @@
   {
    "id": 2,
    "slug": "grab-bars",
+   "pdf_url": "/library/pdf/grab-bars.pdf",
    "title": "Where grab bars go, and what holds them up",
    "summary": "Heights, placement by the toilet and shower, and why the wall behind matters more than the bar.",
    "section_slug": "bathrooms",
@@ -35,6 +37,7 @@
   {
    "id": 3,
    "slug": "comfort-height-toilets",
+   "pdf_url": "/library/pdf/comfort-height-toilets.pdf",
    "title": "Comfort-height toilets and bidet seats",
    "summary": "Taller seats that are easier to stand up from, and bidet seats that cut down on reaching and twisting.",
    "section_slug": "bathrooms",
@@ -46,6 +49,7 @@
   {
    "id": 4,
    "slug": "sit-down-vanities",
+   "pdf_url": "/library/pdf/sit-down-vanities.pdf",
    "title": "Vanities you can sit at",
    "summary": "Knee space, sink depth and covered pipes, so a vanity works from a stool or wheelchair.",
    "section_slug": "bathrooms",
@@ -57,6 +61,7 @@
   {
    "id": 5,
    "slug": "linear-drains",
+   "pdf_url": "/library/pdf/linear-drains.pdf",
    "title": "Linear drains, explained",
    "summary": "Why a long, narrow drain makes a curbless shower simpler to build and safer to use.",
    "section_slug": "bathrooms",
@@ -68,6 +73,7 @@
   {
    "id": 6,
    "slug": "shower-benches",
+   "pdf_url": "/library/pdf/shower-benches.pdf",
    "title": "Shower benches that don't look medical",
    "summary": "Built-in and fold-down benches in teak and stone, and how high to set them.",
    "section_slug": "bathrooms",
@@ -79,6 +85,7 @@
   {
    "id": 7,
    "slug": "zero-step-entries",
+   "pdf_url": "/library/pdf/zero-step-entries.pdf",
    "title": "Zero-step entries without a ramp",
    "summary": "Grading the path up to the door so there's no step at all, and when that's possible.",
    "section_slug": "entries-stairs",
@@ -90,6 +97,7 @@
   {
    "id": 8,
    "slug": "ramps",
+   "pdf_url": "/library/pdf/ramps.pdf",
    "title": "Ramps: slopes, rails and surfaces",
    "summary": "How long a ramp needs to be, what to build it from, and the rails that make it safe.",
    "section_slug": "entries-stairs",
@@ -101,6 +109,7 @@
   {
    "id": 9,
    "slug": "stairlifts",
+   "pdf_url": "/library/pdf/stairlifts.pdf",
    "title": "Straight and curved stairlifts compared",
    "summary": "Costs, installation time and the questions to ask before choosing a stairlift.",
    "section_slug": "entries-stairs",
@@ -112,6 +121,7 @@
   {
    "id": 10,
    "slug": "home-elevators",
+   "pdf_url": "/library/pdf/home-elevators.pdf",
    "title": "Home elevators and platform lifts",
    "summary": "Through-the-floor elevators and vertical platform lifts, and what each needs from the house.",
    "section_slug": "entries-stairs",
@@ -123,6 +133,7 @@
   {
    "id": 11,
    "slug": "handrails",
+   "pdf_url": "/library/pdf/handrails.pdf",
    "title": "Handrails on both sides of every stair",
    "summary": "Grip size, height and why a second rail matters on every flight.",
    "section_slug": "entries-stairs",
@@ -134,6 +145,7 @@
   {
    "id": 12,
    "slug": "safer-cooking",
+   "pdf_url": "/library/pdf/safer-cooking.pdf",
    "title": "Induction cooktops and auto shut-off",
    "summary": "Cooking with less risk of burns and forgotten burners.",
    "section_slug": "kitchens-bedrooms",
@@ -145,6 +157,7 @@
   {
    "id": 13,
    "slug": "reachable-kitchen",
+   "pdf_url": "/library/pdf/reachable-kitchen.pdf",
    "title": "Wall ovens, drawer dishwashers, pull-down shelves",
    "summary": "Bringing the kitchen within reach, without bending low or reaching high.",
    "section_slug": "kitchens-bedrooms",
@@ -156,6 +169,7 @@
   {
    "id": 14,
    "slug": "main-floor-bedroom",
+   "pdf_url": "/library/pdf/main-floor-bedroom.pdf",
    "title": "A bedroom on the main floor",
    "summary": "Converting a den or adding a suite so daily life doesn't depend on the stairs.",
    "section_slug": "kitchens-bedrooms",
@@ -167,6 +181,7 @@
   {
    "id": 15,
    "slug": "night-paths",
+   "pdf_url": "/library/pdf/night-paths.pdf",
    "title": "Clear paths and night lighting",
    "summary": "Lighting the route from bed to bathroom, and clearing it of trip hazards.",
    "section_slug": "kitchens-bedrooms",
@@ -178,6 +193,7 @@
   {
    "id": 16,
    "slug": "ceiling-lift-planning",
+   "pdf_url": "/library/pdf/ceiling-lift-planning.pdf",
    "title": "Planning for a ceiling lift later",
    "summary": "Adding ceiling support now so a lift can go in easily if it's ever needed.",
    "section_slug": "kitchens-bedrooms",
@@ -189,6 +205,7 @@
   {
    "id": 17,
    "slug": "dcof-tile",
+   "pdf_url": "/library/pdf/dcof-tile.pdf",
    "title": "Slip resistance: reading a tile's DCOF rating",
    "summary": "What the number on the product sheet means, and the minimum to look for in wet areas.",
    "section_slug": "materials-lighting",
@@ -200,6 +217,7 @@
   {
    "id": 18,
    "slug": "flooring",
+   "pdf_url": "/library/pdf/flooring.pdf",
    "title": "Flooring that's kind to walkers and wheels",
    "summary": "Vinyl, tile, wood and low carpet compared for grip, comfort and smooth rolling.",
    "section_slug": "materials-lighting",
@@ -211,6 +229,7 @@
   {
    "id": 19,
    "slug": "more-light",
+   "pdf_url": "/library/pdf/more-light.pdf",
    "title": "Why older eyes need more light",
    "summary": "How eyes change with age, and how much brighter rooms should be as a result.",
    "section_slug": "materials-lighting",
@@ -222,6 +241,7 @@
   {
    "id": 20,
    "slug": "glare-contrast",
+   "pdf_url": "/library/pdf/glare-contrast.pdf",
    "title": "Glare, contrast and color temperature",
    "summary": "Matte finishes, contrasting edges and warm bulbs that make a home easier to see in.",
    "section_slug": "materials-lighting",
@@ -233,6 +253,7 @@
   {
    "id": 21,
    "slug": "easy-hardware",
+   "pdf_url": "/library/pdf/easy-hardware.pdf",
    "title": "Lever handles, D-pulls and touch latches",
    "summary": "Hardware that works for stiff or painful hands.",
    "section_slug": "materials-lighting",
@@ -244,6 +265,7 @@
   {
    "id": 22,
    "slug": "typical-costs",
+   "pdf_url": "/library/pdf/typical-costs.pdf",
    "title": "What aging-in-place projects typically cost",
    "summary": "Price ranges for common projects, and what pushes a job up or down.",
    "section_slug": "costs-financing",
@@ -255,6 +277,7 @@
   {
    "id": 23,
    "slug": "medicare-advantage",
+   "pdf_url": "/library/pdf/medicare-advantage.pdf",
    "title": "Medicare Advantage and in-home benefits",
    "summary": "Which plans may help with safety items, and what they usually require first.",
    "section_slug": "costs-financing",
@@ -266,6 +289,7 @@
   {
    "id": 24,
    "slug": "medicaid-waivers",
+   "pdf_url": "/library/pdf/medicaid-waivers.pdf",
    "title": "Medicaid waiver home modification programs",
    "summary": "State programs that can pay for changes so someone can stay at home.",
    "section_slug": "costs-financing",
@@ -277,6 +301,7 @@
   {
    "id": 25,
    "slug": "va-grants",
+   "pdf_url": "/library/pdf/va-grants.pdf",
    "title": "VA housing grants for veterans",
    "summary": "The VA programs that help veterans adapt a home, and who qualifies.",
    "section_slug": "costs-financing",
@@ -288,6 +313,7 @@
   {
    "id": 26,
    "slug": "medical-deduction",
+   "pdf_url": "/library/pdf/medical-deduction.pdf",
    "title": "Deducting changes as a medical expense",
    "summary": "When home changes can count as a medical deduction on taxes.",
    "section_slug": "costs-financing",
@@ -299,8 +325,9 @@
   {
    "id": 27,
    "slug": "equity-insurance",
+   "pdf_url": "/library/pdf/equity-insurance.pdf",
    "title": "Home equity, reverse mortgages and care insurance",
-   "summary": "Ways families use the home itself, or a long-term care policy, to pay for changes.",
+   "summary": "Ways to use the home itself, or a long-term care policy, to pay for changes.",
    "section_slug": "costs-financing",
    "section": "Costs and financing",
    "tags": "HELOC,reverse mortgage,equity,long-term care insurance,loan,pay",
@@ -310,6 +337,7 @@
   {
    "id": 28,
    "slug": "ada-and-homes",
+   "pdf_url": "/library/pdf/ada-and-homes.pdf",
    "title": "Why the ADA doesn't cover your home, and why we use it anyway",
    "summary": "What the ADA requires, who it applies to, and why its measurements still help.",
    "section_slug": "codes-permits",
@@ -321,6 +349,7 @@
   {
    "id": 29,
    "slug": "permits",
+   "pdf_url": "/library/pdf/permits.pdf",
    "title": "Which projects need a permit",
    "summary": "The kinds of changes that usually need one, and who should pull it.",
    "section_slug": "codes-permits",
@@ -332,6 +361,7 @@
   {
    "id": 30,
    "slug": "hoa-rights",
+   "pdf_url": "/library/pdf/hoa-rights.pdf",
    "title": "Your rights when an HOA says no",
    "summary": "How fair housing law protects reasonable changes, and how to ask.",
    "section_slug": "codes-permits",
@@ -343,6 +373,7 @@
   {
    "id": 31,
    "slug": "contractor-questions",
+   "pdf_url": "/library/pdf/contractor-questions.pdf",
    "title": "Questions to ask any contractor",
    "summary": "What a careful contractor should be able to answer before you sign.",
    "section_slug": "codes-permits",
@@ -354,10 +385,11 @@
   {
    "id": 32,
    "slug": "raising-it",
+   "pdf_url": "/library/pdf/raising-it.pdf",
    "title": "Raising it with a parent who says they're fine",
    "summary": "Ways to start the conversation without making it about decline.",
    "section_slug": "family",
-   "section": "Family conversations",
+   "section": "The conversation",
    "tags": "parent,mom,dad,conversation,talk,resistance,denial",
    "status": "published",
    "url": "/library/family/raising-it"
@@ -365,10 +397,11 @@
   {
    "id": 33,
    "slug": "siblings",
+   "pdf_url": "/library/pdf/siblings.pdf",
    "title": "Getting siblings on the same page",
    "summary": "Sharing decisions, costs and work among brothers and sisters.",
    "section_slug": "family",
-   "section": "Family conversations",
+   "section": "The conversation",
    "tags": "siblings,brother,sister,family,disagreement,costs",
    "status": "published",
    "url": "/library/family/siblings"
@@ -376,10 +409,11 @@
   {
    "id": 34,
    "slug": "upgrades-not-decline",
+   "pdf_url": "/library/pdf/upgrades-not-decline.pdf",
    "title": "Talking about upgrades, not decline",
    "summary": "Framing changes as improvements a parent would choose anyway.",
    "section_slug": "family",
-   "section": "Family conversations",
+   "section": "The conversation",
    "tags": "conversation,dignity,language,parent,upgrade",
    "status": "published",
    "url": "/library/family/upgrades-not-decline"
@@ -387,10 +421,11 @@
   {
    "id": 35,
    "slug": "when-home-isnt-safe",
+   "pdf_url": "/library/pdf/when-home-isnt-safe.pdf",
    "title": "When staying home is no longer safe",
    "summary": "Signs that the home can't meet someone's needs, even with changes.",
    "section_slug": "family",
-   "section": "Family conversations",
+   "section": "The conversation",
    "tags": "safety,assisted living,memory care,wandering,caregiver,decision",
    "status": "published",
    "url": "/library/family/when-home-isnt-safe"
@@ -398,10 +433,11 @@
   {
    "id": 36,
    "slug": "home-vs-assisted-living",
+   "pdf_url": "/library/pdf/home-vs-assisted-living.pdf",
    "title": "Staying home versus assisted living: the real costs",
    "summary": "Comparing the cost of adapting a home with monthly care costs over time.",
    "section_slug": "family",
-   "section": "Family conversations",
+   "section": "The conversation",
    "tags": "assisted living,cost,nursing home,memory care,compare,decision",
    "status": "published",
    "url": "/library/family/home-vs-assisted-living"
@@ -409,6 +445,7 @@
   {
    "id": 37,
    "slug": "buyer-features",
+   "pdf_url": "/library/pdf/buyer-features.pdf",
    "title": "Which features buyers of every age want",
    "summary": "Changes that tend to appeal to buyers, not only older ones.",
    "section_slug": "home-value",
@@ -420,6 +457,7 @@
   {
    "id": 38,
    "slug": "resale-risks",
+   "pdf_url": "/library/pdf/resale-risks.pdf",
    "title": "Changes that can hurt resale",
    "summary": "Changes that can narrow the pool of buyers, and how to avoid them.",
    "section_slug": "home-value",
@@ -431,6 +469,7 @@
   {
    "id": 39,
    "slug": "appraisals",
+   "pdf_url": "/library/pdf/appraisals.pdf",
    "title": "Documenting upgrades for an appraiser",
    "summary": "Keeping records so an appraiser can see the value in the work.",
    "section_slug": "home-value",

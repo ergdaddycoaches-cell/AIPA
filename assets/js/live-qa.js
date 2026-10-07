@@ -30,7 +30,7 @@
       '<input id="signup-email" name="email" type="email" autocomplete="email" required>' +
       '<label for="signup-phone">Cell phone <span class="optional">optional</span></label>' +
       '<input id="signup-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">' +
-      '<label class="check"><input id="signup-invite" type="checkbox"> Invite a family member</label>' +
+      '<label class="check"><input id="signup-invite" type="checkbox"> Invite someone else</label>' +
       '<div id="guest-fields" hidden>' +
         '<label for="guest-name">Their name</label>' +
         '<input id="guest-name" name="guest_name" autocomplete="off">' +

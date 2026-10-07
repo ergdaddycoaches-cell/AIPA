@@ -106,8 +106,8 @@
     document.getElementById('section').value = article.section_slug || document.getElementById('section').value;
     document.getElementById('slug').value = article.slug || '';
     document.getElementById('summary').value = article.summary || '';
-    document.getElementById('body').value = article.body || '';
     document.getElementById('tags').value = article.tags || '';
+    if (window.AIPA_GUIDE) window.AIPA_GUIDE.mount(document.getElementById('blocks'), window.AIPA_GUIDE.fromArticle(article));
     var badge = document.getElementById('editor-status');
     badge.className = 'badge ' + (article.status || 'draft');
     badge.textContent = article.id ? label(article.status) : 'New draft';
@@ -126,18 +126,38 @@
   }
   document.getElementById('new-guide').addEventListener('click', blank);
 
-  function save(status){
-    var payload = {
-      id: current && current.id ? current.id : 0,
+  function guidePayload(status){
+    var blocks = window.AIPA_GUIDE ? window.AIPA_GUIDE.read() : [];
+    var section = document.getElementById('section');
+    var guide = {
       title: document.getElementById('title').value,
       summary: document.getElementById('summary').value,
-      body: document.getElementById('body').value,
-      section_slug: document.getElementById('section').value,
+      section: section.options[section.selectedIndex] ? section.options[section.selectedIndex].text : '',
+      blocks: blocks
+    };
+    var payload = {
+      id: current && current.id ? current.id : 0,
+      title: guide.title,
+      summary: guide.summary,
+      body: blocks.length && window.AIPA_GUIDE ? window.AIPA_GUIDE.plain(blocks) : (current && current.body) || '',
+      blocks: JSON.stringify(blocks),
+      section_slug: section.value,
       tags: document.getElementById('tags').value,
       slug: document.getElementById('slug').value,
       status: status
     };
-    msg.textContent = 'Saving…';
+    payload.handoutNote = '';
+    if (blocks.length && window.AIPA_HANDOUT) {
+      try { payload.handout = window.AIPA_HANDOUT.build(guide); }
+      catch (err) { payload.handoutNote = err.message; }
+    }
+    return payload;
+  }
+  function save(status){
+    var payload = guidePayload(status);
+    var handoutNote = payload.handoutNote;
+    delete payload.handoutNote;
+    msg.textContent = payload.handout ? 'Saving the guide and the handout…' : 'Saving…';
     return api('/office/article', {method:'POST', body:payload}).then(function(saved){
       var record = saved && saved.id ? saved : (saved && saved.items ? saved.items[0] : saved);
       current = record;
@@ -145,13 +165,27 @@
         current = articles.filter(function(article){ return article.id === record.id; })[0] || record;
         fillForm();
         renderList();
-        msg.textContent = status === 'published' ? 'This guide is live.' : status === 'retired' ? 'This guide is retired and off the library.' : 'Draft saved. It is not on the site.';
+        var savedNote = status === 'published' ? 'This guide is live.' : status === 'retired' ? 'This guide is retired and off the library.' : 'Draft saved. It is not on the site.';
+        msg.textContent = handoutNote ? savedNote + ' The handout was not updated. ' + handoutNote : savedNote;
       });
     }).catch(function(err){
       msg.textContent = err.message;
     });
   }
 
+  document.getElementById('preview-handout').addEventListener('click', function(){
+    try {
+      var payload = guidePayload('draft');
+      if (payload.handoutNote) { msg.textContent = payload.handoutNote; return; }
+      if (!payload.handout) { msg.textContent = 'Add a headline, paragraph, photo, or list first.'; return; }
+      var binary = atob(payload.handout);
+      var bytes = new Uint8Array(binary.length);
+      for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      var url = URL.createObjectURL(new Blob([bytes], {type:'application/pdf'}));
+      window.open(url, '_blank');
+      msg.textContent = 'The handout preview is open. Save the guide to keep it.';
+    } catch (err) { msg.textContent = err.message; }
+  });
   document.getElementById('save-draft').addEventListener('click', function(){ save('draft'); });
   document.getElementById('publish').addEventListener('click', function(){ save('published'); });
   document.getElementById('retire').addEventListener('click', function(){

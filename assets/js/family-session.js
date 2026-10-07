@@ -31,8 +31,8 @@
       '<label for="signup-phone">Cell phone <span class="optional">optional</span></label>' +
       '<input id="signup-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">' +
       '<div id="guest-list"></div>' +
-      '<button class="btn quiet add-guest" type="button" id="add-guest">Add a family member</button>' +
-      '<p class="note">The more the merrier.</p>' +
+      '<button class="btn quiet add-guest" type="button" id="add-guest">Add someone else</button>' +
+      '<p class="note">Anyone who should hear it can join.</p>' +
       '<label class="check consent"><input id="signup-consent" type="checkbox" required> This conversation may be transcribed so we can follow up with a guide from the library. It stays inside Aging in Place Alliance.</label>' +
       '<div class="actions">' +
         '<button class="btn" type="submit">Reserve this time</button>' +
@@ -111,7 +111,7 @@
     window.AIPA_FAMILY_MONTHS = list;
     if (!list.length) {
       months.innerHTML = '';
-      status.textContent = 'No Family 1:1 times are open in the next two months.';
+      status.textContent = 'No Ask Anything 1:1 times are open in the next two months.';
       return;
     }
     status.textContent = '';

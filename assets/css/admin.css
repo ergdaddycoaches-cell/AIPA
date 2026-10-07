@@ -20,6 +20,23 @@
 .badge.published{color:var(--sage)}
 .badge.retired{color:var(--clay)}
 .editor{background:var(--card);border:1px solid var(--rule);padding:1.5rem}
+.guide-build h2{font-size:1.7rem;margin:1.4rem 0 .4rem}
+.block-add{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.block-add .btn{min-height:48px}
+.guide-block{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rule)}
+.guide-block header{display:flex;justify-content:space-between;gap:.75rem;align-items:center}
+.guide-block h3{font-size:1.25rem}
+.guide-block header .btn{min-height:40px}
+.guide-block textarea{min-height:7rem}
+.bullet-row{display:grid;grid-template-columns:1fr 1fr auto;gap:.75rem;align-items:end;margin-top:.75rem}
+.photo-pick{display:flex;gap:1rem;align-items:center;margin-top:.75rem}
+.photo-pick img{width:6.5rem;height:8.7rem;object-fit:cover;background:var(--paper-2)}
+.crop-dialog{position:fixed;inset:0;background:rgba(42,33,28,.45);display:flex;align-items:center;justify-content:center;z-index:30;padding:1rem}
+.crop-dialog[hidden]{display:none}
+.crop-card{background:var(--card);border:1px solid var(--rule);padding:1.5rem;max-width:26rem;width:100%}
+.crop-card h2{font-size:1.8rem;margin-bottom:.4rem}
+#crop-canvas{display:block;width:100%;height:auto;margin:1rem 0;background:#E7DCC7;cursor:grab;touch-action:none}
+#crop-zoom{width:100%}
 .actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
 .actions .btn{min-height:56px}
 .btn.quiet{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}

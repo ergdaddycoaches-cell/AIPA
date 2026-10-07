@@ -252,7 +252,7 @@
       last: last,
       never: !upcoming && !contactedAfter,
       events: events,
-      title: meeting && meeting.title ? meeting.title : 'Family 1:1',
+      title: meeting && meeting.title ? meeting.title : 'Ask Anything 1:1',
       when: window.AIPA_SEMINAR.format({
         starts_at: occurrence,
         timezone: zone,
@@ -335,7 +335,7 @@
   }
   function queueHtml(list){
     if (!list.length) {
-      return '<p class="empty-queue">No family is in this view.</p>';
+      return '<p class="empty-queue">No one is in this view.</p>';
     }
     var quiet = list.filter(function(family){ return !family.upcoming; });
     var ahead = list.filter(function(family){ return family.upcoming; });
@@ -403,13 +403,23 @@
     var live = callLive();
     return '<div class="dialer">' +
       '<p class="dial-kicker" id="dial-status">' + esc(dialLabel()) + '</p>' +
-      '<p class="dial-who">' + esc(dial.name || 'Family') + '</p>' +
+      '<p class="dial-who">' + esc(dial.name || 'Ask Anything 1:1') + '</p>' +
       '<p class="dial-number">' + esc(dial.number) + '</p>' +
       '<p class="dial-timer" id="call-timer"' + (dial.phase === 'open' ? '' : ' hidden') + '>0:00</p>' +
       '<div class="dial-actions">' +
       (live ? '<button type="button" data-act="mute" aria-pressed="' + dial.muted + '">' + (dial.muted ? 'Unmute' : 'Mute') + '</button>' : '') +
       (live ? '<button type="button" class="hangup" data-act="hangup">Hang up</button>' : '<button type="button" data-act="close">Close</button>') +
       '</div></div>';
+  }
+  function emailDraft(family){
+    var note = String(family.row.follow_up_note || '').trim();
+    var slug = String(family.row.suggested_slug || '').trim();
+    if (!slug) return note;
+    var pdf = family.handoutUrl || ('https://goaipa.com/library/pdf/' + slug + '.pdf');
+    var book = 'https://goaipa.com/ask-anything/';
+    if (note.indexOf(pdf) !== -1) return note;
+    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\n' + book + '\nOr call 833-AIPA-HUB.';
+    return note ? note + '\n\n' + handout : handout;
   }
   function reachPanel(family){
     var showingCall = dial.registrationId === family.id && dial.phase && (reachMode === 'call' || callLive() || dial.phase === 'ended' || dial.phase === 'error');
@@ -418,14 +428,14 @@
     var people = contacts(family.row);
     if (reachMode === 'call' || reachMode === 'text') {
       var phones = choiceList(people, 'phone');
-      if (!phones) return '<form class="composer" data-reach="' + reachMode + '"><p>There is no number on this family.</p><button type="button" data-act="close">Close</button></form>';
+      if (!phones) return '<form class="composer" data-reach="' + reachMode + '"><p>There is no number on file.</p><button type="button" data-act="close">Close</button></form>';
     }
     if (reachMode === 'email') {
       var emails = choiceList(people, 'email');
-      if (!emails) return '<form class="composer"><p>There is no email on this family.</p><button type="button" data-act="close">Close</button></form>';
+      if (!emails) return '<form class="composer"><p>There is no email on file.</p><button type="button" data-act="close">Close</button></form>';
     }
     if (reachMode === 'call') {
-      return '<form class="composer" data-reach="call"><p class="hint">You talk through this computer. The family sees the Twilio number.</p>' + phones +
+      return '<form class="composer" data-reach="call"><p class="hint">You talk through this computer. They see the Twilio number.</p>' + phones +
         '<div class="composer-actions"><button class="btn" type="submit">Place the call</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
     if (reachMode === 'text') {
@@ -437,7 +447,7 @@
       var subject = family.row.suggested_title ? 'A guide: ' + family.row.suggested_title : 'Following up on our conversation';
       return '<form class="composer" data-reach="email">' + emails +
         '<label for="reach-subject">Subject</label><input id="reach-subject" name="reach-subject" type="text" required value="' + esc(subject) + '">' +
-        '<label for="reach-body">Email</label><textarea id="reach-body" name="reach-body" rows="6" required>' + esc(family.row.follow_up_note || '') + '</textarea>' +
+        '<label for="reach-body">Email</label><textarea id="reach-body" name="reach-body" rows="8" required>' + esc(emailDraft(family)) + '</textarea>' +
         '<div class="composer-actions"><button class="btn" type="submit">Send email</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
     if (reachMode === 'retire') {
@@ -446,7 +456,7 @@
         '<option value="visit_booked">Visit booked</option><option value="asked_to_stop">Asked us to stop</option>' +
         '<option value="no_response">No response</option><option value="not_a_fit">Not a fit</option></select>' +
         '<label for="retire-note">Note</label><textarea id="retire-note" name="note" rows="3"></textarea>' +
-        '<div class="composer-actions"><button class="btn" type="submit">Retire this family</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
+        '<div class="composer-actions"><button class="btn" type="submit">Retire</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
     if (reachMode === 'restore') {
       var why = REASONS[family.row.retired_reason] || 'Retired';
@@ -458,7 +468,7 @@
   }
   function detail(family){
     if (!family) {
-      document.getElementById('detail').innerHTML = '<p class="waiting">No family is in this view.</p>';
+      document.getElementById('detail').innerHTML = '<p class="waiting">No one is in this view.</p>';
       return;
     }
     var retired = isRetired(family);
@@ -479,7 +489,7 @@
       '<p class="session">' + esc(family.title) + ' · ' + esc(family.when) + '</p>' +
       banner +
       callbackBanner +
-      '<div class="reach" role="group" aria-label="Reach this family">' +
+      '<div class="reach" role="group" aria-label="Reach this person">' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
@@ -508,7 +518,7 @@
     else if (ageFilter === '14') text = 'Quiet at least 14 days';
     else if (ageFilter === '30') text = 'Quiet at least 30 days';
     else if (ageFilter === 'never') text = 'The 1:1 happened, and no email, text, or call has connected since';
-    if (lifeFilter === 'retired') text = 'Retired families';
+    if (lifeFilter === 'retired') text = 'Retired';
     if (callbackFilter) text = 'Asked for a call back';
     document.getElementById('queue-label').textContent = text;
   }
@@ -542,13 +552,13 @@
       var line = item.body || item.subject || '';
       return '<li><strong>' + esc(what) + ' ' + esc(way) + ' ' + esc(who || 'unknown') + '</strong>' +
         (line ? '<span>' + esc(line) + '</span>' : '') +
-        '<form class="attach" data-unmatched="' + item.id + '"><label>Family <select name="registration_id" required><option value="">Choose a family</option>' + options + '</select></label><button type="submit">Attach</button><span class="attach-status" role="status"></span></form></li>';
+        '<form class="attach" data-unmatched="' + item.id + '"><label>Person <select name="registration_id" required><option value="">Choose someone</option>' + options + '</select></label><button type="submit">Attach</button><span class="attach-status" role="status"></span></form></li>';
     }).join('');
   }
 
   function load(){
     var status = document.getElementById('dash-status');
-    status.textContent = 'Loading families…';
+    status.textContent = 'Loading…';
     return Promise.all([
       api('/office/meetings'),
       api('/office/signups'),
@@ -701,7 +711,7 @@
     var reason = document.querySelector('[name="reason"]');
     var note = document.querySelector('[name="note"]');
     if (engagement === 'retired' && (!reason || !reason.value)) {
-      if (status) status.textContent = 'Choose why this family is retiring.';
+      if (status) status.textContent = 'Choose why they are retiring.';
       return;
     }
     if (status) status.textContent = engagement === 'retired' ? 'Retiring…' : 'Bringing them back…';
@@ -751,6 +761,20 @@
       if (callLive() && act === 'call') { reachMode = 'call'; render(); return; }
       reachMode = reachMode === act ? '' : act;
       render();
+      if (act === 'email' && reachMode === 'email' && family.row.suggested_slug && !family.handoutUrl) {
+        var slug = family.row.suggested_slug;
+        var id = family.id;
+        fetch((CFG.apiBase || '').replace(/\/$/, '') + '/library/article?slug=' + encodeURIComponent(slug), {headers:{'Accept':'application/json'}})
+          .then(function(r){ return r.json(); })
+          .then(function(article){
+            if (!article || !article.pdf_url || selectedId !== id || reachMode !== 'email') return;
+            var before = emailDraft(family);
+            family.handoutUrl = /^https?:/i.test(article.pdf_url) ? article.pdf_url : ('https://goaipa.com' + article.pdf_url);
+            var box = document.querySelector('[name="reach-body"]');
+            if (box && box.value === before) box.value = emailDraft(family);
+          })
+          .catch(function(){});
+      }
       return;
     }
     if (act === 'close') {
@@ -813,7 +837,7 @@
     var select = form.querySelector('[name="registration_id"]');
     var note = form.querySelector('.attach-status');
     if (!select || !select.value) {
-      if (note) note.textContent = 'Choose a family.';
+      if (note) note.textContent = 'Choose someone.';
       return;
     }
     if (note) note.textContent = 'Attaching…';

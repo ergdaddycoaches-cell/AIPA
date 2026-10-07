@@ -19,7 +19,7 @@
   <div class="wrap">
     <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Staff back office</small></span></a>
     <div class="mast-actions">
-      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/families/">Ask Anything 1:1</a>
       <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
     </div>
   </div>
@@ -67,11 +67,22 @@
         <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank">
         <label for="summary">Summary</label>
         <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
-        <label for="body">Guide</label>
-        <textarea id="body" name="body" placeholder="Write the guide here. Leave a blank line between paragraphs."></textarea>
-        <label for="tags">Words families might search</label>
+        <div class="guide-build">
+          <h2>Guide</h2>
+          <p class="note">The title, the phone number, and the booking code are added to the handout for you. A footnote on a paragraph or a bullet is collected at the bottom.</p>
+          <div id="blocks"></div>
+          <div class="block-add" role="group" aria-label="Add to the guide">
+            <button class="btn quiet" type="button" data-add="headline">Headline</button>
+            <button class="btn quiet" type="button" data-add="paragraph">Paragraph</button>
+            <button class="btn quiet" type="button" data-add="photo-left">Photo on the left</button>
+            <button class="btn quiet" type="button" data-add="photo-right">Photo on the right</button>
+            <button class="btn quiet" type="button" data-add="bullets">Bulleted list</button>
+          </div>
+        </div>
+        <label for="tags">Words people might search</label>
         <input id="tags" name="tags" placeholder="walk-in, mom, how much">
         <div class="actions">
+          <button class="btn quiet" type="button" id="preview-handout">Preview the handout</button>
           <button class="btn quiet" type="button" id="save-draft">Save draft</button>
           <button class="btn" type="button" id="publish">Publish</button>
           <button class="btn danger" type="button" id="retire">Retire</button>
@@ -79,6 +90,19 @@
         <p class="status-line" id="editor-msg" role="status"></p>
         <p class="note" id="live-link"></p>
       </form>
+      <div id="crop-dialog" class="crop-dialog" hidden>
+        <div class="crop-card">
+          <h2>Crop the photo</h2>
+          <p>Drag the photo and use the slider to zoom. Every photo uses this same frame.</p>
+          <canvas id="crop-canvas" width="300" height="400"></canvas>
+          <label for="crop-zoom">Zoom</label>
+          <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1">
+          <div class="actions">
+            <button class="btn" type="button" id="crop-apply">Use this crop</button>
+            <button class="btn quiet" type="button" id="crop-cancel">Cancel</button>
+          </div>
+        </div>
+      </div>
     </div>
     </div>
 
@@ -89,7 +113,7 @@
       </div>
       <form class="editor" id="zoom-form">
         <h2>Standing Zoom link</h2>
-        <label for="standing-zoom">Link families can use any time</label>
+        <label for="standing-zoom">Link anyone can use</label>
         <input id="standing-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
         <div class="actions"><button class="btn quiet" type="submit">Save Zoom link</button></div>
         <p class="status-line" id="zoom-status" role="status"></p>
@@ -112,12 +136,12 @@
             <option value="contractor_orientation">Contractor Orientation</option>
             <option value="contractor_deep_dive">Contractor Deep Dive</option>
             <option value="live_qa">Live Q&amp;A</option>
-            <option value="family_1_1">Family 1:1</option>
+            <option value="family_1_1">Ask Anything 1:1</option>
             <option value="ad_hoc">Ad Hoc</option>
           </select>
           <label for="meeting-title">Title</label>
           <input id="meeting-title" required>
-          <label for="meeting-summary">What families will hear</label>
+          <label for="meeting-summary">What they will hear</label>
           <textarea id="meeting-summary" rows="3"></textarea>
           <fieldset class="kind-set">
             <legend>Schedule</legend>
@@ -184,7 +208,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Cell</th>
-                <th>Family member</th>
+                <th>Guest</th>
                 <th>Their email</th>
                 <th>Their cell</th>
                 <th>Notes</th>
@@ -194,10 +218,10 @@
           </table>
         </div>
         <section id="family-notes" class="family-notes" hidden aria-labelledby="family-notes-heading">
-          <h3 id="family-notes-heading">Family notes</h3>
+          <h3 id="family-notes-heading">Notes</h3>
           <p class="note" id="family-notes-who"></p>
           <form id="family-notes-form">
-            <label class="check" for="notes-consent"><input id="notes-consent" type="checkbox"> This family agreed to a transcript</label>
+            <label class="check" for="notes-consent"><input id="notes-consent" type="checkbox"> They agreed to a transcript</label>
             <label for="notes-transcript">Transcript</label>
             <textarea id="notes-transcript" class="tall"></textarea>
             <label for="notes-summary">Summary</label>
@@ -227,7 +251,7 @@
             <textarea id="notes-readiness-note"></textarea>
             <fieldset>
               <legend>People on the call</legend>
-              <p class="note">Internal only. These reads are not sent to the family.</p>
+              <p class="note">Internal only. These reads are not sent out.</p>
               <div id="attendee-reads"></div>
               <button class="btn quiet" type="button" id="add-attendee">Add a person</button>
             </fieldset>
@@ -277,6 +301,10 @@
   </section>
 </main>
 <script src="/assets/js/seminar-format.js"></script>
+<script src="/assets/js/qrcode-generator.js"></script>
+<script src="/assets/js/jspdf.umd.min.js"></script>
+<script src="/assets/js/handout.js"></script>
+<script src="/assets/js/guide-editor.js"></script>
 <script src="/assets/js/admin.js"></script>
 <script src="/assets/js/seminars.js"></script>
 </body>

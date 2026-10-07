@@ -9,7 +9,7 @@ window.AIPA_SEMINAR = {
     contractor_orientation: 'Contractor Orientation',
     contractor_deep_dive: 'Contractor Deep Dive',
     live_qa: 'Live Q&A',
-    family_1_1: 'Family 1:1',
+    family_1_1: 'Ask Anything 1:1',
     ad_hoc: 'Ad Hoc'
   },
   typeLabel: function(value){

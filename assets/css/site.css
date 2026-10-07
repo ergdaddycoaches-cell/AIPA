@@ -334,6 +334,20 @@ a.inline{font-weight:600;text-decoration-color:var(--clay);text-decoration-thick
 .tool-row .fpo{min-height:180px}
 .article-body{max-width:66ch}
 .article-body p{font-size:1.3rem}
+.article-body h2{font-size:clamp(1.7rem,3vw,2.2rem);margin:1.6rem 0 .5rem}
+.article-body ul{margin:0 0 1rem;padding-left:1.2rem}
+.article-body li{font-size:1.3rem;margin:.35rem 0}
+.guide-photo{display:grid;grid-template-columns:11rem 1fr;gap:1.25rem;align-items:start;margin:0 0 1.25rem}
+.guide-photo.photo-right{grid-template-columns:1fr 11rem}
+.guide-photo.photo-right img{order:2}
+.guide-photo img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--paper-2)}
+.guide-notes{margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem}
+.guide-notes ol{margin:0;padding-left:1.2rem}
+.print-guide{margin:1.5rem 0 0}
+@media (max-width:700px){
+  .guide-photo,.guide-photo.photo-right{grid-template-columns:1fr}
+  .guide-photo.photo-right img{order:0}
+}
 .slot-month{font-size:clamp(1.8rem,3vw,2.4rem);margin:2.5rem 0 0}
 .slot-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
 .slot{padding:1.4rem 0;border-bottom:1px solid var(--rule)}
