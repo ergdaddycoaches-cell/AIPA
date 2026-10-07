@@ -180,6 +180,13 @@ td.src{font-size:1rem;color:var(--ink-2)}
 .web .btn:hover{background:var(--amber-wash)}
 .web .link{color:var(--on-dark);text-decoration-color:var(--on-dark)}
 .web .acts{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center}
+.web .seminar-list{list-style:none;margin:0 0 1.5rem;padding:0}
+.web .seminar-list li{padding:.9rem 0;border-top:1px solid rgba(247,242,232,.28)}
+.web .seminar-list a{color:var(--on-dark)}
+.web .seminar-list .type{display:block;font-size:.95rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.15rem}
+.web .seminar-list .when,.web .seminar-list .detail{display:block}
+.web .seminar-list .when{font-weight:700}
+.web .seminar-list .detail{font-weight:400;margin-top:.2rem}
 
 /* Footer sitemap */
 footer{border-top:1px solid var(--ink);padding-block:3.5rem 2.5rem;font-size:1.05rem}
@@ -327,6 +334,29 @@ a.inline{font-weight:600;text-decoration-color:var(--clay);text-decoration-thick
 .tool-row .fpo{min-height:180px}
 .article-body{max-width:66ch}
 .article-body p{font-size:1.3rem}
+.slot-month{font-size:clamp(1.8rem,3vw,2.4rem);margin:2.5rem 0 0}
+.slot-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.slot{padding:1.4rem 0;border-bottom:1px solid var(--rule)}
+.slot .when{display:block;font-weight:700;margin-bottom:.25rem}
+.slot h3{font-size:1.7rem;margin:0}
+.slot .summary{color:var(--ink-2);margin:.45rem 0 0;max-width:62ch}
+.slot .btn{margin-top:1rem}
+.signup{background:var(--card);border:1px solid var(--rule);padding:1.25rem 1.4rem 1.4rem;margin-top:1rem;max-width:36rem}
+.signup h3{font-size:1.45rem;margin:0}
+.signup .note{color:var(--ink-2);margin:.35rem 0 0}
+.signup label{display:block;font-weight:700;margin:1rem 0 .4rem}
+.signup input{width:100%;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px}
+.signup .optional{font-weight:400;color:var(--ink-2)}
+.signup .check{display:flex;align-items:center;gap:.6rem;font-weight:600;margin:1rem 0 0}
+.signup .check input{width:1.25rem;height:1.25rem;min-height:0}
+.signup .actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
+.signup .btn.quiet{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.signup .btn.quiet:hover{background:var(--paper-2)}
+.signup .guest{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--rule)}
+.signup .guest .btn{margin-top:.75rem}
+.signup .add-guest{margin-top:1rem}
+.signup .status-line{font-weight:700;margin:.75rem 0 0}
+.signup .status-line a{color:inherit}
 @media (max-width:900px){
   .page-hero .grid,.two-col,.tool-row{grid-template-columns:1fr}
   .related,.ask{grid-template-columns:1fr}

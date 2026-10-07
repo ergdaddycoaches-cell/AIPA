@@ -28,6 +28,20 @@
 .status-line{min-height:1.6em;font-weight:700;margin:.5rem 0 0}
 .password-box{margin-top:2rem;border-top:1px solid var(--rule);padding-top:1rem}
 .password-box input{max-width:24rem}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.kind-set{border:0;margin:1.25rem 0 0;padding:0}
+.kind-set legend{font-weight:700;margin-bottom:.4rem}
+.check{display:flex;align-items:center;gap:.6rem;font-weight:600;margin:.35rem 0}
+.check input{width:1.25rem;height:1.25rem;min-height:0}
+#panel-seminars .editor + .chips{margin-top:2rem}
+.signup-panel{margin-top:2.5rem}
+.signup-panel h2{font-size:clamp(1.8rem,3vw,2.4rem);margin:0 0 .75rem}
+.signup-panel label{display:block;font-weight:700;margin:0 0 .4rem}
+.signup-panel select{
+  width:100%;max-width:28rem;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);
+  border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px;margin-bottom:1rem}
+.signup-panel table{min-width:64rem}
+.signup-panel th,.signup-panel td{white-space:nowrap}
 @media (max-width:900px){
-  .desk{grid-template-columns:1fr}
+  .desk,.pair{grid-template-columns:1fr}
 }

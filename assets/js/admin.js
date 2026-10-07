@@ -194,11 +194,23 @@
     showLogin(false);
     loadSections().then(loadArticles).then(function(){
       blank();
+      if (window.AIPA_SEMINARS) window.AIPA_SEMINARS.load();
     }).catch(function(err){
       showLogin(true);
       document.getElementById('login-status').textContent = err.message;
     });
   }
+
+  document.querySelectorAll('[data-panel]').forEach(function(button){
+    button.addEventListener('click', function(){
+      var panel = button.dataset.panel;
+      document.querySelectorAll('[data-panel]').forEach(function(other){
+        other.setAttribute('aria-pressed', String(other === button));
+      });
+      document.getElementById('panel-guides').hidden = panel !== 'guides';
+      document.getElementById('panel-seminars').hidden = panel !== 'seminars';
+    });
+  });
 
   if (token()) openDesk();
   else showLogin(true);

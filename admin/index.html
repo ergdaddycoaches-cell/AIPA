@@ -25,7 +25,7 @@
   <section class="office wrap" id="login-view">
     <form class="login-card" id="login-form">
       <h1>Back office</h1>
-      <p class="lede">Write a guide, keep it as a draft, then publish it or retire it from the library.</p>
+      <p class="lede">Write guides and schedule seminars. Drafts stay off the site until you publish them.</p>
       <label for="password">Staff password</label>
       <input id="password" type="password" autocomplete="current-password" required>
       <div class="actions"><button class="btn" type="submit">Sign in</button></div>
@@ -34,6 +34,11 @@
   </section>
 
   <section class="office wrap" id="desk" hidden>
+    <div class="chips" id="office-nav" role="group" aria-label="Back office sections">
+      <button class="chip" type="button" data-panel="guides" aria-pressed="true">Guides</button>
+      <button class="chip" type="button" data-panel="seminars" aria-pressed="false">Seminars</button>
+    </div>
+    <div id="panel-guides">
     <div class="sec-head">
       <h1>Guides</h1>
       <p>Drafts stay off the site. Publishing puts a guide in the library and in search. Retiring takes it back off.</p>
@@ -72,17 +77,134 @@
         <p class="note" id="live-link"></p>
       </form>
     </div>
+    </div>
+
+    <div id="panel-seminars" hidden>
+      <div class="sec-head">
+        <h1>Seminars</h1>
+        <p>The standing Zoom link can be used any time. A meeting is either one session or a series, and it stays off the site until you publish it.</p>
+      </div>
+      <form class="editor" id="zoom-form">
+        <h2>Standing Zoom link</h2>
+        <label for="standing-zoom">Link families can use any time</label>
+        <input id="standing-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
+        <div class="actions"><button class="btn quiet" type="submit">Save Zoom link</button></div>
+        <p class="status-line" id="zoom-status" role="status"></p>
+      </form>
+      <div class="chips" role="group" aria-label="Filter seminars">
+        <button class="chip" type="button" data-seminar-filter="" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-seminar-filter="draft" aria-pressed="false">Drafts</button>
+        <button class="chip" type="button" data-seminar-filter="published" aria-pressed="false">Live</button>
+        <button class="chip" type="button" data-seminar-filter="retired" aria-pressed="false">Retired</button>
+      </div>
+      <div class="desk">
+        <div>
+          <button class="btn" type="button" id="new-meeting">New meeting</button>
+          <ul class="guide-list" id="meeting-list"></ul>
+        </div>
+        <form class="editor" id="meeting-editor">
+          <p class="badge draft" id="meeting-status">New draft</p>
+          <label for="meeting-type">Type</label>
+          <select id="meeting-type" required>
+            <option value="contractor_orientation">Contractor Orientation</option>
+            <option value="contractor_deep_dive">Contractor Deep Dive</option>
+            <option value="live_qa">Live Q&amp;A</option>
+            <option value="family_1_1">Family 1:1</option>
+            <option value="ad_hoc">Ad Hoc</option>
+          </select>
+          <label for="meeting-title">Title</label>
+          <input id="meeting-title" required>
+          <label for="meeting-summary">What families will hear</label>
+          <textarea id="meeting-summary" rows="3"></textarea>
+          <fieldset class="kind-set">
+            <legend>Schedule</legend>
+            <label class="check"><input type="radio" name="meeting-kind" value="one_time" checked> One-time meeting</label>
+            <label class="check"><input type="radio" name="meeting-kind" value="recurring"> Recurring meeting</label>
+          </fieldset>
+          <div id="frequency-wrap" hidden>
+            <label for="meeting-frequency">Repeats</label>
+            <select id="meeting-frequency">
+              <option value="weekly">Every week</option>
+              <option value="every_two_weeks">Every two weeks</option>
+              <option value="monthly">Every month</option>
+            </select>
+          </div>
+          <div class="pair">
+            <div>
+              <label for="meeting-starts" id="meeting-starts-label">Date and time</label>
+              <input id="meeting-starts" type="datetime-local">
+            </div>
+            <div>
+              <label for="meeting-zone">Timezone</label>
+              <select id="meeting-zone">
+                <option value="America/Los_Angeles">Pacific</option>
+                <option value="America/Denver">Mountain</option>
+                <option value="America/Chicago">Central</option>
+                <option value="America/New_York">Eastern</option>
+              </select>
+            </div>
+          </div>
+          <label for="meeting-duration">Length in minutes</label>
+          <input id="meeting-duration" type="number" min="15" max="240" value="45">
+          <label for="meeting-zoom">Zoom link for this meeting</label>
+          <input id="meeting-zoom" type="url" inputmode="url" placeholder="Leave blank to use the standing link">
+          <fieldset class="kind-set">
+            <legend>Reminders</legend>
+            <label class="check"><input id="remind-email" type="checkbox"> Email</label>
+            <label class="check"><input id="remind-sms" type="checkbox"> Text message</label>
+          </fieldset>
+          <label for="remind-hours">Hours before the session</label>
+          <input id="remind-hours" type="number" min="1" max="168" value="24">
+          <p class="note">Email and text choices are saved with the meeting. Sending them through Twilio and email is not connected yet.</p>
+          <div class="actions">
+            <button class="btn quiet" type="button" id="meeting-draft">Save draft</button>
+            <button class="btn" type="button" id="meeting-publish">Publish</button>
+            <button class="btn danger" type="button" id="meeting-retire">Retire</button>
+          </div>
+          <p class="status-line" id="meeting-msg" role="status"></p>
+        </form>
+      </div>
+      <section class="signup-panel" aria-labelledby="signup-heading">
+        <h2 id="signup-heading">Signups</h2>
+        <label for="signup-session">Session</label>
+        <select id="signup-session">
+          <option value="">All sessions</option>
+        </select>
+        <p class="note" id="signup-empty">No one has signed up yet.</p>
+        <div class="tablewrap">
+          <table id="signup-table" hidden>
+            <caption class="sr">People signed up for sessions</caption>
+            <thead>
+              <tr>
+                <th>Session</th>
+                <th>When</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Cell</th>
+                <th>Family member</th>
+                <th>Their email</th>
+                <th>Their cell</th>
+              </tr>
+            </thead>
+            <tbody id="signup-rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
     <form class="password-box" id="password-form">
       <h2>Change password</h2>
       <label for="current-password">Current password</label>
       <input id="current-password" type="password" autocomplete="current-password" required>
       <label for="next-password">New password</label>
-      <input id="next-password" type="password" autocomplete="new-password" minlength="12" required>
+      <input id="next-password" type="password" autocomplete="new-password" minlength="10" required>
       <div class="actions"><button class="btn quiet" type="submit">Update password</button></div>
       <p class="status-line" id="password-status" role="status"></p>
     </form>
   </section>
 </main>
+<script src="/assets/js/seminar-format.js"></script>
 <script src="/assets/js/admin.js"></script>
+<script src="/assets/js/seminars.js"></script>
 </body>
 </html>
