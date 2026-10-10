@@ -11,6 +11,8 @@
   var articles = [];
   var filter = '';
   var current = null;
+  if (document.fonts && document.fonts.load) document.fonts.load('28px "VI Phong Lan Hoa"');
+  if (window.AIPA_HANDOUT && AIPA_HANDOUT.ready) AIPA_HANDOUT.ready();
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(t){
@@ -126,6 +128,152 @@
   }
   document.getElementById('new-guide').addEventListener('click', blank);
 
+  function sectionMatch(name){
+    var want = String(name || '').trim().toLowerCase();
+    var select = document.getElementById('section');
+    if (!want) return '';
+    var found = '';
+    Array.prototype.forEach.call(select.options, function(option){
+      if (found) return;
+      if (option.value.toLowerCase() === want || option.text.toLowerCase() === want) found = option.value;
+    });
+    return found;
+  }
+  document.getElementById('markup-file').addEventListener('change', function(){
+    var file = this.files && this.files[0];
+    this.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      document.getElementById('markup').value = String(reader.result || '');
+      msg.textContent = 'File loaded. Fill this guide when the markup looks right.';
+    };
+    reader.onerror = function(){ msg.textContent = 'That file could not be read.'; };
+    reader.readAsText(file);
+  });
+  document.getElementById('markup-fill').addEventListener('click', function(){
+    if (!window.AIPA_MARKUP) { msg.textContent = 'The markup tool did not load.'; return; }
+    var parsed = window.AIPA_MARKUP.parse(document.getElementById('markup').value);
+    if (!parsed.title && !parsed.blocks.length) {
+      msg.textContent = parsed.errors[0] || 'That markup has no title and no guide blocks.';
+      return;
+    }
+    var occupied = document.getElementById('title').value.trim() || (window.AIPA_GUIDE && window.AIPA_GUIDE.read().some(function(block){
+      return block.text || block.image || (block.items || []).some(function(item){ return item.text; });
+    }));
+    if (occupied && !window.confirm('Replace what is in the editor? Nothing is saved until you save the draft.')) return;
+    current = null;
+    document.getElementById('title').value = parsed.title;
+    document.getElementById('summary').value = parsed.summary;
+    document.getElementById('slug').value = parsed.slug;
+    document.getElementById('tags').value = parsed.tags;
+    var section = sectionMatch(parsed.section);
+    if (section) document.getElementById('section').value = section;
+    else if (parsed.section) parsed.errors.push('No section named "' + parsed.section + '".');
+    if (window.AIPA_GUIDE) window.AIPA_GUIDE.mount(document.getElementById('blocks'), parsed.blocks);
+    var badge = document.getElementById('editor-status');
+    badge.className = 'badge draft';
+    badge.textContent = 'New draft';
+    document.getElementById('live-link').innerHTML = '';
+    renderList();
+    var photos = parsed.blocks.filter(function(block){ return block.type === 'photo-left' || block.type === 'photo-right'; }).length;
+    var note = 'Filled from the markup. Save the draft to keep the guide and the handout.';
+    if (photos) note += ' Upload a photo for ' + (photos === 1 ? 'the picture block.' : 'each picture block.');
+    if (parsed.errors.length) note += ' ' + parsed.errors.join(' ');
+    msg.textContent = note;
+    document.getElementById('title').focus();
+  });
+
+  function payloadFromGuide(guide){
+    var sectionSlug = sectionMatch(guide.section);
+    var sectionName = '';
+    var select = document.getElementById('section');
+    Array.prototype.forEach.call(select.options, function(option){
+      if (option.value === sectionSlug) sectionName = option.text;
+    });
+    var blocks = guide.blocks || [];
+    var payload = {
+      id: 0,
+      title: guide.title,
+      summary: guide.summary,
+      body: window.AIPA_GUIDE ? window.AIPA_GUIDE.plain(blocks) : '',
+      blocks: JSON.stringify(blocks),
+      section_slug: sectionSlug,
+      tags: guide.tags || '',
+      slug: guide.slug || '',
+      status: 'draft'
+    };
+    if (blocks.length && window.AIPA_HANDOUT) {
+      try {
+        payload.handout = window.AIPA_HANDOUT.build({
+          title: guide.title,
+          summary: guide.summary,
+          section: sectionName,
+          blocks: blocks,
+          slug: guide.slug || ''
+        });
+      } catch (err) {
+        payload.handoutNote = err.message;
+      }
+    }
+    return payload;
+  }
+
+  document.getElementById('markup-import').addEventListener('click', function(){
+    if (!window.AIPA_MARKUP || !window.AIPA_MARKUP.parseMany) {
+      msg.textContent = 'The markup tool did not load.';
+      return;
+    }
+    var guides = window.AIPA_MARKUP.parseMany(document.getElementById('markup').value);
+    var ready = guides.filter(function(guide){ return guide.title; });
+    if (!ready.length) {
+      msg.textContent = (guides[0] && guides[0].errors[0]) || 'That markup has no articles with a title.';
+      return;
+    }
+    var untitled = guides.length - ready.length;
+    var ask = 'Save ' + ready.length + (ready.length === 1 ? ' draft' : ' drafts') + '? They stay off the site until you publish them.';
+    if (!window.confirm(ask)) return;
+    var prepare = window.AIPA_HANDOUT && AIPA_HANDOUT.ready ? AIPA_HANDOUT.ready() : Promise.resolve();
+    var notes = [];
+    var saved = 0;
+    var photos = 0;
+    prepare.then(function(){
+      var chain = Promise.resolve();
+      ready.forEach(function(guide, index){
+        chain = chain.then(function(){
+          if (!sectionMatch(guide.section)) {
+            notes.push('"' + guide.title + '" was skipped. No section named "' + (guide.section || '') + '".');
+            return;
+          }
+          msg.textContent = 'Saving draft ' + (index + 1) + ' of ' + ready.length + '…';
+          photos += guide.blocks.filter(function(block){
+            return block.type === 'photo-left' || block.type === 'photo-right';
+          }).length;
+          var payload = payloadFromGuide(guide);
+          var handoutNote = payload.handoutNote;
+          delete payload.handoutNote;
+          return api('/office/article', {method:'POST', body:payload}).then(function(){
+            saved += 1;
+            if (handoutNote) notes.push('"' + guide.title + '" was saved without a handout. ' + handoutNote);
+            if (guide.errors.length) notes.push('"' + guide.title + '": ' + guide.errors.join(' '));
+          });
+        });
+      });
+      return chain;
+    }).then(function(){
+      return loadArticles();
+    }).then(function(){
+      renderList();
+      var summary = 'Saved ' + saved + (saved === 1 ? ' draft.' : ' drafts.');
+      if (untitled) summary += ' ' + untitled + (untitled === 1 ? ' had no title and was left out.' : ' had no title and were left out.');
+      if (photos) summary += ' Upload a photo for ' + (photos === 1 ? 'the picture block.' : 'each picture block.');
+      if (notes.length) summary += ' ' + notes.join(' ');
+      msg.textContent = summary;
+    }).catch(function(err){
+      msg.textContent = err.message;
+    });
+  });
+
   function guidePayload(status){
     var blocks = window.AIPA_GUIDE ? window.AIPA_GUIDE.read() : [];
     var section = document.getElementById('section');
@@ -133,7 +281,8 @@
       title: document.getElementById('title').value,
       summary: document.getElementById('summary').value,
       section: section.options[section.selectedIndex] ? section.options[section.selectedIndex].text : '',
-      blocks: blocks
+      blocks: blocks,
+      slug: document.getElementById('slug').value
     };
     var payload = {
       id: current && current.id ? current.id : 0,
@@ -154,6 +303,8 @@
     return payload;
   }
   function save(status){
+    var prepare = window.AIPA_HANDOUT && AIPA_HANDOUT.ready ? AIPA_HANDOUT.ready() : Promise.resolve();
+    return prepare.then(function(){
     var payload = guidePayload(status);
     var handoutNote = payload.handoutNote;
     delete payload.handoutNote;
@@ -171,9 +322,14 @@
     }).catch(function(err){
       msg.textContent = err.message;
     });
+    }).catch(function(err){
+      msg.textContent = err.message;
+    });
   }
 
   document.getElementById('preview-handout').addEventListener('click', function(){
+    var prepare = window.AIPA_HANDOUT && AIPA_HANDOUT.ready ? AIPA_HANDOUT.ready() : Promise.resolve();
+    prepare.then(function(){
     try {
       var payload = guidePayload('draft');
       if (payload.handoutNote) { msg.textContent = payload.handoutNote; return; }
@@ -185,6 +341,7 @@
       window.open(url, '_blank');
       msg.textContent = 'The handout preview is open. Save the guide to keep it.';
     } catch (err) { msg.textContent = err.message; }
+    }).catch(function(err){ msg.textContent = err.message; });
   });
   document.getElementById('save-draft').addEventListener('click', function(){ save('draft'); });
   document.getElementById('publish').addEventListener('click', function(){ save('published'); });

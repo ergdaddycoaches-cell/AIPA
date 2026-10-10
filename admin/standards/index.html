@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Standards | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/standards-office.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Standards</small></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/">Back office</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Standards</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+  <section class="office wrap" id="desk" hidden>
+    <div class="sec-head">
+      <h1>Standards</h1>
+      <p>Measurements appear on the public standards page as soon as you save them.</p>
+    </div>
+    <div class="desk">
+      <div>
+        <button class="btn" type="button" id="row-new">New measurement</button>
+        <ul class="guide-list" id="row-list"></ul>
+      </div>
+      <form class="editor standards-editor" id="row-form">
+        <label for="area">Area</label>
+        <input id="area" name="area" maxlength="60" required autocomplete="off" list="area-list">
+        <datalist id="area-list"></datalist>
+        <label for="label">What to check</label>
+        <input id="label" name="label" maxlength="80" required autocomplete="off">
+        <label for="target">Target</label>
+        <input id="target" name="target" maxlength="40" required autocomplete="off">
+        <label for="means">What it means at home</label>
+        <textarea id="means" name="means" rows="4" required></textarea>
+        <label for="source">Source</label>
+        <input id="source" name="source" maxlength="80" required autocomplete="off">
+        <label for="sort">Order</label>
+        <input id="sort" name="sort" type="number" min="0" step="1" inputmode="numeric">
+        <p class="note">Lower numbers appear first. Measurements in the same area stay together.</p>
+        <div class="actions">
+          <button class="btn" type="submit">Save</button>
+          <button class="btn danger" type="button" id="row-remove" hidden>Remove</button>
+        </div>
+        <p class="status-line" id="row-status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>

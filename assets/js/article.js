@@ -31,8 +31,9 @@
         if (block.type === 'headline') return '<h2>' + esc(block.text) + '</h2>';
         if (block.type === 'paragraph') return '<p>' + esc(block.text).replace(/\n/g, '<br>') + mark(block.footnote) + '</p>';
         if (block.type === 'photo-left' || block.type === 'photo-right') {
-          var img = block.image ? '<img src="' + esc(block.image) + '" alt="">' : '';
-          return '<div class="guide-photo ' + block.type + '">' + img + '<p>' + esc(block.text).replace(/\n/g, '<br>') + mark(block.footnote) + '</p></div>';
+          var img = block.image ? '<img src="' + esc(block.image) + '" alt="' + esc(block.alt || '') + '">' : '';
+          var shape = ' ratio-' + String(block.ratio || '3:4').replace(':', '-');
+          return '<div class="guide-photo ' + block.type + shape + '">' + img + '<p>' + esc(block.text).replace(/\n/g, '<br>') + mark(block.footnote) + '</p></div>';
         }
         if (block.type === 'bullets') {
           return '<ul>' + (block.items || []).map(function(item){
@@ -51,6 +52,22 @@
       }).join('') + '</ol></section>';
     }
     return html;
+  }
+  function readingLine(text){
+    var count = String(text || '').trim().split(/\s+/).filter(Boolean).length;
+    var n = Math.max(1, Math.round(count / 200));
+    return 'About ' + n + (n === 1 ? ' minute' : ' minutes');
+  }
+  function readingText(article){
+    var parts = [article.summary || ''];
+    var blocks = parseBlocks(article.blocks);
+    if (blocks.length) {
+      blocks.forEach(function(block){
+        if (block.text) parts.push(block.text);
+        (block.items || []).forEach(function(item){ if (item && item.text) parts.push(item.text); });
+      });
+    } else if (article.body) parts.push(article.body);
+    return parts.join(' ');
   }
   function missing(){
     document.title = 'Guide not in the library | Aging in Place Alliance';
@@ -73,15 +90,22 @@
       }
       var bodyHtml = guideHtml(article);
       var body = bodyHtml ? '<div class="article-body">' + bodyHtml + '</div>' : '';
+      var close = '';
+      if (window.AIPA_CLOSE) {
+        var sentence = esc(window.AIPA_CLOSE.line(article)).replace('Ask Anything 1:1', '<a class="link" href="/ask-anything/">Ask Anything 1:1</a>');
+        close = '<p class="guide-close">' + sentence + '</p>';
+      }
       var pdf = article.pdf_url
         ? '<p class="print-guide"><a class="btn" href="' + esc(article.pdf_url) + '">Print this guide</a></p>'
         : '';
+      var sheet = '<div class="titleblock"><div class="tb-seal"><span class="seal" aria-hidden="true">AIPA</span></div><div class="tb-topic"><span class="tb-name">' + esc(article.section || 'Guide') + '</span></div><div class="tb-time"><span class="tb-k">To read</span><span class="tb-read">' + esc(readingLine(readingText(article))) + '</span></div></div>';
       root.innerHTML =
-        '<p class="facts"><span>' + esc(article.section) + '</span></p>' +
+        sheet +
         '<h1>' + esc(article.title) + '</h1>' +
         (article.summary ? '<p class="lede">' + esc(article.summary) + '</p>' : '') +
         pdf +
         body +
+        close +
         '<p><a class="link" href="/library/' + esc(article.section_slug) + '/">More ' + esc(article.section).toLowerCase() + ' guides</a></p>';
     })
     .catch(missing);

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Call notes | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="/assets/css/families.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/families/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Call notes</small></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Pipeline</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Call notes</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="call-sheet wrap" id="sheet" hidden>
+    <p><a class="call-back" href="/admin/families/">Pipeline</a></p>
+    <h1 id="who">Call notes</h1>
+    <nav class="call-jump" aria-label="Sections">
+      <a href="#showed-up">Who showed up</a>
+      <a href="#said-heading">What was said</a>
+      <a href="#send-heading">What to send</a>
+      <a href="#callback-heading">Call back</a>
+      <a href="#delay-heading">Delayed email</a>
+    </nav>
+    <form id="notes-form">
+      <h2 id="showed-up">Who showed up</h2>
+      <div id="people"></div>
+      <button type="button" id="add-person">Add a person</button>
+
+      <h2 id="said-heading">What was said</h2>
+      <textarea id="summary" name="summary" rows="8" maxlength="20000" aria-labelledby="said-heading"></textarea>
+
+      <h2 id="send-heading">What to send</h2>
+      <label for="guide">Guide</label>
+      <select id="guide" name="guide"><option value="">No guide</option></select>
+      <label for="follow">Message</label>
+      <textarea id="follow" name="follow_up_note" rows="5" maxlength="20000"></textarea>
+      <p class="send-note" id="guide-token-note">{{guide}} is filled in with the guide name when this is sent.</p>
+      <button type="button" id="insert-guide">Insert {{guide}}</button>
+      <div class="send-channels" role="group" aria-label="How to send">
+        <button type="button" id="channel-email" aria-pressed="true">Email</button>
+        <button type="button" id="channel-text" aria-pressed="false">Text</button>
+      </div>
+      <p class="send-note" id="send-note"></p>
+      <label for="send-who" id="send-who-label">To</label>
+      <select id="send-who"></select>
+      <p class="send-note" id="send-empty" hidden></p>
+      <label for="subject" id="subject-label">Subject</label>
+      <input id="subject" type="text" maxlength="200">
+
+      <h2 id="callback-heading">Call back</h2>
+      <span id="callback-label">Wants a call back</span>
+      <div class="send-channels" role="group" aria-labelledby="callback-label">
+        <button type="button" id="callback-no" aria-pressed="true">No</button>
+        <button type="button" id="callback-yes" aria-pressed="false">Yes</button>
+      </div>
+      <label for="callback-date">Date</label>
+      <input id="callback-date" type="date">
+
+      <h2 id="delay-heading">Send delayed email</h2>
+      <p class="send-note">This is not sent on its own. It shows on Actions on the date you pick, so you can approve it, change it, delay it, or kill it.</p>
+      <span id="delay-label">Send a delayed email</span>
+      <div class="send-channels" role="group" aria-labelledby="delay-label">
+        <button type="button" id="delay-no" aria-pressed="true">No</button>
+        <button type="button" id="delay-yes" aria-pressed="false">Yes</button>
+      </div>
+      <label for="delay-date">Date</label>
+      <input id="delay-date" type="date">
+      <label for="delay-subject">Subject</label>
+      <input id="delay-subject" type="text" maxlength="200">
+      <label for="delay-guide">Guide name</label>
+      <input id="delay-guide" type="text" maxlength="200">
+      <label for="delay-body">Email</label>
+      <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
+      <p class="send-note">{{guide}} is filled in with the guide name when you approve this on Actions.</p>
+      <button type="button" id="delay-insert">Insert {{guide}}</button>
+
+      <div class="call-actions">
+        <button class="btn" type="submit">Save</button>
+        <button class="btn" type="button" id="send-message">Send email</button>
+      </div>
+      <p class="status-line" id="send-status" role="status"></p>
+      <p class="status-line" id="notes-status" role="status"></p>
+    </form>
+  </section>
+</main>
+<script src="/assets/js/call-notes.js"></script>
+</body>
+</html>

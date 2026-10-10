@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Actions | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/seminar-format.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
+<script src="/assets/js/actions.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Actions</small></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/" aria-current="page">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/">Back office</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Actions</h1>
+      <p class="lede">Callbacks, delayed emails, and scheduled sessions. Sign in with the staff password.</p>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="office wrap" id="desk" hidden>
+    <h1>Actions</h1>
+    <p class="lede">Callbacks, delayed emails, and scheduled Live Q&amp;A and Ask Anything 1:1 sessions, in day order. Scroll to move between days.</p>
+    <div class="action-stick" id="action-stick">
+      <div class="action-bar">
+        <button class="btn quiet" type="button" id="day-prev">Previous day</button>
+        <label for="day">Day</label>
+        <input id="day" type="date">
+        <button class="btn quiet" type="button" id="day-today">Today</button>
+        <button class="btn quiet" type="button" id="day-next">Next day</button>
+      </div>
+      <div class="action-counts" id="day-count" role="status"></div>
+    </div>
+    <div id="day-groups"></div>
+    <section class="action-open" id="undated" hidden>
+      <h2>No date yet</h2>
+      <ul class="action-list" id="undated-list"></ul>
+    </section>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Contractors | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="/assets/css/families.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Contractors</small></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="btn quiet" href="/admin/">Back office</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Contractors</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="clock wrap contractor-board" id="dash" hidden>
+    <div class="pulse" role="group" aria-label="Time in the current stage">
+      <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
+      <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Sitting 7 days</span></button>
+      <button type="button" data-age="14" aria-pressed="false"><b id="count-14">0</b><span>Sitting 14 days</span></button>
+      <button type="button" data-age="30" aria-pressed="false"><b id="count-30">0</b><span>Sitting 30 days</span></button>
+    </div>
+    <div class="board-tools">
+      <div class="tool-row">
+        <button type="button" id="contractor-open">Add a contractor</button>
+        <button type="button" id="stages-open">Edit stages</button>
+      </div>
+    </div>
+    <section id="stage-editor" class="stage-editor" hidden>
+      <h2>Stages</h2>
+      <p>The name is the column heading. Up and down change the left-to-right order. A column can be removed only when nobody is in it.</p>
+      <ol id="stage-list"></ol>
+      <div class="stage-actions">
+        <button type="button" id="stage-add">Add a stage</button>
+        <button class="btn" type="button" id="stage-save">Save stages</button>
+        <button type="button" id="stage-cancel">Close</button>
+      </div>
+      <p class="status-line" id="stage-status" role="status"></p>
+    </section>
+    <section id="contractor-editor" class="stage-editor" hidden>
+      <h2>Add a contractor</h2>
+      <form id="contractor-form" class="contractor-add">
+        <label>Name <input name="name" type="text" maxlength="80" required autocomplete="off"></label>
+        <button class="btn" type="submit">Add to the first column</button>
+        <button type="button" id="contractor-cancel">Close</button>
+      </form>
+      <p class="status-line" id="contractor-status" role="status"></p>
+    </section>
+    <p class="status-line" id="dash-status" role="status"></p>
+    <section id="callbacks" class="callback-inbox" aria-labelledby="callbacks-title">
+      <h2 id="callbacks-title">Callback requests</h2>
+      <ul id="callback-list"><li>Loading…</li></ul>
+    </section>
+    <article class="detail" id="detail" aria-live="polite">
+      <p class="waiting">Choose a contractor.</p>
+    </article>
+    <div class="pipeline" id="pipeline" aria-label="Contractor pipeline"></div>
+  </section>
+</main>
+<script src="/assets/js/contractors.js"></script>
+</body>
+</html>

@@ -32,7 +32,9 @@
         if (!heading || !list) return;
         var match = (heading.getAttribute('href') || '').match(/\/library\/([a-z0-9-]+)\/?$/);
         if (!match) return;
-        list.innerHTML = (by[match[1]] || []).map(function(article){
+        var listed = by[match[1]] || [];
+        if (!listed.length) return;
+        list.innerHTML = listed.map(function(article){
           return '<li><a href="' + esc(article.url) + '">' + esc(article.title) + '</a></li>';
         }).join('');
       });
@@ -42,6 +44,7 @@
         var section = scope && scope.dataset.section;
         if (!section) return;
         var rows = by[section] || [];
+        if (!rows.length) return;
         guides.innerHTML = rows.map(function(article, index){
           return '<li><a href="' + esc(article.url) + '"><span class="no">' + (index + 1) + '</span><span>' +
             (index === 0 ? '<span class="start">Start here</span>' : '') +

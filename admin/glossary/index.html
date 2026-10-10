@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Glossary | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/glossary-office.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Glossary</small></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="btn quiet" href="/admin/">Back office</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Glossary</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+  <section class="office wrap" id="desk" hidden>
+    <div class="sec-head">
+      <h1>Glossary</h1>
+      <p>Terms appear on the public glossary as soon as you save them.</p>
+    </div>
+    <div class="desk">
+      <div>
+        <button class="btn" type="button" id="term-new">New term</button>
+        <ul class="guide-list" id="term-list"></ul>
+      </div>
+      <form class="editor glossary-editor" id="term-form">
+        <label for="term">Term</label>
+        <input id="term" name="term" maxlength="80" required autocomplete="off">
+        <label for="definition">Definition</label>
+        <textarea id="definition" name="definition" rows="6" required></textarea>
+        <label for="see-slug">Related guide</label>
+        <select id="see-slug" name="see_slug">
+          <option value="">None</option>
+        </select>
+        <label for="see-title">Link text</label>
+        <input id="see-title" name="see_title" autocomplete="off">
+        <div class="actions">
+          <button class="btn" type="submit">Save</button>
+          <button class="btn danger" type="button" id="term-remove" hidden>Remove</button>
+        </div>
+        <p class="status-line" id="term-status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>

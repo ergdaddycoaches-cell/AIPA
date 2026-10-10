@@ -11,6 +11,7 @@ The webhook URLs below are not environment variables. They are the addresses to 
 | `TWILIO_ACCOUNT_SID` | The Account SID, starting with `AC`. |
 | `TWILIO_AUTH_TOKEN` | The auth token. Used to check that a webhook post really came from Twilio. |
 | `TWILIO_FROM_NUMBER` | The Twilio number families text and hear when you call, in E.164, such as `+18332472482`. |
+| `TWILIO_ALERT_NUMBER` | The mobile number that receives a text the moment a contractor form is saved, in E.164. Until this is set, the form is still saved and no text is sent. |
 | `TWILIO_API_KEY_SID` | An API key SID, starting with `SK`. Used to mint the browser dialer token. |
 | `TWILIO_API_KEY_SECRET` | The secret for that API key. Stays in Xano. The browser only receives a short-lived token. |
 | `TWILIO_TWIML_APP_SID` | The TwiML App SID, starting with `AP`. Its voice URL is the call webhook below. |
@@ -29,6 +30,8 @@ Voice webhook, pasted on the TwiML App as the voice request URL:
 `https://xmr6-ssay-w0v9.n7e.xano.io/api:mXXl9fOY/hooks/twilio-voice`
 
 That address is what the browser dialer asks Twilio to call. Until `TWILIO_AUTH_TOKEN` and `TWILIO_FROM_NUMBER` are set, it hangs up and does not dial. Leave this on the TwiML App. Do not put it on the toll-free number.
+
+The Actions page uses this same dialer for a contractor, and only for the number already stored on that contractor. Until the voice settings are set, Call says the dialer is not connected and does not dial. The API key, API secret, and TwiML App SID are also required before a call can start.
 
 Toll-free number, for “A call comes in”:
 

@@ -88,7 +88,10 @@
     var select = document.getElementById('signup-session');
     if (!select) return;
     var names = {};
-    signups.forEach(function(row){ names[sessionTitle(row)] = true; });
+    signups.forEach(function(row){
+      if (!row.meeting_id) return;
+      names[sessionTitle(row)] = true;
+    });
     meetings.forEach(function(meeting){
       if ((meeting.meeting_type === 'live_qa' || meeting.meeting_type === 'family_1_1') && meeting.title) names[meeting.title] = true;
     });
@@ -304,6 +307,7 @@
     if (!table || !body || !empty) return;
     fillSessionFilter();
     var rows = signups.filter(function(row){
+      if (!row.meeting_id) return false;
       return !signupFilter || sessionTitle(row) === signupFilter;
     }).sort(function(a, b){
       if (a.occurrence_at < b.occurrence_at) return -1;

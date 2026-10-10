@@ -6,7 +6,7 @@
   "materials-lighting": "Materials and lighting",
   "costs-financing": "Costs and financing",
   "codes-permits": "Codes, permits and HOAs",
-  "family": "The conversation",
+  "family": "Talking it through",
   "home-value": "Home value"
  },
  "articles": [
@@ -389,7 +389,7 @@
    "title": "Raising it with a parent who says they're fine",
    "summary": "Ways to start the conversation without making it about decline.",
    "section_slug": "family",
-   "section": "The conversation",
+   "section": "Talking it through",
    "tags": "parent,mom,dad,conversation,talk,resistance,denial",
    "status": "published",
    "url": "/library/family/raising-it"
@@ -401,7 +401,7 @@
    "title": "Getting siblings on the same page",
    "summary": "Sharing decisions, costs and work among brothers and sisters.",
    "section_slug": "family",
-   "section": "The conversation",
+   "section": "Talking it through",
    "tags": "siblings,brother,sister,family,disagreement,costs",
    "status": "published",
    "url": "/library/family/siblings"
@@ -413,7 +413,7 @@
    "title": "Talking about upgrades, not decline",
    "summary": "Framing changes as improvements a parent would choose anyway.",
    "section_slug": "family",
-   "section": "The conversation",
+   "section": "Talking it through",
    "tags": "conversation,dignity,language,parent,upgrade",
    "status": "published",
    "url": "/library/family/upgrades-not-decline"
@@ -425,7 +425,7 @@
    "title": "When staying home is no longer safe",
    "summary": "Signs that the home can't meet someone's needs, even with changes.",
    "section_slug": "family",
-   "section": "The conversation",
+   "section": "Talking it through",
    "tags": "safety,assisted living,memory care,wandering,caregiver,decision",
    "status": "published",
    "url": "/library/family/when-home-isnt-safe"
@@ -437,7 +437,7 @@
    "title": "Staying home versus assisted living: the real costs",
    "summary": "Comparing the cost of adapting a home with monthly care costs over time.",
    "section_slug": "family",
-   "section": "The conversation",
+   "section": "Talking it through",
    "tags": "assisted living,cost,nursing home,memory care,compare,decision",
    "status": "published",
    "url": "/library/family/home-vs-assisted-living"

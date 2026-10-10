@@ -1,5 +1,6 @@
 window.AIPA_SEMINAR = {
   zones: {
+    'America/Honolulu': 'Hawaii',
     'America/Los_Angeles': 'Pacific',
     'America/Denver': 'Mountain',
     'America/Chicago': 'Central',

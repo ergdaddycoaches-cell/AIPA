@@ -7,8 +7,9 @@
 <title>Ask Anything 1:1 | Aging in Place Alliance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
 <link rel="stylesheet" href="/assets/css/families.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
@@ -20,6 +21,9 @@
   <div class="wrap">
     <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Ask Anything 1:1</small></span></a>
     <div class="mast-actions">
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
       <a class="btn quiet" href="/admin/">Back office</a>
       <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
     </div>
@@ -38,12 +42,6 @@
   </section>
 
   <section class="clock wrap" id="dash" hidden>
-    <header class="clock-head">
-      <p class="kicker">Ask Anything 1:1</p>
-      <h1>Who you have left too long.</h1>
-      <p class="deck">A touch is the conversation, an email that went out, a text that went out, or a call they answered. A draft does not count. A 1:1 that has not happened yet is not late. Retired people leave this clock.</p>
-    </header>
-
     <div class="pulse" role="group" aria-label="Time since last touch">
       <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
       <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Quiet 7 days</span></button>
@@ -52,37 +50,171 @@
       <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
     </div>
 
-    <div class="life" role="group" aria-label="Whether they are still on the clock">
-      <button type="button" data-life="active" aria-pressed="true">Active</button>
-      <button type="button" data-life="retired" aria-pressed="false">Retired</button>
-      <button type="button" data-callback="yes" aria-pressed="false">Call back <span id="count-callback">0</span></button>
-    </div>
-
-    <div class="readiness" role="group" aria-label="Readiness for an estimator visit">
-      <button type="button" data-ready="" aria-pressed="true">Any readiness</button>
-      <button type="button" data-ready="ready" aria-pressed="false">Ready for a visit</button>
-      <button type="button" data-ready="unsure" aria-pressed="false">Unsure</button>
-      <button type="button" data-ready="not_ready" aria-pressed="false">Not ready</button>
-    </div>
-
     <section id="unmatched" class="unmatched" hidden>
       <h2>Needs a name</h2>
       <p>These calls and messages did not match a cell or email we have. Attach a voicemail to the person it belongs to. That marks them for a call back.</p>
       <ul id="unmatched-list"></ul>
     </section>
-    <p class="eyebrow" id="queue-label">Longest silence first</p>
+    <div class="board-tools">
+      <div class="tool-row">
+        <label class="contractor-filter">Contractor
+          <select id="contractor-filter">
+            <option value="">All contractors</option>
+            <option value="0">No contractor</option>
+          </select>
+        </label>
+        <button type="button" id="family-open">Add a family</button>
+        <button type="button" id="contractors-open">Contractors</button>
+        <a id="contractor-board" href="/admin/contractors/">Contractor board</a>
+        <button type="button" id="stages-open">Edit stages</button>
+      </div>
+    </div>
+    <section id="stage-editor" class="stage-editor" hidden>
+      <h2>Stages</h2>
+      <p>The name is the column heading. Up and down change the left-to-right order. A column can be removed only when nobody is in it.</p>
+      <ol id="stage-list"></ol>
+      <div class="stage-actions">
+        <button type="button" id="stage-add">Add a stage</button>
+        <button class="btn" type="button" id="stage-save">Save stages</button>
+        <button type="button" id="stage-cancel">Close</button>
+      </div>
+      <p class="status-line" id="stage-status" role="status"></p>
+    </section>
+    <section id="contractor-editor" class="stage-editor" hidden>
+      <h2>Contractors</h2>
+      <p>A contractor can be on many families. A family has one contractor, or none. The number is the contractor id a CSV uses.</p>
+      <ul id="contractor-list" class="id-list"></ul>
+      <form id="contractor-form" class="contractor-add">
+        <label>Name <input name="name" type="text" maxlength="80" required autocomplete="off"></label>
+        <button class="btn" type="submit">Add contractor</button>
+      </form>
+      <div class="stage-actions">
+        <button type="button" id="contractor-close">Close</button>
+      </div>
+      <p class="status-line" id="contractor-status" role="status"></p>
+    </section>
+    <section id="family-editor" class="stage-editor" hidden>
+      <h2>Add a family</h2>
+      <p>They land in the first column. Leave the contractor blank when there is not one yet.</p>
+      <form id="family-form">
+        <div class="family-grid">
+          <label>First name <input name="first_name" type="text" maxlength="80" autocomplete="off"></label>
+          <label>Last name <input name="last_name" type="text" maxlength="80" autocomplete="off"></label>
+          <label class="wide">Address 1 <input name="address_1" type="text" maxlength="120" autocomplete="off"></label>
+          <label class="wide">Address 2 <input name="address_2" type="text" maxlength="120" autocomplete="off"></label>
+          <label>City <input name="city" type="text" maxlength="80" autocomplete="off"></label>
+          <label>State <input name="state" type="text" maxlength="40" autocomplete="off"></label>
+          <label>ZIP <input name="zip" type="text" maxlength="20" autocomplete="off"></label>
+          <label>Email address <input name="email" type="email" maxlength="120" autocomplete="off"></label>
+          <label>Cell phone <input name="cell_phone" type="tel" maxlength="40" autocomplete="off"></label>
+          <label>Originating date <input name="originated_at" type="date"></label>
+          <label class="wide">Contractor <select name="contractor_id"><option value="0">No contractor</option></select></label>
+          <label class="check"><input name="opt_in_call" type="checkbox"> Opted in to calls</label>
+          <label class="check"><input name="opt_in_email" type="checkbox"> Opted in to email</label>
+          <label class="wide">Notes <textarea name="notes" rows="3" maxlength="4000"></textarea></label>
+        </div>
+        <div class="stage-actions">
+          <button class="btn" type="submit">Add to the first column</button>
+          <button type="button" id="family-cancel">Close</button>
+        </div>
+      </form>
+      <div class="csv-box">
+        <h3>Upload a CSV</h3>
+        <p>One header row, then one family per line. Column names: first_name, last_name, address_1, address_2, city, state, zip, email, cell_phone, opt_in_call, opt_in_email, originated_at, notes, contractor_id. The same columns can be written as first name, last name, address 1, address 2, city, state, zip, email address, cell phone, opt in for phone call, opt in for email, date of originating record creation, notes, and contractor internal id. Opt in is yes or no. Dates are YYYY-MM-DD. Leave contractor id blank when there is not one. Up to 200 families at a time.</p>
+        <div class="stage-actions">
+          <label class="file-pick">CSV file <input id="family-csv" type="file" accept=".csv,text/csv"></label>
+          <button type="button" id="family-upload">Upload</button>
+        </div>
+      </div>
+      <p class="status-line" id="family-status" role="status"></p>
+    </section>
     <p class="status-line" id="dash-status" role="status"></p>
 
     <div class="board">
-      <div id="queue"></div>
       <article class="detail" id="detail" aria-live="polite">
         <p class="waiting">Choose someone.</p>
       </article>
+      <div class="pipeline" id="pipeline" aria-label="Pipeline"></div>
     </div>
   </section>
 </main>
+<div id="call-window" class="call-window" hidden>
+  <section class="call-window-card" role="dialog" aria-labelledby="who">
+    <div class="call-window-bar" id="call-drag">
+      <h1 id="who">Call notes</h1>
+      <button type="button" id="call-close">Close</button>
+    </div>
+    <nav class="call-jump" aria-label="Sections">
+      <a href="#showed-up">Who showed up</a>
+      <a href="#said-heading">What was said</a>
+      <a href="#send-heading">What to send</a>
+      <a href="#callback-heading">Call back</a>
+      <a href="#delay-heading">Delayed email</a>
+    </nav>
+    <div class="call-window-body">
+      <div class="call-sheet">
+        <form id="notes-form">
+          <h2 id="showed-up">Who showed up</h2>
+          <div id="people"></div>
+          <button type="button" id="add-person">Add a person</button>
+          <h2 id="said-heading">What was said</h2>
+          <textarea id="summary" name="summary" rows="8" maxlength="20000" aria-labelledby="said-heading"></textarea>
+          <h2 id="send-heading">What to send</h2>
+          <label for="guide">Guide</label>
+          <select id="guide" name="guide"><option value="">No guide</option></select>
+          <label for="follow">Message</label>
+          <textarea id="follow" name="follow_up_note" rows="5" maxlength="20000"></textarea>
+          <p class="send-note" id="guide-token-note">{{guide}} is filled in with the guide name when this is sent.</p>
+          <button type="button" id="insert-guide">Insert {{guide}}</button>
+          <div class="send-channels" role="group" aria-label="How to send">
+            <button type="button" id="channel-email" aria-pressed="true">Email</button>
+            <button type="button" id="channel-text" aria-pressed="false">Text</button>
+          </div>
+          <p class="send-note" id="send-note"></p>
+          <label for="send-who" id="send-who-label">To</label>
+          <select id="send-who"></select>
+          <p class="send-note" id="send-empty" hidden></p>
+          <label for="subject" id="subject-label">Subject</label>
+          <input id="subject" type="text" maxlength="200">
+          <h2 id="callback-heading">Call back</h2>
+          <span id="callback-label">Wants a call back</span>
+          <div class="send-channels" role="group" aria-labelledby="callback-label">
+            <button type="button" id="callback-no" aria-pressed="true">No</button>
+            <button type="button" id="callback-yes" aria-pressed="false">Yes</button>
+          </div>
+          <label for="callback-date">Date</label>
+          <input id="callback-date" type="date">
+          <h2 id="delay-heading">Send delayed email</h2>
+          <p class="send-note">This is not sent on its own. It shows on Actions on the date you pick, so you can approve it, change it, delay it, or kill it.</p>
+          <span id="delay-label">Send a delayed email</span>
+          <div class="send-channels" role="group" aria-labelledby="delay-label">
+            <button type="button" id="delay-no" aria-pressed="true">No</button>
+            <button type="button" id="delay-yes" aria-pressed="false">Yes</button>
+          </div>
+          <label for="delay-date">Date</label>
+          <input id="delay-date" type="date">
+          <label for="delay-subject">Subject</label>
+          <input id="delay-subject" type="text" maxlength="200">
+          <label for="delay-guide">Guide name</label>
+          <input id="delay-guide" type="text" maxlength="200">
+          <label for="delay-body">Email</label>
+          <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
+          <p class="send-note">{{guide}} is filled in with the guide name when you approve this on Actions.</p>
+          <button type="button" id="delay-insert">Insert {{guide}}</button>
+          <div class="call-actions">
+            <button class="btn" type="submit">Save</button>
+            <button class="btn" type="button" id="send-message">Send email</button>
+          </div>
+          <p class="status-line" id="send-status" role="status"></p>
+          <p class="status-line" id="notes-status" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
 <script src="/assets/js/seminar-format.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/families.js"></script>
+<script src="/assets/js/call-notes.js"></script>
 </body>
 </html>

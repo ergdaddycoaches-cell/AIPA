@@ -9,10 +9,28 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
     });
   }
+  var RATIOS = {
+    '3:2': {w:3, h:2, label:'3:2 landscape'},
+    '4:3': {w:4, h:3, label:'4:3 landscape'},
+    '1:1': {w:1, h:1, label:'Square'},
+    '3:4': {w:3, h:4, label:'3:4 portrait'}
+  };
+  function knownRatio(value){ return Object.prototype.hasOwnProperty.call(RATIOS, value); }
+  function frameSize(ratio){
+    var spec = RATIOS[ratio] || RATIOS['3:2'];
+    var longEdge = 360;
+    if (spec.w >= spec.h) return {w: longEdge, h: Math.round(longEdge * spec.h / spec.w)};
+    return {w: Math.round(longEdge * spec.w / spec.h), h: longEdge};
+  }
+  function exportSize(ratio){
+    var frame = frameSize(ratio);
+    var scale = 900 / Math.max(frame.w, frame.h);
+    return {w: Math.round(frame.w * scale), h: Math.round(frame.h * scale)};
+  }
   function blank(type){
     if (type === 'headline') return {id:uid(), type:type, text:''};
     if (type === 'bullets') return {id:uid(), type:type, items:[{text:'', footnote:''}]};
-    if (type === 'photo-left' || type === 'photo-right') return {id:uid(), type:type, text:'', footnote:'', image:''};
+    if (type === 'photo-left' || type === 'photo-right') return {id:uid(), type:type, text:'', footnote:'', image:'', ratio:'3:2', alt:''};
     return {id:uid(), type:'paragraph', text:'', footnote:''};
   }
   function parse(value){
@@ -38,6 +56,10 @@
     next.text = block.text || '';
     next.footnote = block.footnote || '';
     next.image = block.image || '';
+    if (next.type === 'photo-left' || next.type === 'photo-right') {
+      next.ratio = knownRatio(block.ratio) ? block.ratio : (next.image ? '3:4' : '3:2');
+      next.alt = String(block.alt || '').replace(/\s+/g, ' ').trim();
+    }
     if (next.type === 'bullets') {
       next.items = (block.items && block.items.length ? block.items : [{text:'', footnote:''}]).map(function(item){
         return {text:item.text || '', footnote:item.footnote || ''};
@@ -83,9 +105,12 @@
       body = '<label>Paragraph<textarea data-field="text" rows="4">' + esc(block.text) + '</textarea></label>' +
         '<label>Footnote<input data-field="footnote" value="' + esc(block.footnote) + '" placeholder="Optional. Collected at the bottom."></label>';
       if (block.type === 'photo-left' || block.type === 'photo-right') {
+        var shape = knownRatio(block.ratio) ? block.ratio : '3:2';
         body += '<div class="photo-pick">' +
-          (block.image ? '<img src="' + esc(block.image) + '" alt="">' : '<p class="note">No photo yet.</p>') +
-          '<button class="btn quiet" type="button" data-do="photo">' + (block.image ? 'Change photo' : 'Upload photo') + '</button></div>';
+          (block.image ? '<img class="ratio-' + shape.replace(':', '-') + '" src="' + esc(block.image) + '" alt="' + esc(block.alt) + '">' : '<p class="note">No photo yet.</p>') +
+          '<div><p class="note">' + esc(RATIOS[shape].label) + '</p>' +
+          '<button class="btn quiet" type="button" data-do="photo">' + (block.image ? 'Change photo' : 'Upload photo') + '</button></div></div>' +
+          '<label>What the photo shows<input data-field="alt" value="' + esc(block.alt) + '" placeholder="For someone who cannot see the photo. Leave blank if the paragraph already says it."></label>';
       }
     }
     return '<article class="guide-block" data-block="' + index + '"><header><h3>' + esc(label(block.type)) + '</h3><div>' +
@@ -109,16 +134,30 @@
     var card = node.closest('[data-block]');
     return card ? Number(card.dataset.block) : -1;
   }
+  function sizeCanvas(ratio){
+    var canvas = document.getElementById('crop-canvas');
+    var size = frameSize(ratio);
+    if (!canvas) return size;
+    if (canvas.width !== size.w || canvas.height !== size.h) {
+      canvas.width = size.w;
+      canvas.height = size.h;
+    }
+    return size;
+  }
   function openCrop(file, index){
     var dialog = document.getElementById('crop-dialog');
     var canvas = document.getElementById('crop-canvas');
     var zoom = document.getElementById('crop-zoom');
+    var ratioSelect = document.getElementById('crop-ratio');
     if (!dialog || !canvas || !file) return;
     var img = new Image();
     var url = URL.createObjectURL(file);
     img.onload = function(){
-      crop = {img:img, url:url, index:index, zoom:1, panX:0, panY:0, drag:null};
-      zoom.value = '1';
+      var ratio = blocks[index] && knownRatio(blocks[index].ratio) ? blocks[index].ratio : '3:2';
+      crop = {img:img, url:url, index:index, zoom:1, panX:0, panY:0, drag:null, ratio:ratio};
+      if (ratioSelect) ratioSelect.value = ratio;
+      if (zoom) zoom.value = '1';
+      sizeCanvas(ratio);
       dialog.hidden = false;
       drawCrop();
     };
@@ -127,6 +166,7 @@
   function drawCrop(){
     var canvas = document.getElementById('crop-canvas');
     if (!canvas || !crop) return;
+    sizeCanvas(crop.ratio);
     var ctx = canvas.getContext('2d');
     var w = canvas.width;
     var h = canvas.height;
@@ -140,16 +180,18 @@
   function applyCrop(){
     var source = document.getElementById('crop-canvas');
     if (!source || !crop) return;
+    var size = exportSize(crop.ratio);
     var out = document.createElement('canvas');
-    out.width = 900;
-    out.height = 1200;
+    out.width = size.w;
+    out.height = size.h;
     var ctx = out.getContext('2d');
-    var scale = 900 / source.width;
+    var scale = size.w / source.width;
     var cover = Math.max(source.width / crop.img.width, source.height / crop.img.height) * crop.zoom * scale;
     var dw = crop.img.width * cover;
     var dh = crop.img.height * cover;
-    ctx.drawImage(crop.img, (900 - dw) / 2 + crop.panX * scale, (1200 - dh) / 2 + crop.panY * scale, dw, dh);
+    ctx.drawImage(crop.img, (size.w - dw) / 2 + crop.panX * scale, (size.h - dh) / 2 + crop.panY * scale, dw, dh);
     blocks[crop.index].image = out.toDataURL('image/jpeg', 0.85);
+    blocks[crop.index].ratio = crop.ratio;
     closeCrop();
     paint();
   }
@@ -212,6 +254,14 @@
       crop.zoom = Number(event.target.value) || 1;
       drawCrop();
     }
+  });
+  document.addEventListener('change', function(event){
+    if (event.target.id !== 'crop-ratio' || !crop || !knownRatio(event.target.value)) return;
+    crop.ratio = event.target.value;
+    crop.panX = 0;
+    crop.panY = 0;
+    sizeCanvas(crop.ratio);
+    drawCrop();
   });
   document.addEventListener('pointerdown', function(event){
     if (event.target.id !== 'crop-canvas' || !crop) return;

@@ -7,10 +7,16 @@
   var signout = document.getElementById('signout');
   var families = [];
   var ageFilter = 'all';
-  var readyFilter = '';
-  var lifeFilter = 'active';
-  var callbackFilter = false;
   var reachMode = '';
+  var stages = [];
+  var places = {};
+  var stageDraft = [];
+  var detailTab = 'summary';
+  var detailTabFor = 0;
+  var contractors = [];
+  var profiles = {};
+  var contractorFilter = '';
+  var contractorFilterStamp = '';
   var selectedId = 0;
   var dial = { phase: '', registrationId: 0, name: '', number: '', call: null, device: null, token: '', muted: false, started: 0, timer: 0, error: '' };
   var fromClick = false;
@@ -195,7 +201,12 @@
     return 'Not set';
   }
 
-  function build(row, meeting, touches){
+  function dateLabel(value){
+    var match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(value || ''));
+    if (!match) return '';
+    return MONTHS[+match[2] - 1] + ' ' + (+match[3]) + ', ' + match[1];
+  }
+  function build(row, meeting, touches, profile){
     var zone = meeting && meeting.timezone ? meeting.timezone : 'America/Los_Angeles';
     var now = zonedNow(zone);
     var occurrence = stamp(row.occurrence_at);
@@ -222,7 +233,7 @@
     if (!hasMessage && row.follow_up_status === 'sent') {
       var sentAt = stamp(row.follow_up_sent_at) || fromEpoch(row.follow_up_sent_at, zone);
       if (sentAt) {
-        events.push({kind:'email', occurred_at:sentAt, note:row.follow_up_note || '', future: sentAt > now});
+        events.push({kind:'email', occurred_at:sentAt, note:mergeGuide(row.follow_up_note, row.suggested_title), future: sentAt > now});
       }
     }
     events.sort(function(a, b){
@@ -252,18 +263,20 @@
       last: last,
       never: !upcoming && !contactedAfter,
       events: events,
-      title: meeting && meeting.title ? meeting.title : 'Ask Anything 1:1',
-      when: window.AIPA_SEMINAR.format({
+      title: meeting && meeting.title ? meeting.title : (row.meeting_id ? 'Ask Anything 1:1' : 'Added by the office'),
+      when: occurrence ? window.AIPA_SEMINAR.format({
         starts_at: occurrence,
         timezone: zone,
         kind: 'one_time'
-      }),
+      }) : (profile && profile.originated_at ? 'Record from ' + dateLabel(profile.originated_at) : 'No 1:1 yet'),
+      profile: profile || null,
       guests: people(row),
       reads: parseList(row.attendee_reads)
     };
   }
 
   function ageClass(family){
+    if (!family.last && !family.occurrence) return '';
     if (family.upcoming) return 'soon';
     if (family.days >= 30) return 'late';
     if (family.days <= 3) return 'fresh';
@@ -291,20 +304,38 @@
     if (ageFilter === 'never') return family.never;
     return family.days >= Number(ageFilter);
   }
-  function inReady(family){
-    return !readyFilter || family.row.visit_readiness === readyFilter;
-  }
   function wantsCallback(family){
     return !!(family && family.row && (family.row.callback_requested === true || family.row.callback_requested === 1));
   }
-  function inLife(family){
-    return lifeFilter === 'retired' ? isRetired(family) : !isRetired(family);
+  function callbackPhrase(family){
+    var raw = String(family && family.row && family.row.callback_requested_at || '');
+    var match = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw);
+    if (!match) return '';
+    var target = Date.UTC(+match[1], +match[2] - 1, +match[3]);
+    var todayMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(zonedNow('America/Los_Angeles'));
+    if (!todayMatch) return '';
+    var today = Date.UTC(+todayMatch[1], +todayMatch[2] - 1, +todayMatch[3]);
+    var days = Math.round((target - today) / 86400000);
+    if (days > 1) return 'in ' + days + ' days';
+    if (days === 1) return 'in 1 day';
+    if (days === 0) return 'today';
+    var late = Math.abs(days);
+    return 'LATE: ' + late + ' ' + (late === 1 ? 'day' : 'days') + ' ago.';
+  }
+  function contractorIdOf(family){
+    var id = family && family.profile && family.profile.contractor_id;
+    return Number(id) || 0;
+  }
+  function inContractor(family){
+    if (!contractorFilter) return true;
+    if (contractorFilter === '0') return !contractorIdOf(family);
+    return contractorIdOf(family) === Number(contractorFilter);
   }
   function pool(){
-    return families.filter(inReady).filter(inLife);
+    return families.filter(inContractor);
   }
   function visible(){
-    var list = callbackFilter ? families.filter(wantsCallback) : pool().filter(inAge);
+    var list = pool().filter(inAge);
     var quiet = list.filter(function(family){ return !family.upcoming; });
     var ahead = list.filter(function(family){ return family.upcoming; });
     quiet.sort(function(a, b){ return b.days - a.days || a.row.name.localeCompare(b.row.name); });
@@ -312,26 +343,20 @@
     return quiet.concat(ahead);
   }
 
-  function spark(family){
-    return '<span class="spark" aria-hidden="true">' + family.events.map(function(event){
-      var cls = event.kind + (event.future ? ' future' : '');
-      return '<span class="' + cls + '"></span>';
-    }).join('') + '</span>';
+  function quietLine(family){
+    if (family.upcoming) return 'Coming up ' + shortWhen(family.occurrence);
+    if (!family.occurrence && !family.last) return 'No touch yet';
+    if (family.days === 0) return ageCaption(family);
+    return ageNumber(family) + ' ' + ageCaption(family);
+  }
+  function callbackMark(){
+    return '<span class="callback-mark" role="img" aria-label="Call back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v2.2a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 1h2.2a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L7.1 8.7a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2.1z"/><path d="M15 3h6v6"/><path d="M21 3l-6 6"/></svg></span>';
   }
   function card(family){
-    var withWhom = family.guests.length ? '<span class="with">with ' + esc(family.guests.map(function(person){ return person.name; }).join(', ')) + '</span>' : '';
-    var ready = family.row.visit_readiness || 'unset';
-    var word = family.upcoming || family.days === 0 ? ' word' : '';
-    var retiredFlag = isRetired(family) ? '<span class="flag retired">' + esc(REASONS[family.row.retired_reason] || 'Retired') + '</span>' : '';
-    var callbackFlag = wantsCallback(family) ? '<span class="flag callback">Call back</span>' : '';
-    return '<li><button type="button" class="family ' + ageClass(family) + word + (isRetired(family) ? ' retired' : '') + '" data-id="' + family.id + '" aria-current="' + (family.id === selectedId) + '">' +
-      '<span class="age"><b>' + esc(ageNumber(family)) + '</b></span>' +
-      '<span class="who"><strong>' + esc(family.row.name) + '</strong>' +
-      '<span class="since">' + esc(ageCaption(family)) + '</span>' + withWhom +
-      '<span class="session">' + esc(family.title) + '</span>' +
-      '<span class="flags"><span class="flag ' + esc(ready) + '">' + esc(readiness(family.row.visit_readiness)) + '</span>' + callbackFlag + retiredFlag + '</span>' +
-      spark(family) +
-      '</span></button></li>';
+    return '<li><button type="button" draggable="true" class="family ' + ageClass(family) + '" data-id="' + family.id + '" aria-current="' + (family.id === selectedId) + '">' +
+      '<span class="who"><span class="name-line"><strong>' + esc(family.row.name) + '</strong>' +
+      (wantsCallback(family) ? callbackMark() : '') +
+      '</span><span class="since">' + esc(quietLine(family)) + '</span></span></button></li>';
   }
   function queueHtml(list){
     if (!list.length) {
@@ -346,13 +371,60 @@
     }
     return html;
   }
-  function bindQueue(){
-    document.querySelectorAll('.family').forEach(function(button){
+  function stageFor(family){
+    var id = family && places[family.id];
+    if (stages.some(function(stage){ return stage.id === id; })) return id;
+    return stages.length ? stages[0].id : 0;
+  }
+  function pipelineHtml(list){
+    if (!stages.length) return '<p class="empty-queue">No stages yet. Use Edit stages to add the columns.</p>';
+    return stages.map(function(stage){
+      var cards = list.filter(function(family){ return stageFor(family) === stage.id; });
+      var body = cards.length ? '<ol class="family-list">' + cards.map(card).join('') + '</ol>' : '<p class="column-empty">No one here.</p>';
+      return '<section class="stage-col" data-stage="' + stage.id + '"><h2><span>' + esc(stage.name) + '</span><b>' + cards.length + '</b></h2>' + body + '</section>';
+    }).join('');
+  }
+  function bindPipeline(){
+    document.querySelectorAll('#pipeline .family').forEach(function(button){
+      button.addEventListener('dragstart', function(event){
+        button.dataset.dragged = 'yes';
+        event.dataTransfer.setData('text/plain', button.dataset.id);
+        event.dataTransfer.effectAllowed = 'move';
+      });
+      button.addEventListener('dragend', function(){
+        document.querySelectorAll('.stage-col').forEach(function(col){ col.classList.remove('drop'); });
+      });
       button.addEventListener('click', function(){
+        if (button.dataset.dragged === 'yes') { button.dataset.dragged = ''; return; }
         selectedId = Number(button.dataset.id);
         fromClick = true;
         render();
       });
+    });
+    document.querySelectorAll('#pipeline .stage-col').forEach(function(col){
+      col.addEventListener('dragover', function(event){
+        event.preventDefault();
+        col.classList.add('drop');
+      });
+      col.addEventListener('dragleave', function(event){
+        if (!col.contains(event.relatedTarget)) col.classList.remove('drop');
+      });
+      col.addEventListener('drop', function(event){
+        event.preventDefault();
+        col.classList.remove('drop');
+        movePerson(Number(event.dataTransfer.getData('text/plain')), Number(col.dataset.stage));
+      });
+    });
+  }
+  function movePerson(id, stageId){
+    var family = families.filter(function(item){ return item.id === id; })[0];
+    if (!family || !stageId || stageFor(family) === stageId) return;
+    places[id] = stageId;
+    render();
+    api('/office/pipeline-move', {method:'POST', body:{registration_id:id, stage_id:stageId}}).catch(function(err){
+      var line = document.getElementById('dash-status');
+      if (line) line.textContent = err.message;
+      load();
     });
   }
   function timelineNote(event){
@@ -372,17 +444,110 @@
   }
   function reads(family){
     if (!family.reads.length) return '';
-    return '<div class="note-block"><h3>How they showed up</h3><ul class="reads">' + family.reads.map(function(person){
+    return '<ul class="reads">' + family.reads.map(function(person){
       var bits = [ROLES[person.role] || '', STYLES[person.style] || ''].filter(Boolean).join(' · ');
       return '<li><strong>' + esc(person.name || '') + '</strong>' +
         (bits ? '<span class="role">' + esc(bits) + '</span>' : '') +
         (person.note ? '<p>' + esc(person.note) + '</p>' : '') + '</li>';
-    }).join('') + '</ul></div>';
+    }).join('') + '</ul>';
+  }
+  function mergeGuide(text, title){
+    var name = String(title || '').trim();
+    return String(text || '').replace(/\{\{guide\}\}/g, name || '{{guide}}');
   }
   function follow(row){
     if (!row.follow_up_note) return '';
     var label = row.follow_up_status === 'sent' ? 'Follow-up that went out' : row.follow_up_status === 'draft' ? 'Draft, not sent' : 'Follow-up note';
-    return '<div class="follow"><h3>' + esc(label) + '</h3><p>' + esc(row.follow_up_note) + '</p></div>';
+    return '<div class="follow"><h3>' + esc(label) + '</h3><p>' + esc(mergeGuide(row.follow_up_note, row.suggested_title)) + '</p></div>';
+  }
+  function firstSentence(text){
+    var value = String(text || '').replace(/\s+/g, ' ').trim();
+    if (!value) return '';
+    var match = value.match(/^.+?[.!?](?=\s|$)/);
+    return match ? match[0] : value;
+  }
+  function latestEvent(family){
+    var past = (family.events || []).filter(function(event){ return !event.future; });
+    if (past.length) return past[past.length - 1];
+    return (family.events || [])[0] || null;
+  }
+  function showedLine(person){
+    var how = STYLES[person.style] || ROLES[person.role] || '';
+    return (person.name || 'Someone') + (how ? ' · ' + how : '');
+  }
+  function hasConversation(family){
+    return !!(family.row.summary || family.row.suggested_slug || family.row.follow_up_note);
+  }
+  function summaryPanel(family){
+    var lines = [];
+    var event = latestEvent(family);
+    if (event) {
+      var note = firstSentence(event.note);
+      lines.push('<p><b>Latest</b> ' + esc(pretty(event.occurred_at)) + ' · ' + esc(eventLabel(event)) + (note ? '. ' + esc(note) : '') + '</p>');
+    }
+    if (family.row.summary) lines.push('<p><b>Conversation</b> ' + esc(firstSentence(family.row.summary)) + '</p>');
+    if (family.profile && family.profile.notes) lines.push('<p><b>Notes</b> ' + esc(firstSentence(family.profile.notes)) + '</p>');
+    family.reads.forEach(function(person, index){
+      lines.push('<p' + (index ? ' class="sum-next"' : '') + '>' + (index ? '' : '<b>Showed up</b> ') + esc(showedLine(person)) + '</p>');
+    });
+    return lines.length ? lines.join('') : '<p class="band-empty">Nothing recorded yet.</p>';
+  }
+  function conversationPanel(family){
+    var guide = family.row.suggested_slug
+      ? '<p><a class="guide-link" href="/library/article/?slug=' + encodeURIComponent(family.row.suggested_slug) + '">' + esc(family.row.suggested_title || family.row.suggested_slug) + '</a></p>' +
+        (family.row.suggestion_reason ? '<p class="reason">' + esc(family.row.suggestion_reason) + '</p>' : '')
+      : '';
+    return (family.row.summary ? '<p>' + esc(family.row.summary) + '</p>' : '') + guide + follow(family.row);
+  }
+  function addressLine(profile){
+    var street = [profile.address_1, profile.address_2].filter(function(part){ return part; }).join(', ');
+    var place = [profile.city, profile.state].filter(function(part){ return part; }).join(', ');
+    if (profile.zip) place = place ? place + ' ' + profile.zip : profile.zip;
+    return [street, place].filter(function(part){ return part; }).join(' · ');
+  }
+  function flagLine(value){
+    if (value === 'yes') return 'Opted in';
+    if (value === 'no') return 'Not opted in';
+    return '';
+  }
+  function hasRecord(family){
+    var profile = family.profile;
+    if (!profile) return false;
+    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || family.row.email || family.row.phone);
+  }
+  function recordPanel(family){
+    var profile = family.profile || {};
+    var lines = [];
+    var address = addressLine(profile);
+    if (address) lines.push('<p><b>Address</b> ' + esc(address) + '</p>');
+    if (family.row.email) lines.push('<p><b>Email</b> ' + esc(family.row.email) + '</p>');
+    if (family.row.phone) lines.push('<p><b>Cell</b> ' + esc(family.row.phone) + '</p>');
+    if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
+    if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
+    if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
+    if (profile.notes) lines.push('<p><b>Notes</b> ' + esc(profile.notes) + '</p>');
+    return lines.join('') || '<p class="band-empty">No address or notes yet.</p>';
+  }
+  function band(family){
+    if (detailTabFor !== family.id) {
+      detailTab = 'summary';
+      detailTabFor = family.id;
+    }
+    var tabs = [{id:'summary', label:'Summary'}];
+    if (family.events.length) tabs.push({id:'timeline', label:'Timeline'});
+    if (hasConversation(family)) tabs.push({id:'conversation', label:'Conversation'});
+    if (family.reads.length) tabs.push({id:'showed', label:'Showed up'});
+    if (hasRecord(family)) tabs.push({id:'record', label:'Record'});
+    if (!tabs.some(function(tab){ return tab.id === detailTab; })) detailTab = 'summary';
+    var panel = summaryPanel(family);
+    if (detailTab === 'timeline') panel = timeline(family);
+    else if (detailTab === 'conversation') panel = conversationPanel(family);
+    else if (detailTab === 'showed') panel = reads(family);
+    else if (detailTab === 'record') panel = recordPanel(family);
+    if (tabs.length === 1 && panel.indexOf('band-empty') !== -1) return '';
+    return '<div class="band-tabs" role="tablist">' + tabs.map(function(tab){
+      return '<button type="button" role="tab" data-tab="' + tab.id + '" aria-selected="' + (detailTab === tab.id) + '">' + tab.label + '</button>';
+    }).join('') + '</div><div class="detail-body" role="tabpanel">' + panel + '</div>';
   }
   function choiceList(people, field){
     return people.filter(function(person){ return person[field]; }).map(function(person, index){
@@ -466,6 +631,20 @@
     }
     return '';
   }
+  function contractorField(family){
+    var current = contractorIdOf(family);
+    return '<label class="stage-pick">Contractor <select id="contractor-select"><option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
+      contractors.map(function(contractor){
+        return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
+      }).join('') + '</select></label>';
+  }
+  function stageField(family){
+    if (!stages.length) return '';
+    var current = stageFor(family);
+    return '<label class="stage-pick">Stage <select id="stage-select">' + stages.map(function(stage){
+      return '<option value="' + stage.id + '"' + (stage.id === current ? ' selected' : '') + '>' + esc(stage.name) + '</option>';
+    }).join('') + '</select></label>';
+  }
   function detail(family){
     if (!family) {
       document.getElementById('detail').innerHTML = '<p class="waiting">No one is in this view.</p>';
@@ -475,32 +654,31 @@
     var away = callLive() && dial.registrationId !== family.id
       ? '<div class="on-call"><p>On a call with ' + esc(dial.name) + '</p><button type="button" data-act="return-call">Return</button><button type="button" class="hangup" data-act="hangup">Hang up</button></div>'
       : '';
-    var guide = family.row.suggested_slug
-      ? '<p><a class="guide-link" href="/library/article/?slug=' + encodeURIComponent(family.row.suggested_slug) + '">' + esc(family.row.suggested_title || family.row.suggested_slug) + '</a></p>' +
-        (family.row.suggestion_reason ? '<p class="reason">' + esc(family.row.suggestion_reason) + '</p>' : '')
-      : '';
-    var summary = family.row.summary ? '<div class="note-block"><h3>From the conversation</h3><p>' + esc(family.row.summary) + '</p>' + guide + follow(family.row) + '</div>' : (guide || follow(family.row) ? '<div class="note-block">' + guide + follow(family.row) + '</div>' : '');
     var banner = retired ? '<p class="retired-banner">Retired' + (REASONS[family.row.retired_reason] ? ' · ' + esc(REASONS[family.row.retired_reason]) : '') + '</p>' : '';
-    var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
+    var callbackWhen = wantsCallback(family) ? callbackPhrase(family) : '';
+    var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back' + (callbackWhen ? ' · ' + esc(callbackWhen) : '') + ' <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
     document.getElementById('detail').innerHTML =
       away +
-      '<p class="kicker">' + esc(readiness(family.row.visit_readiness)) + '</p>' +
+      '<div class="detail-top">' +
+      '<div class="detail-id">' +
       '<h2>' + esc(family.row.name) + '</h2>' +
       '<p class="session">' + esc(family.title) + ' · ' + esc(family.when) + '</p>' +
+      (family.row.readiness_note ? '<p class="split-note">' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
+      '</div>' +
+      '<div class="detail-actions">' +
+      contractorField(family) +
+      stageField(family) +
+      '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<div class="reach" role="group" aria-label="Reach this person">' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
-      '</div>' +
+      '</div></div></div>' +
       reachPanel(family) +
-      (family.row.readiness_note ? '<p>' + esc(family.row.readiness_note) + '</p>' : '') +
-      timeline(family) + summary + reads(family);
-    if (fromClick && window.matchMedia('(max-width: 900px)').matches) {
-      document.getElementById('detail').scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
-    }
+      band(family);
     fromClick = false;
   }
   function counts(list){
@@ -509,29 +687,54 @@
     document.getElementById('count-14').textContent = list.filter(function(family){ return !family.upcoming && family.days >= 14; }).length;
     document.getElementById('count-30').textContent = list.filter(function(family){ return !family.upcoming && family.days >= 30; }).length;
     document.getElementById('count-never').textContent = list.filter(function(family){ return family.never; }).length;
-    var callbackCount = document.getElementById('count-callback');
-    if (callbackCount) callbackCount.textContent = families.filter(wantsCallback).length;
   }
-  function label(){
-    var text = 'Longest silence first';
-    if (ageFilter === '7') text = 'Quiet at least 7 days';
-    else if (ageFilter === '14') text = 'Quiet at least 14 days';
-    else if (ageFilter === '30') text = 'Quiet at least 30 days';
-    else if (ageFilter === 'never') text = 'The 1:1 happened, and no email, text, or call has connected since';
-    if (lifeFilter === 'retired') text = 'Retired';
-    if (callbackFilter) text = 'Asked for a call back';
-    document.getElementById('queue-label').textContent = text;
+  function contractorOptions(selected){
+    var current = Number(selected) || 0;
+    return '<option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
+      contractors.map(function(contractor){
+        return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
+      }).join('');
+  }
+  function drawContractorFilter(){
+    var select = document.getElementById('contractor-filter');
+    if (!select) return;
+    var stamp = contractors.map(function(contractor){ return contractor.id + ':' + contractor.name; }).join('|');
+    if (stamp === contractorFilterStamp && select.value === contractorFilter) return;
+    contractorFilterStamp = stamp;
+    select.innerHTML = '<option value="">All contractors</option><option value="0">No contractor</option>' +
+      contractors.map(function(contractor){
+        return '<option value="' + contractor.id + '">' + esc(contractor.name) + '</option>';
+      }).join('');
+    select.value = contractorFilter;
+    if (select.value !== contractorFilter) {
+      contractorFilter = '';
+      select.value = '';
+    }
+  }
+  function drawContractors(){
+    var list = document.getElementById('contractor-list');
+    if (list) {
+      list.innerHTML = contractors.length ? contractors.map(function(contractor){
+        return '<li><b>' + contractor.id + '</b> ' + esc(contractor.name) + '</li>';
+      }).join('') : '<li>No contractors yet.</li>';
+    }
+    var select = document.querySelector('#family-form [name="contractor_id"]');
+    if (select) {
+      var current = select.value;
+      select.innerHTML = contractorOptions(current);
+    }
   }
   function render(){
-    var activePool = families.filter(inReady).filter(function(family){ return !isRetired(family); });
+    drawContractorFilter();
+    drawContractors();
+    var activePool = families.filter(inContractor);
     counts(activePool);
-    label();
     var list = visible();
     if (!list.some(function(family){ return family.id === selectedId; })) {
       selectedId = list.length ? list[0].id : 0;
     }
-    document.getElementById('queue').innerHTML = queueHtml(list);
-    bindQueue();
+    document.getElementById('pipeline').innerHTML = pipelineHtml(list);
+    bindPipeline();
     detail(list.filter(function(family){ return family.id === selectedId; })[0] || null);
   }
 
@@ -563,18 +766,29 @@
       api('/office/meetings'),
       api('/office/signups'),
       api('/office/touches').catch(function(){ return []; }),
-      api('/office/unmatched').catch(function(){ return []; })
+      api('/office/unmatched').catch(function(){ return []; }),
+      api('/office/pipeline'),
+      api('/office/households')
     ]).then(function(result){
       var meetings = rows(result[0]);
       var signups = rows(result[1]);
       var touches = rows(result[2]);
       var unmatched = rows(result[3]);
+      var pipeline = result[4] || {};
+      var household = result[5] || {};
+      stages = rows(pipeline.stages).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+      places = {};
+      rows(pipeline.places).forEach(function(place){ places[place.registration_id] = place.stage_id; });
+      contractors = rows(household.contractors);
+      profiles = {};
+      rows(household.profiles).forEach(function(profile){ profiles[profile.registration_id] = profile; });
       families = signups.filter(function(row){
         var meeting = meetings.filter(function(item){ return item.id === row.meeting_id; })[0];
-        return meeting && meeting.meeting_type === 'family_1_1';
+        if (meeting && meeting.meeting_type === 'family_1_1') return true;
+        return !row.meeting_id;
       }).map(function(row){
         var meeting = meetings.filter(function(item){ return item.id === row.meeting_id; })[0];
-        return build(row, meeting, touches);
+        return build(row, meeting, touches, profiles[row.id] || null);
       });
       renderUnmatched(unmatched);
       status.textContent = '';
@@ -690,13 +904,17 @@
     var status = document.getElementById('reach-status');
     if (!picked) { if (status) status.textContent = 'Choose who to reach.'; return; }
     if (!body || !body.value.trim()) { if (status) status.textContent = 'Write the message first.'; return; }
+    if (body.value.indexOf('{{guide}}') !== -1 && !String(family.row.suggested_title || '').trim()) {
+      if (status) status.textContent = 'Pick a guide so {{guide}} has a name.';
+      return;
+    }
     if (status) status.textContent = channel === 'sms' ? 'Sending the text…' : 'Sending the email…';
     api('/office/send', {method:'POST', body:{
       registration_id: family.id,
       channel: channel,
       to: picked.value,
       subject: subject ? subject.value : '',
-      body: body.value
+      body: mergeGuide(body.value, family.row.suggested_title)
     }}).then(function(data){
       if (!data.configured || data.ok === false) {
         if (status) status.textContent = data.message || 'This was not sent.';
@@ -722,14 +940,17 @@
       note: note ? note.value : ''
     }}).then(function(){
       reachMode = '';
-      if (engagement === 'retired') lifeFilter = 'active';
-      document.querySelectorAll('[data-life]').forEach(function(button){
-        button.setAttribute('aria-pressed', String(button.dataset.life === lifeFilter));
-      });
       load();
     }).catch(function(err){ if (status) status.textContent = err.message; });
   }
   document.getElementById('detail').addEventListener('click', function(event){
+    var tabBtn = event.target.closest('[data-tab]');
+    if (tabBtn && tabBtn.closest('.band-tabs')) {
+      detailTab = tabBtn.dataset.tab;
+      detailTabFor = selectedId;
+      render();
+      return;
+    }
     var button = event.target.closest('[data-act]');
     if (!button) return;
     var act = button.dataset.act;
@@ -757,6 +978,10 @@
       return;
     }
     if (!family) return;
+    if (act === 'call-notes') {
+      if (window.AIPA_CALL_NOTES) window.AIPA_CALL_NOTES.open(family.id);
+      return;
+    }
     if (act === 'call' || act === 'text' || act === 'email' || act === 'retire' || act === 'restore') {
       if (callLive() && act === 'call') { reachMode = 'call'; render(); return; }
       reachMode = reachMode === act ? '' : act;
@@ -800,6 +1025,244 @@
     else if (form.dataset.reach === 'email') sendMessage(family, 'email');
     else if (form.dataset.reach === 'retire') retireFamily(family, 'retired');
     else if (form.dataset.reach === 'restore') retireFamily(family, 'active');
+  });
+
+  function readStageDraft(){
+    document.querySelectorAll('#stage-list li').forEach(function(item){
+      var index = Number(item.dataset.index);
+      var input = item.querySelector('input');
+      if (stageDraft[index] && input) stageDraft[index].name = input.value;
+    });
+  }
+  function drawStageDraft(){
+    var list = document.getElementById('stage-list');
+    list.innerHTML = stageDraft.map(function(stage, index){
+      return '<li data-index="' + index + '"><input value="' + esc(stage.name) + '" aria-label="Stage name" maxlength="40">' +
+        '<button type="button" data-stage-move="up"' + (index === 0 ? ' disabled' : '') + '>Up</button>' +
+        '<button type="button" data-stage-move="down"' + (index === stageDraft.length - 1 ? ' disabled' : '') + '>Down</button>' +
+        '<button type="button" data-stage-remove>Remove</button></li>';
+    }).join('');
+  }
+  document.getElementById('stages-open').addEventListener('click', function(){
+    stageDraft = stages.map(function(stage){ return {id: stage.id, name: stage.name}; });
+    document.getElementById('stage-status').textContent = '';
+    document.getElementById('stage-editor').hidden = false;
+    drawStageDraft();
+  });
+  document.getElementById('stage-cancel').addEventListener('click', function(){
+    document.getElementById('stage-editor').hidden = true;
+  });
+  document.getElementById('stage-add').addEventListener('click', function(){
+    readStageDraft();
+    stageDraft.push({id: 0, name: ''});
+    drawStageDraft();
+    var inputs = document.querySelectorAll('#stage-list input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  });
+  document.getElementById('stage-list').addEventListener('click', function(event){
+    var button = event.target.closest('button');
+    if (!button) return;
+    var item = button.closest('li');
+    if (!item) return;
+    readStageDraft();
+    var index = Number(item.dataset.index);
+    if (button.dataset.stageMove === 'up' && index > 0) {
+      var up = stageDraft[index - 1];
+      stageDraft[index - 1] = stageDraft[index];
+      stageDraft[index] = up;
+    } else if (button.dataset.stageMove === 'down' && index < stageDraft.length - 1) {
+      var down = stageDraft[index + 1];
+      stageDraft[index + 1] = stageDraft[index];
+      stageDraft[index] = down;
+    } else if (button.hasAttribute('data-stage-remove')) {
+      stageDraft.splice(index, 1);
+    } else return;
+    drawStageDraft();
+  });
+  document.getElementById('stage-save').addEventListener('click', function(){
+    readStageDraft();
+    var status = document.getElementById('stage-status');
+    status.textContent = 'Saving stages…';
+    api('/office/pipeline', {method:'POST', body:{stages: JSON.stringify(stageDraft.map(function(stage){
+      return {id: stage.id || 0, name: stage.name};
+    }))}}).then(function(){
+      document.getElementById('stage-editor').hidden = true;
+      status.textContent = '';
+      load();
+    }).catch(function(err){ status.textContent = err.message; });
+  });
+  document.getElementById('detail').addEventListener('change', function(event){
+    if (!event.target) return;
+    if (event.target.id === 'contractor-select') {
+      var picked = selectedFamily();
+      if (!picked) return;
+      var note = document.getElementById('dash-status');
+      api('/office/household-contractor', {method:'POST', body:{
+        registration_id: picked.id,
+        contractor_id: Number(event.target.value) || 0
+      }}).then(function(){ load(); }).catch(function(err){
+        note.textContent = err.message;
+        load();
+      });
+      return;
+    }
+    if (event.target.id !== 'stage-select') return;
+    var family = selectedFamily();
+    if (!family) return;
+    movePerson(family.id, Number(event.target.value));
+  });
+
+  function parseCsv(text){
+    var rows = [];
+    var row = [];
+    var cell = '';
+    var quoted = false;
+    var source = String(text || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    for (var i = 0; i < source.length; i++) {
+      var ch = source.charAt(i);
+      if (quoted) {
+        if (ch === '"') {
+          if (source.charAt(i + 1) === '"') { cell += '"'; i += 1; }
+          else quoted = false;
+        } else cell += ch;
+      } else if (ch === '"') quoted = true;
+      else if (ch === ',') { row.push(cell); cell = ''; }
+      else if (ch === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; }
+      else cell += ch;
+    }
+    if (cell.length || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function headerKey(value){
+    return String(value || '').replace(/^\uFEFF/, '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+  }
+  var CSV_HEADER = {
+    'first name':'first_name', 'last name':'last_name',
+    'address 1':'address_1', 'address1':'address_1', 'address 2':'address_2', 'address2':'address_2',
+    'city':'city', 'state':'state', 'zip':'zip', 'zip code':'zip',
+    'email':'email', 'email address':'email',
+    'cell phone':'cell_phone', 'cell':'cell_phone', 'phone':'cell_phone',
+    'opt in for phone call':'opt_in_call', 'opt in for phone call flag':'opt_in_call',
+    'opt in call':'opt_in_call', 'opt in phone':'opt_in_call',
+    'opt in for email':'opt_in_email', 'opt in for email flag':'opt_in_email', 'opt in email':'opt_in_email',
+    'date of originating record creation':'originated_at', 'originated':'originated_at', 'originated at':'originated_at',
+    'notes':'notes', 'note':'notes',
+    'contractor internal id':'contractor_id', 'contractor id':'contractor_id'
+  };
+  var CSV_REQUIRED = [
+    ['first_name','first name'], ['last_name','last name'], ['address_1','address 1'], ['address_2','address 2'],
+    ['city','city'], ['state','state'], ['zip','zip'], ['email','email'], ['cell_phone','cell phone'],
+    ['opt_in_call','opt in for phone call'], ['opt_in_email','opt in for email'],
+    ['originated_at','date of originating record creation'], ['notes','notes'], ['contractor_id','contractor internal id']
+  ];
+  function rowsFromCsv(text){
+    var table = parseCsv(text);
+    if (!table.length) return {error:'The file is empty.'};
+    var index = {};
+    table[0].forEach(function(name, i){
+      var key = CSV_HEADER[headerKey(name)];
+      if (key && index[key] == null) index[key] = i;
+    });
+    var missing = CSV_REQUIRED.filter(function(pair){ return index[pair[0]] == null; }).map(function(pair){ return pair[1]; });
+    if (missing.length) return {error:'This file is missing a column for ' + missing.join(', ') + '.'};
+    var out = [];
+    for (var r = 1; r < table.length; r++) {
+      var cells = table[r];
+      if (!cells.some(function(value){ return String(value || '').trim(); })) continue;
+      var item = {row: r + 1};
+      CSV_REQUIRED.forEach(function(pair){
+        item[pair[0]] = cells[index[pair[0]]] == null ? '' : cells[index[pair[0]]];
+      });
+      out.push(item);
+    }
+    if (!out.length) return {error:'The file has a header and no families.'};
+    if (out.length > 200) return {error:'Upload 200 families at a time.'};
+    return {rows: out};
+  }
+  function familyMessage(data){
+    var created = data && data.created ? data.created : 0;
+    var messages = rows(data && data.errors).map(function(item){ return item.message || ''; }).filter(Boolean);
+    if (!created && messages.length) return messages.join(' ');
+    var lead = created === 1 ? 'Added 1 family to the first column.' : 'Added ' + created + ' families to the first column.';
+    if (!messages.length) return lead;
+    return lead + ' ' + messages.join(' ') + ' Uploading this file again will add the families that already went in a second time.';
+  }
+  function postFamilies(list){
+    var status = document.getElementById('family-status');
+    status.textContent = 'Saving…';
+    return api('/office/households', {method:'POST', body:{rows: JSON.stringify(list)}}).then(function(data){
+      status.textContent = familyMessage(data);
+      if (data && data.created) {
+        var form = document.getElementById('family-form');
+        if (form) form.reset();
+        return load();
+      }
+    }).catch(function(err){ status.textContent = err.message; });
+  }
+  document.getElementById('contractor-filter').addEventListener('change', function(event){
+    contractorFilter = event.target.value;
+    render();
+  });
+  document.getElementById('family-open').addEventListener('click', function(){
+    document.getElementById('family-status').textContent = '';
+    document.getElementById('family-editor').hidden = false;
+    drawContractors();
+  });
+  document.getElementById('family-cancel').addEventListener('click', function(){
+    document.getElementById('family-editor').hidden = true;
+  });
+  document.getElementById('contractors-open').addEventListener('click', function(){
+    document.getElementById('contractor-status').textContent = '';
+    document.getElementById('contractor-editor').hidden = false;
+    drawContractors();
+  });
+  document.getElementById('contractor-close').addEventListener('click', function(){
+    document.getElementById('contractor-editor').hidden = true;
+  });
+  document.getElementById('contractor-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var status = document.getElementById('contractor-status');
+    status.textContent = 'Saving…';
+    api('/office/contractor', {method:'POST', body:{name: event.target.name.value}}).then(function(){
+      event.target.reset();
+      status.textContent = 'Added.';
+      load();
+    }).catch(function(err){ status.textContent = err.message; });
+  });
+  document.getElementById('family-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var form = event.target;
+    postFamilies([{
+      row: 1,
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      address_1: form.address_1.value,
+      address_2: form.address_2.value,
+      city: form.city.value,
+      state: form.state.value,
+      zip: form.zip.value,
+      email: form.email.value,
+      cell_phone: form.cell_phone.value,
+      opt_in_call: form.opt_in_call.checked ? 'yes' : 'no',
+      opt_in_email: form.opt_in_email.checked ? 'yes' : 'no',
+      originated_at: form.originated_at.value,
+      notes: form.notes.value,
+      contractor_id: form.contractor_id.value || '0'
+    }]);
+  });
+  document.getElementById('family-upload').addEventListener('click', function(){
+    var input = document.getElementById('family-csv');
+    var status = document.getElementById('family-status');
+    var file = input.files && input.files[0];
+    if (!file) { status.textContent = 'Choose a CSV file.'; return; }
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed = rowsFromCsv(String(reader.result || ''));
+      if (parsed.error) { status.textContent = parsed.error; return; }
+      postFamilies(parsed.rows).then(function(){ input.value = ''; });
+    };
+    reader.onerror = function(){ status.textContent = 'That file could not be read.'; };
+    reader.readAsText(file);
   });
 
   document.getElementById('login-form').addEventListener('submit', function(e){
@@ -848,37 +1311,7 @@
       if (note) note.textContent = err.message;
     });
   });
-  document.querySelectorAll('[data-callback]').forEach(function(button){
-    button.addEventListener('click', function(){
-      callbackFilter = !callbackFilter;
-      button.setAttribute('aria-pressed', String(callbackFilter));
-      render();
-    });
-  });
-  document.querySelectorAll('[data-life]').forEach(function(button){
-    button.addEventListener('click', function(){
-      lifeFilter = button.dataset.life;
-      reachMode = '';
-      callbackFilter = false;
-      document.querySelectorAll('[data-callback]').forEach(function(other){
-        other.setAttribute('aria-pressed', 'false');
-      });
-      document.querySelectorAll('[data-life]').forEach(function(other){
-        other.setAttribute('aria-pressed', String(other === button));
-      });
-      render();
-    });
-  });
-  document.querySelectorAll('[data-ready]').forEach(function(button){
-    button.addEventListener('click', function(){
-      readyFilter = button.dataset.ready;
-      document.querySelectorAll('[data-ready]').forEach(function(other){
-        other.setAttribute('aria-pressed', String(other === button));
-      });
-      render();
-    });
-  });
-
+  window.addEventListener('aipa-family-changed', function(){ load(); });
   if (token()) { showLogin(false); load(); }
   else showLogin(true);
 })();

@@ -7,8 +7,9 @@
 <title>Back office | Aging in Place Alliance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
 <script src="/assets/js/config.js"></script>
@@ -19,7 +20,11 @@
   <div class="wrap">
     <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Staff back office</small></span></a>
     <div class="mast-actions">
-      <a class="btn quiet" href="/admin/families/">Ask Anything 1:1</a>
+      <a class="btn quiet" href="/admin/actions/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
       <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
     </div>
   </div>
@@ -67,9 +72,20 @@
         <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank">
         <label for="summary">Summary</label>
         <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
+        <div class="markup">
+          <h2>Start from markup</h2>
+          <p class="note">Paste a text file, or choose one. Fill this guide replaces the draft on screen. To bring in several guides, separate them with a line that says [article], then save them all as drafts. A photo block is left empty so you can crop the picture after.</p>
+          <textarea id="markup" rows="8" spellcheck="false" placeholder="[title]&#10;Where grab bars go&#10;&#10;[section]&#10;Bathrooms&#10;&#10;[summary]&#10;One or two sentences.&#10;&#10;[paragraph]&#10;The first paragraph.&#10;^ An optional footnote&#10;&#10;[paragraph_image_left 3:2]&#10;The words beside the photo.&#10;&#10;[bullets]&#10;- First point&#10;- Second point ^ A footnote for this point"></textarea>
+          <div class="actions">
+            <label class="btn quiet" for="markup-file">Choose a text file</label>
+            <input id="markup-file" type="file" accept=".txt,text/plain">
+            <button class="btn quiet" type="button" id="markup-fill">Fill this guide</button>
+            <button class="btn quiet" type="button" id="markup-import">Save all as drafts</button>
+          </div>
+        </div>
         <div class="guide-build">
           <h2>Guide</h2>
-          <p class="note">The title, the phone number, and the booking code are added to the handout for you. A footnote on a paragraph or a bullet is collected at the bottom.</p>
+          <p class="note">The title, the phone number, and the booking code are added to the handout for you. A footnote on a paragraph or a bullet is collected at the bottom. What the photo shows is read aloud and is not printed.</p>
           <div id="blocks"></div>
           <div class="block-add" role="group" aria-label="Add to the guide">
             <button class="btn quiet" type="button" data-add="headline">Headline</button>
@@ -93,8 +109,15 @@
       <div id="crop-dialog" class="crop-dialog" hidden>
         <div class="crop-card">
           <h2>Crop the photo</h2>
-          <p>Drag the photo and use the slider to zoom. Every photo uses this same frame.</p>
-          <canvas id="crop-canvas" width="300" height="400"></canvas>
+          <p>Pick a shape, then drag the photo and use the slider to zoom.</p>
+          <label for="crop-ratio">Shape</label>
+          <select id="crop-ratio">
+            <option value="3:2" selected>3:2 landscape</option>
+            <option value="4:3">4:3 landscape</option>
+            <option value="1:1">Square</option>
+            <option value="3:4">3:4 portrait</option>
+          </select>
+          <canvas id="crop-canvas" width="360" height="240"></canvas>
           <label for="crop-zoom">Zoom</label>
           <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1">
           <div class="actions">
@@ -164,6 +187,7 @@
             <div>
               <label for="meeting-zone">Timezone</label>
               <select id="meeting-zone">
+                <option value="America/Honolulu">Hawaii</option>
                 <option value="America/Los_Angeles">Pacific</option>
                 <option value="America/Denver">Mountain</option>
                 <option value="America/Chicago">Central</option>
@@ -303,8 +327,10 @@
 <script src="/assets/js/seminar-format.js"></script>
 <script src="/assets/js/qrcode-generator.js"></script>
 <script src="/assets/js/jspdf.umd.min.js"></script>
+<script src="/assets/js/guide-close.js"></script>
 <script src="/assets/js/handout.js"></script>
 <script src="/assets/js/guide-editor.js"></script>
+<script src="/assets/js/guide-markup.js"></script>
 <script src="/assets/js/admin.js"></script>
 <script src="/assets/js/seminars.js"></script>
 </body>
