@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>For contractors | Aging in Place Alliance</title>
+<meta name="description" content="Ten questions for remodeling contractors with cold leads. If this is a fit, request a callback.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="icon" href="/favicon.ico">
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/contractor-lead.js" defer></script>
+<script src="/assets/js/dead-lead.js" defer></script>
+</head>
+<body class="lead-page">
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Guides for adapting a home</small></span></a>
+  </div>
+</header>
+<main id="main">
+  <section class="page-hero" aria-labelledby="pt">
+    <div class="wrap">
+      <h1 id="pt">That lead isn’t cold. They just haven’t talked to someone who listens and relates.</h1>
+    </div>
+  </section>
+  <section class="roi" id="roi">
+    <div class="wrap">
+      <div id="roi-ask">
+        <p class="roi-step" id="roi-step">1 of 5</p>
+        <div class="roi-meter" id="roi-meter" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-labelledby="roi-step"><span id="roi-meter-fill"></span></div>
+        <h2 id="roi-q"></h2>
+        <p class="roi-help" id="roi-help"></p>
+        <div class="roi-field">
+          <span id="roi-prefix" aria-hidden="true"></span>
+          <input id="roi-num" inputmode="decimal" autocomplete="off" aria-labelledby="roi-q" aria-describedby="roi-help roi-note">
+          <span id="roi-suffix" aria-hidden="true"></span>
+        </div>
+        <input id="roi-range" type="range" aria-labelledby="roi-q" aria-describedby="roi-help">
+        <p class="roi-note" id="roi-note">Starting values are placeholders. Change them to your own numbers.</p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="roi-back" hidden>Back</button>
+          <button class="btn" type="button" id="roi-next">Next</button>
+        </div>
+      </div>
+
+      <div id="roi-cost" hidden>
+        <h2>What your dead leads already cost you</h2>
+        <p class="roi-hero" id="roi-spent" aria-hidden="true">$0</p>
+        <p class="roi-hero-label">spent on leads that never bought, in the last 2 years.</p>
+        <p class="roi-sr" id="roi-spent-live" aria-live="polite"></p>
+        <figure class="roi-waffle-wrap">
+          <div class="roi-waffle" id="roi-waffle" aria-hidden="true"></div>
+          <figcaption>
+            <span class="roi-key job">Became jobs</span>
+            <span class="roi-key quiet" id="roi-quiet-label">Went quiet</span>
+          </figcaption>
+          <p class="roi-sr" id="roi-waffle-sr"></p>
+        </figure>
+        <p class="roi-line" id="roi-spent-line"></p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="roi-cost-back">Back</button>
+          <button class="btn" type="button" id="roi-worth-go">See what they’re still worth →</button>
+        </div>
+      </div>
+
+      <div id="roi-worth" hidden>
+        <h2>What they could still be worth</h2>
+        <div class="roi-recover">
+          <p class="roi-recover-label" id="roi-recover-label">If <b id="roi-pct">2%</b> of your dead leads became jobs…</p>
+          <input id="roi-recover" type="range" min="1" max="10" step="0.5" value="2" aria-labelledby="roi-recover-label" aria-valuemin="1" aria-valuemax="10" aria-valuenow="2">
+          <div class="roi-scale" aria-hidden="true"><span class="roi-tick">Our planning estimate</span></div>
+        </div>
+        <div class="roi-cards">
+          <article class="roi-card">
+            <h3>Jobs back on your calendar</h3>
+            <p class="roi-stat" id="roi-jobs">0</p>
+            <p class="roi-houses" id="roi-houses" aria-hidden="true"></p>
+          </article>
+          <article class="roi-card">
+            <h3>Recovered revenue</h3>
+            <p class="roi-stat" id="roi-revenue">$0</p>
+          </article>
+          <article class="roi-card roi-net" id="roi-net-card">
+            <h3>Net found margin</h3>
+            <p class="roi-stat" id="roi-net">$0</p>
+            <p class="roi-loss" id="roi-loss" hidden>At these numbers, recovery doesn’t pay. Let’s talk about why.</p>
+          </article>
+        </div>
+        <figure>
+          <ul class="roi-fall" id="roi-fall" aria-hidden="true"></ul>
+          <p class="roi-sr" id="roi-fall-sr"></p>
+        </figure>
+        <figure class="roi-sens">
+          <svg id="roi-line" viewBox="0 0 320 150" role="img" aria-labelledby="roi-line-sr"></svg>
+          <p class="roi-sr" id="roi-line-sr"></p>
+          <p class="roi-caption" id="roi-caption">Even at the low end, this is margin from leads you’d written off.</p>
+        </figure>
+        <p class="roi-fine">These are illustrations based on your inputs, not a guarantee. We’re new, and our pilot exists to measure real results with your leads.</p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="roi-worth-back">Back</button>
+          <a class="btn" id="roi-cta" href="#screening">Check if your market is open.</a>
+        </div>
+        <p class="roi-fine">One contractor partner per market (15-mile radius).</p>
+      </div>
+    </div>
+  </section>
+  <section id="screening" aria-labelledby="screen-title">
+    <div class="wrap">
+      <h2 id="screen-title">See if you qualify.</h2>
+      <form id="screen-form">
+        <div class="q-carousel">
+        <div class="q-track" id="q-track">
+        <div class="tool-q" role="group" aria-labelledby="q1-label">
+          <p class="q-num" aria-hidden="true">1</p>
+          <p class="q-label" id="q1-label">Does your business have at least 50 Google reviews with an average of 4.5 stars or higher?</p>
+          <div class="picks">
+            <label><input type="radio" name="q1" value="yes" required>Yes</label>
+            <label><input type="radio" name="q1" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q2-label">
+          <p class="q-num" aria-hidden="true">2</p>
+          <p class="q-label" id="q2-label">Is your average aging-in-place project over $15,000?</p>
+          <div class="picks">
+            <label><input type="radio" name="q2" value="yes" required>Yes</label>
+            <label><input type="radio" name="q2" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q3-label">
+          <p class="q-num" aria-hidden="true">3</p>
+          <p class="q-label" id="q3-label">Does your estimator close at least 30% of the in-home estimates they run?</p>
+          <div class="picks">
+            <label><input type="radio" name="q3" value="yes" required>Yes</label>
+            <label><input type="radio" name="q3" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q4-label">
+          <p class="q-num" aria-hidden="true">4</p>
+          <p class="q-label" id="q4-label">Do you have at least 400 cold leads?</p>
+          <div class="picks">
+            <label><input type="radio" name="q4" value="yes" required>Yes</label>
+            <label><input type="radio" name="q4" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q5-label">
+          <p class="q-num" aria-hidden="true">5</p>
+          <p class="q-label" id="q5-label">Do you believe that some of your cold leads aren't actually cold, they just haven't been made to feel safe in taking the next step?</p>
+          <div class="picks">
+            <label><input type="radio" name="q5" value="yes" required>Yes</label>
+            <label><input type="radio" name="q5" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q6-label">
+          <p class="q-num" aria-hidden="true">6</p>
+          <p class="q-label" id="q6-label">Do you believe that peer-led conversations help put older buyers at ease?</p>
+          <div class="picks">
+            <label><input type="radio" name="q6" value="yes" required>Yes</label>
+            <label><input type="radio" name="q6" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q7-label">
+          <p class="q-num" aria-hidden="true">7</p>
+          <p class="q-label" id="q7-label">Do you believe that many of your deals fall apart because of unsurfaced differences of opinion within the family?</p>
+          <div class="picks">
+            <label><input type="radio" name="q7" value="yes" required>Yes</label>
+            <label><input type="radio" name="q7" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q8-label">
+          <p class="q-num" aria-hidden="true">8</p>
+          <p class="q-label" id="q8-label">Does your team have the tools and patience to do long arc lead nurturing?</p>
+          <div class="picks">
+            <label><input type="radio" name="q8" value="yes" required>Yes</label>
+            <label><input type="radio" name="q8" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q9-label">
+          <p class="q-num" aria-hidden="true">9</p>
+          <p class="q-label" id="q9-label">Are you willing to let a 3rd party represent you in cold lead follow up?</p>
+          <div class="picks">
+            <label><input type="radio" name="q9" value="yes" required>Yes</label>
+            <label><input type="radio" name="q9" value="no">No</label>
+          </div>
+        </div>
+        <div class="tool-q" role="group" aria-labelledby="q10-label">
+          <p class="q-num" aria-hidden="true">10</p>
+          <p class="q-label" id="q10-label">Are you open to a commission-only arrangement in which you only pay when leads agree to an in-home inspection?</p>
+          <div class="picks">
+            <label><input type="radio" name="q10" value="yes" required>Yes</label>
+            <label><input type="radio" name="q10" value="no">No</label>
+          </div>
+        </div>
+        </div>
+        <div class="q-nav">
+          <button class="btn" type="button" id="q-prev">Previous</button>
+          <div class="q-marks" id="q-marks" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <p class="q-count" id="q-count" aria-live="polite">Question 1 of 10</p>
+        </div>
+        </div>
+        <p class="status-line" id="screen-status" role="status"></p>
+      </form>
+
+      <div id="screen-miss" hidden aria-live="polite">
+        <p class="lead-thanks">Thank you for your time. Based on your answers, we wouldn't be the right fit.</p>
+        <div class="actions">
+          <button class="btn" type="button" id="retake">Retake the Qualification Screener</button>
+        </div>
+      </div>
+
+      <form class="signup" id="callback-form" hidden>
+        <h2>Request a callback</h2>
+        <p class="note">Leave a number where we can reach you.</p>
+        <label for="cb-name">Your name</label>
+        <input id="cb-name" name="name" autocomplete="name" required maxlength="80">
+        <label for="cb-company">Company</label>
+        <input id="cb-company" name="company" autocomplete="organization" required maxlength="80">
+        <label for="cb-phone">Phone</label>
+        <input id="cb-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40">
+        <label for="cb-email">Email</label>
+        <input id="cb-email" name="email" type="email" autocomplete="email" required maxlength="120">
+        <div class="sms-agree">
+          <input id="cb-agree" name="agree" type="checkbox">
+          <p><label for="cb-agree">Yes, I agree to receive text messages from Aging In Place Alliance. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase.</label> <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms</a></p>
+        </div>
+        <input type="hidden" name="utm_source" id="utm_source">
+        <input type="hidden" name="utm_medium" id="utm_medium">
+        <input type="hidden" name="utm_campaign" id="utm_campaign">
+        <input type="hidden" name="utm_term" id="utm_term">
+        <input type="hidden" name="utm_content" id="utm_content">
+        <div class="actions"><button class="btn" type="submit">Request a callback</button></div>
+        <p class="status-line" id="callback-status" role="status"></p>
+      </form>
+      <div id="callback-next" hidden>
+        <h2 id="callback-next-title" tabindex="-1">What happens next</h2>
+        <ol class="call-flow">
+          <li>
+            <span class="call-ico" aria-hidden="true">
+              <svg viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="34" fill="var(--sage-wash)"/>
+                <path fill="var(--sage)" d="M44.2 38.4l-4.4-1.9a2.1 2.1 0 0 0-2.4.6l-1.8 2.2a15.2 15.2 0 0 1-7.1-7.1l2.2-1.8a2.1 2.1 0 0 0 .6-2.4l-1.9-4.4a2.1 2.1 0 0 0-2-1.3h-3.6A2.6 2.6 0 0 0 21.2 24.6 19.6 19.6 0 0 0 42.4 45.8a2.6 2.6 0 0 0 2.7-2.6v-3.6a2.1 2.1 0 0 0-.9-1.2z"/>
+                <path d="M46 25.5a9 9 0 0 1 9 9" fill="none" stroke="var(--clay)" stroke-width="2.6" stroke-linecap="round"/>
+                <path d="M46 19.5a15 15 0 0 1 15 15" fill="none" stroke="var(--clay)" stroke-width="2.6" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <p><span>1</span>We call you back</p>
+          </li>
+          <li>
+            <span class="call-ico" aria-hidden="true">
+              <svg viewBox="0 0 72 72">
+                <circle cx="36" cy="36" r="34" fill="var(--amber-wash)"/>
+                <path fill="var(--clay)" d="M36 36 L36 16 A20 20 0 0 1 55 29.8 Z"/>
+                <circle cx="36" cy="36" r="20" fill="none" stroke="var(--ink)" stroke-width="2.6"/>
+                <circle cx="36" cy="36" r="2.4" fill="var(--ink)"/>
+              </svg>
+            </span>
+            <p><span>2</span>12-min phone call</p>
+          </li>
+          <li>
+            <span class="call-ico" aria-hidden="true">
+              <svg viewBox="0 0 72 64">
+                <path fill="var(--clay)" d="M37 10H66a3 3 0 0 1 3 3v38a3 3 0 0 1-3 3H37V45.7A14 14 0 0 0 37 18.3V10z"/>
+                <path fill="var(--sage)" d="M6 10h28v10a12 12 0 0 1 0 24v10H6a3 3 0 0 1-3-3V13a3 3 0 0 1 3-3z"/>
+              </svg>
+            </span>
+            <p><span>3</span>Decide if we should work together</p>
+          </li>
+        </ol>
+      </div>
+      <noscript><p>This page needs JavaScript to continue.</p></noscript>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <div class="legal">
+      <p><a href="/">Aging in Place Alliance</a></p>
+      <p>&copy; 2026 Aging in Place Alliance</p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
