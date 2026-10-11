@@ -109,7 +109,8 @@
       })
       .catch(function(err){ status.textContent = err.message; });
   });
-  signout.addEventListener('click', function(){
+  signout.addEventListener('click', function(event){
+    event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
   });

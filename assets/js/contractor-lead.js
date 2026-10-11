@@ -112,7 +112,8 @@
       utm_medium: (document.getElementById('utm_medium') || {}).value || '',
       utm_campaign: (document.getElementById('utm_campaign') || {}).value || '',
       utm_term: (document.getElementById('utm_term') || {}).value || '',
-      utm_content: (document.getElementById('utm_content') || {}).value || ''
+      utm_content: (document.getElementById('utm_content') || {}).value || '',
+      agree: !!(document.getElementById('cb-agree') && document.getElementById('cb-agree').checked)
     };
   }
 

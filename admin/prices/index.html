@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Prices | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="/favicon.ico">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+            <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
+      <a class="btn quiet" href="/admin/prices/" aria-current="page">Prices</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Prices</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+  <section class="office wrap" id="desk" hidden>
+    <p id="price-current" hidden></p>
+    <details id="price-sets-panel" class="price-sets-panel" open>
+      <summary id="price-sets-title">Price sets · 0</summary>
+      <ul id="price-sets" class="price-sets"></ul>
+      <form id="move-form" class="move-set" hidden>
+        <h3>Move a contractor to another price set</h3>
+        <p class="hint" id="move-hint"></p>
+        <label>Contractor <select name="contractor" id="move-contractor" required></select></label>
+        <label>Price set <select name="set" id="move-set" required></select></label>
+        <button class="btn" type="submit">Move to this price set</button>
+        <p class="status-line" id="move-status" role="status"></p>
+      </form>
+    </details>
+    <form id="price-form" class="price-form">
+      <label>First lead <input name="first_lead" inputmode="decimal" autocomplete="off" required></label>
+      <label>Each later lead <input name="later_lead" inputmode="decimal" autocomplete="off" required></label>
+      <label>Percent of the job above the threshold <input name="percent" inputmode="decimal" autocomplete="off" required></label>
+      <label>Threshold <input name="threshold" inputmode="decimal" autocomplete="off" required></label>
+      <button class="btn" type="submit">Save prices for new contracts</button>
+    </form>
+    <p class="status-line" id="price-status" role="status"></p>
+  </section>
+</main>
+<script src="/assets/js/prices.js"></script>
+</body>
+</html>

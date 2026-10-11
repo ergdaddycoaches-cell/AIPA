@@ -69,7 +69,8 @@
       .catch(function(err){ status.textContent = err.message; });
   });
 
-  signout.addEventListener('click', function(){
+  signout.addEventListener('click', function(event){
+    event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
   });
@@ -368,40 +369,15 @@
       });
   }
 
-  document.getElementById('password-form').addEventListener('submit', function(e){
-    e.preventDefault();
-    var status = document.getElementById('password-status');
-    status.textContent = 'Updating…';
-    api('/office/password', {method:'POST', body:{
-      current: document.getElementById('current-password').value,
-      next: document.getElementById('next-password').value
-    }}).then(function(){
-      document.getElementById('password-form').reset();
-      status.textContent = 'Password updated.';
-    }).catch(function(err){ status.textContent = err.message; });
-  });
-
   function openDesk(){
     showLogin(false);
     loadSections().then(loadArticles).then(function(){
       blank();
-      if (window.AIPA_SEMINARS) window.AIPA_SEMINARS.load();
     }).catch(function(err){
       showLogin(true);
       document.getElementById('login-status').textContent = err.message;
     });
   }
-
-  document.querySelectorAll('[data-panel]').forEach(function(button){
-    button.addEventListener('click', function(){
-      var panel = button.dataset.panel;
-      document.querySelectorAll('[data-panel]').forEach(function(other){
-        other.setAttribute('aria-pressed', String(other === button));
-      });
-      document.getElementById('panel-guides').hidden = panel !== 'guides';
-      document.getElementById('panel-seminars').hidden = panel !== 'seminars';
-    });
-  });
 
   if (token()) openDesk();
   else showLogin(true);

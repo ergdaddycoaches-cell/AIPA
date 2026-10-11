@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/contractor-lead.js" defer></script>
 <script src="/assets/js/dead-lead.js" defer></script>
@@ -224,6 +224,10 @@
         <input id="cb-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="40">
         <label for="cb-email">Email</label>
         <input id="cb-email" name="email" type="email" autocomplete="email" required maxlength="120">
+        <div class="sms-agree">
+          <input id="cb-agree" name="agree" type="checkbox">
+          <p><label for="cb-agree">Yes, I agree to receive text messages from Aging In Place Alliance. Message frequency varies. Msg &amp; data rates may apply. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase.</label> <a href="/privacy/">Privacy Policy</a> · <a href="/terms/">Terms</a></p>
+        </div>
         <input type="hidden" name="utm_source" id="utm_source">
         <input type="hidden" name="utm_medium" id="utm_medium">
         <input type="hidden" name="utm_campaign" id="utm_campaign">
@@ -276,7 +280,7 @@
   <div class="wrap">
     <div class="legal">
       <p><a href="/">Aging in Place Alliance</a></p>
-      <p>&copy; 2026 Aging in Place Alliance</p>
+      <p>&copy; 2026 Aging in Place Alliance · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
     </div>
   </div>
 </footer>

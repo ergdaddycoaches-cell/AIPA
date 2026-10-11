@@ -1,0 +1,68 @@
+﻿[
+    {
+        "goal":  "Rebuild trust with a lead that stalled, then get a Live Q\u0026A registration. If they finish without registering, move them to monthly nurture.",
+        "key":  "reactivation",
+        "name":  "Reactivation",
+        "sort":  1
+    },
+    {
+        "goal":  "Get someone who registered for a Live Q\u0026A to show up. Set the session time to the start of that Live Q\u0026A.",
+        "key":  "attendance",
+        "name":  "Attendance reminders",
+        "sort":  2
+    },
+    {
+        "goal":  "Bring back someone who registered and missed the Live Q\u0026A. Do not send the replay to the general list.",
+        "key":  "no_show",
+        "name":  "No-show follow-up",
+        "sort":  3
+    },
+    {
+        "goal":  "Book the Ask Anything 1:1 while the Live Q\u0026A is still fresh. The day-of email is the existing invite. The day-2 text is the existing invite text, sent only if the call is not answered.",
+        "key":  "attendee",
+        "name":  "Attendee follow-up",
+        "sort":  4
+    },
+    {
+        "goal":  "Get someone who booked an Ask Anything 1:1 to show up. Set the session time to the start of that conversation.",
+        "key":  "one_to_one",
+        "name":  "Ask Anything 1:1 reminders",
+        "sort":  5
+    },
+    {
+        "goal":  "Rebook the Ask Anything 1:1 after a missed conversation. If this finishes without a booking, move them to monthly nurture.",
+        "key":  "one_to_one_miss",
+        "name":  "Missed Ask Anything 1:1",
+        "sort":  6
+    },
+    {
+        "goal":  "Book the in-home visit for someone who wants to think about it. Every touch comes from the guide who ran the conversation. The day-4 text is the existing home-visit text, sent only if the call is not answered.",
+        "key":  "visit",
+        "name":  "After an Ask Anything 1:1",
+        "sort":  7
+    },
+    {
+        "goal":  "One email a month. The cycle is no ask, no ask, then a soft ask, and then it repeats. A hard ask goes out about every third month.",
+        "key":  "nurture_new",
+        "name":  "Monthly nurture, not yet at a Live Q\u0026A",
+        "sort":  8
+    },
+    {
+        "goal":  "One email a month for someone who registered or attended. The cycle is no ask, soft ask, hard ask, and then it repeats.",
+        "key":  "nurture_qa",
+        "name":  "Monthly nurture, after a Live Q\u0026A",
+        "sort":  9
+    },
+    {
+        "goal":  "One email a month. The cycle is a soft ask, then a hard ask for the visit, and then it repeats. These homeowners do not go inactive on their own.",
+        "key":  "nurture_visit",
+        "name":  "Monthly nurture, after an Ask Anything 1:1",
+        "sort":  10
+    },
+    {
+        "goal":  "Sent around the holidays in addition to the regular cadence. Skip that person\u0027s nearest regular email that week.",
+        "key":  "seasonal",
+        "name":  "Seasonal emails",
+        "sort":  11
+    }
+]

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Handout summary preview | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+  body{background:var(--paper-2)}
+  .preview-note{max-width:none;margin:0;padding:.85rem 1.5rem;background:var(--ink);color:var(--paper);font-size:1.05rem}
+  .stage{padding:2rem 1.5rem 3rem}
+  .sheet{width:612px;max-width:100%;background:#fff;color:#2A211C;padding:50px;box-shadow:0 0 0 1px var(--rule)}
+  .sheet img{display:block;width:512px;max-width:100%;height:auto}
+  .sheet h1{font-family:"Atkinson Hyperlegible",sans-serif;font-weight:400;font-size:26px;line-height:1.15;margin:18px 0 12px;max-width:512px;color:#2A211C}
+  .deck{font-family:"Atkinson Hyperlegible",sans-serif;font-weight:400;font-style:normal;font-size:16px;line-height:1.4;margin:0 0 18px;max-width:512px;color:#2A211C}
+  .rule{width:72px;height:1px;background:#2A211C;margin:0 0 16px}
+  .body{font-family:"Atkinson Hyperlegible",sans-serif;font-weight:400;font-size:14px;line-height:1.4;margin:0;max-width:512px;color:#2A211C}
+</style>
+</head>
+<body>
+<p class="preview-note">This is how the summary sits on the handout: 16 point roman, then a short line, then the article at 14 point. The paragraph under the line is sample text.</p>
+<div class="stage">
+  <article class="sheet">
+    <img id="card" alt="">
+    <h1>Where grab bars go, and what holds them up</h1>
+    <p class="deck">Heights, placement by the toilet and shower, and why the wall behind matters more than the bar.</p>
+    <div class="rule"></div>
+    <p class="body">The bar is only as strong as the wall behind it. A towel bar will pull out of drywall. A grab bar needs wood where the screws land.</p>
+  </article>
+</div>
+<script src="/assets/js/handout.js"></script>
+<script>
+Promise.all([
+  document.fonts.load('26px "VI Phong Lan Hoa"'),
+  document.fonts.load('16px "Atkinson Hyperlegible"')
+]).then(function(){
+  var card = window.AIPA_HANDOUT.titleCard('Bathrooms', 'About 1 minute', 512);
+  var img = document.getElementById('card');
+  img.src = card.url;
+  img.style.height = card.h + 'px';
+  document.body.setAttribute('data-ready', 'yes');
+});
+</script>
+</body>
+</html>

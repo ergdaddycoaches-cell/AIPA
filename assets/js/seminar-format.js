@@ -16,6 +16,12 @@ window.AIPA_SEMINAR = {
   typeLabel: function(value){
     return this.types[value] || '';
   },
+  date: function(startsAt){
+    var match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(startsAt || ''));
+    if (!match) return 'Date not set';
+    var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return months[+match[2] - 1] + ' ' + (+match[3]) + ', ' + match[1];
+  },
   format: function(meeting){
     var start = String(meeting.starts_at || '');
     var match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(start);

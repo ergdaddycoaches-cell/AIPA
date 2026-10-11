@@ -8,6 +8,7 @@
   var families = [];
   var ageFilter = 'all';
   var reachMode = '';
+  var pendingInvite = null;
   var stages = [];
   var places = {};
   var stageDraft = [];
@@ -15,6 +16,10 @@
   var detailTabFor = 0;
   var contractors = [];
   var profiles = {};
+  var bills = [];
+  var cadenceSequences = [];
+  var cadenceSteps = [];
+  var cadenceRuns = {};
   var contractorFilter = '';
   var contractorFilterStamp = '';
   var selectedId = 0;
@@ -217,6 +222,8 @@
         status: touch.status || '',
         occurred_at: stamp(touch.occurred_at),
         note: touch.note || '',
+        touch_id: touch.id,
+        recording_url: touch.recording_url || '',
         future: stamp(touch.occurred_at) > now
       };
     }).filter(function(event){ return event.occurred_at && KINDS[event.kind]; });
@@ -416,16 +423,76 @@
       });
     });
   }
-  function movePerson(id, stageId){
+  function money(cents){
+    var n = Number(cents) || 0;
+    var abs = Math.abs(n);
+    var whole = Math.floor(abs / 100);
+    var c = abs % 100;
+    var s = String(whole);
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 === 0) out += ',';
+      out += s.charAt(i);
+    }
+    return (n < 0 ? '-' : '') + '$' + out + '.' + (c < 10 ? '0' : '') + c;
+  }
+  function leadReleased(bill){
+    return bill.status === 'paid' || bill.status === 'none' || !(Number(bill.amount_cents) > 0);
+  }
+  function movePerson(id, stageId, jobTotal){
     var family = families.filter(function(item){ return item.id === id; })[0];
     if (!family || !stageId || stageFor(family) === stageId) return;
-    places[id] = stageId;
-    render();
-    api('/office/pipeline-move', {method:'POST', body:{registration_id:id, stage_id:stageId}}).catch(function(err){
-      var line = document.getElementById('dash-status');
-      if (line) line.textContent = err.message;
-      load();
+    var stage = stages.filter(function(item){ return item.id === stageId; })[0];
+    var name = stage ? String(stage.name || '').trim().toLowerCase() : '';
+    if (name === 'contract completed' && jobTotal == null) {
+      askJobTotal(id, stageId);
+      return;
+    }
+    var billingStage = name === 'wants home visit' || name === 'contract completed';
+    if (!billingStage) {
+      places[id] = stageId;
+      render();
+    }
+    var body = {registration_id:id, stage_id:stageId};
+    if (jobTotal != null) body.job_total = String(jobTotal);
+    api('/office/pipeline-move', {method:'POST', body:body}).then(function(){
+      if (!billingStage) return;
+      var ask = document.getElementById('job-ask');
+      if (ask) ask.hidden = true;
+      return load();
+    }).catch(function(err){
+      var jobStatus = document.getElementById('job-status');
+      if (name === 'contract completed' && jobStatus && !document.getElementById('job-ask').hidden) jobStatus.textContent = err.message;
+      else {
+        var line = document.getElementById('dash-status');
+        if (line) line.textContent = err.message;
+      }
+      if (billingStage) render();
+      else load();
     });
+  }
+  function askJobTotal(id, stageId){
+    var family = families.filter(function(item){ return item.id === id; })[0];
+    var box = document.getElementById('job-ask');
+    var who = document.getElementById('job-who');
+    var status = document.getElementById('job-status');
+    var input = document.getElementById('job-total');
+    if (!box || !input) return;
+    box.dataset.id = String(id);
+    box.dataset.stage = String(stageId);
+    if (who) who.textContent = family && family.row ? family.row.name : '';
+    if (status) status.textContent = '';
+    input.value = '';
+    render();
+    box.hidden = false;
+    input.focus();
+  }
+  function startLead(family){
+    var line = document.getElementById('dash-status');
+    if (line) line.textContent = 'Starting the lead fee…';
+    api('/office/pipeline-move', {method:'POST', body:{registration_id: family.id, stage_id: stageFor(family)}})
+      .then(function(){ return load(); })
+      .catch(function(err){ if (line) line.textContent = err.message; });
   }
   function timelineNote(event){
     var note = String(event.note || '').trim();
@@ -439,7 +506,9 @@
       var label = eventLabel(event);
       var cls = event.kind + (event.direction === 'in' ? ' in' : '') + (event.future ? ' future' : '') + (failedStatus(event.status) ? ' failed' : '') + (event.latest ? ' latest' : '');
       return '<li class="' + cls + '"><time>' + esc(pretty(event.occurred_at)) + '</time><h3>' + esc(label) + '</h3>' +
-        timelineNote(event) + '</li>';
+        timelineNote(event) +
+        (event.recording_url && event.touch_id ? '<button type="button" class="btn quiet message-play" data-play="family" data-play-id="' + event.touch_id + '">Play</button>' : '') +
+        '</li>';
     }).join('') + '</ol>';
   }
   function reads(family){
@@ -513,7 +582,7 @@
   function hasRecord(family){
     var profile = family.profile;
     if (!profile) return false;
-    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || family.row.email || family.row.phone);
+    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || profile.opt_in_sms || family.row.email || family.row.phone);
   }
   function recordPanel(family){
     var profile = family.profile || {};
@@ -525,6 +594,7 @@
     if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
+    if (flagLine(profile.opt_in_sms)) lines.push('<p><b>Texts</b> ' + flagLine(profile.opt_in_sms) + '</p>');
     if (profile.notes) lines.push('<p><b>Notes</b> ' + esc(profile.notes) + '</p>');
     return lines.join('') || '<p class="band-empty">No address or notes yet.</p>';
   }
@@ -576,15 +646,89 @@
       (live ? '<button type="button" class="hangup" data-act="hangup">Hang up</button>' : '<button type="button" data-act="close">Close</button>') +
       '</div></div>';
   }
-  function emailDraft(family){
+  function messageTokens(family){
+    var pages = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages() : {
+      live_qa: 'https://goaipa.com/live-qa/',
+      one_to_one: 'https://goaipa.com/ask-anything/',
+      library: 'https://goaipa.com/library/',
+      sms_opt_in: '',
+      first_name: ''
+    };
+    pages.first_name = firstName(family);
+    var linkToken = family.profile && family.profile.sms_token;
+    if (linkToken) pages.sms_opt_in = 'https://goaipa.com/admin/families/sms/?t=' + linkToken;
+    return pages;
+  }
+  function guideMail(family){
     var note = String(family.row.follow_up_note || '').trim();
     var slug = String(family.row.suggested_slug || '').trim();
-    if (!slug) return note;
-    var pdf = family.handoutUrl || ('https://goaipa.com/library/pdf/' + slug + '.pdf');
-    var book = 'https://goaipa.com/ask-anything/';
-    if (note.indexOf(pdf) !== -1) return note;
-    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\n' + book + '\nOr call 833-AIPA-HUB.';
-    return note ? note + '\n\n' + handout : handout;
+    var title = String(family.row.suggested_title || '').trim();
+    var pdf = slug ? (family.handoutUrl || ('https://goaipa.com/library/pdf/' + slug + '.pdf')) : '';
+    var tokens = messageTokens(family);
+    tokens.note = note;
+    tokens.guide = title;
+    tokens.guide_pdf = pdf;
+    if (window.AIPA_MESSAGES) {
+      if (!title) return AIPA_MESSAGES.compose('guide_followup_plain', tokens);
+      var mail = AIPA_MESSAGES.compose('guide_followup', tokens);
+      if (!pdf) mail.body = note;
+      else if (note && note.indexOf(pdf) !== -1) mail.body = note;
+      return mail;
+    }
+    if (!title) return {subject: 'Following up on our conversation', body: note};
+    if (!pdf) return {subject: 'A guide: ' + title, body: note};
+    if (note.indexOf(pdf) !== -1) return {subject: 'A guide: ' + title, body: note};
+    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\nhttps://goaipa.com/ask-anything/\nOr call 833-AIPA-HUB.';
+    return {subject: 'A guide: ' + title, body: note ? note + '\n\n' + handout : handout};
+  }
+  function firstName(family){
+    var profile = family.profile || {};
+    var first = String(profile.first_name || '').trim();
+    if (first) return first;
+    var name = String(family.row.name || '').trim();
+    var space = name.indexOf(' ');
+    return space > 0 ? name.slice(0, space) : name;
+  }
+  function inviteCopy(family){
+    var visit = family.row.attended_1_1 === 'yes';
+    if (window.AIPA_MESSAGES) {
+      var tokens = messageTokens(family);
+      var email = AIPA_MESSAGES.compose(visit ? 'invite_visit' : 'invite_qa', tokens);
+      var sms = AIPA_MESSAGES.compose(visit ? 'invite_visit_sms' : 'invite_qa_sms', tokens);
+      return {
+        next: visit ? 'a home visit' : 'an Ask Anything 1:1',
+        subject: email.subject,
+        body: email.body,
+        sms: sms.body
+      };
+    }
+    var who = firstName(family);
+    var hello = who ? 'Hello ' + who + ',' : 'Hello,';
+    if (family.row.attended_1_1 === 'yes') {
+      return {
+        next: 'a home visit',
+        subject: 'A home visit',
+        body: hello + '\n\nThank you for the Ask Anything 1:1.\n\nThe next step is a home visit, if you want a contractor to look at the house.\n\nReply to this email or call 833-AIPA-HUB.\n\nAging in Place Alliance',
+        sms: 'Hi ' + (who ? who : '') + (who ? ', ' : '') + 'it\'s [Guide name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+      };
+    }
+    return {
+      next: 'an Ask Anything 1:1',
+      subject: 'Thank you for joining us today',
+      body: (who ? 'Hi ' + who + ',' : 'Hi,') + '\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: https://goaipa.com/ask-anything/\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB',
+      sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Host name]. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: https://goaipa.com/ask-anything/ Reply STOP to opt out.'
+    };
+  }
+  function attendHtml(family){
+    var seminar = family.row.attended_seminar === 'yes';
+    var one = family.row.attended_1_1 === 'yes';
+    var invite = (seminar || one)
+      ? '<button type="button" data-act="invite" aria-pressed="' + (reachMode === 'invite') + '">Invite to the next step</button>'
+      : '';
+    return '<div class="attend" role="group" aria-label="Attendance">' +
+      '<button type="button" data-act="attend" data-kind="seminar" aria-pressed="' + seminar + '">Attended Q&A</button>' +
+      '<button type="button" data-act="attend" data-kind="1_1" aria-pressed="' + one + '">Attended 1:1</button>' +
+      invite + '</div>';
   }
   function reachPanel(family){
     var showingCall = dial.registrationId === family.id && dial.phase && (reachMode === 'call' || callLive() || dial.phase === 'ended' || dial.phase === 'error');
@@ -603,16 +747,34 @@
       return '<form class="composer" data-reach="call"><p class="hint">You talk through this computer. They see the Twilio number.</p>' + phones +
         '<div class="composer-actions"><button class="btn" type="submit">Place the call</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
+    if (reachMode === 'invite') {
+      var copy = inviteCopy(family);
+      var textOk = family.profile && family.profile.opt_in_sms === 'yes';
+      var emailNo = family.profile && family.profile.opt_in_email === 'no';
+      return '<form class="composer" data-reach="invite"><p>Invite them to ' + esc(copy.next) + '.</p>' +
+        (emailNo ? '<p>They have not opted in to email.</p>' : '<button class="btn" type="button" data-act="invite-email">Email</button>') +
+        (textOk ? '<button class="btn" type="button" data-act="invite-text">Text</button>' : '<p>They have not agreed to texts. Use Text agreement first.</p>') +
+        '<div class="composer-actions"><button type="button" data-act="close">Close</button></div></form>';
+    }
     if (reachMode === 'text') {
       return '<form class="composer" data-reach="text">' + phones +
-        '<label for="reach-body">Text</label><textarea id="reach-body" name="reach-body" rows="4" required>' + esc(family.row.follow_up_note || '') + '</textarea>' +
+        '<label for="reach-body">Text</label><textarea id="reach-body" name="reach-body" rows="4" required>' + esc(pendingInvite ? pendingInvite.sms : (family.row.follow_up_note || '')) + '</textarea>' +
         '<div class="composer-actions"><button class="btn" type="submit">Send text</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
+    if (reachMode === 'sms-agree') {
+      var agreed = family.profile && family.profile.opt_in_sms === 'yes';
+      if (!family.row.email) return '<form class="composer"><p>There is no email on file.</p><button type="button" data-act="close">Close</button></form>';
+      return '<form class="composer" data-reach="sms-agree"><p>This emails them a private link. They confirm their mobile number and agree to texts. The link stops working after they submit.</p>' +
+        (agreed ? '<p>They have already agreed to texts. Sending a new link replaces the old one.</p>' : '') +
+        '<div class="composer-actions"><button class="btn" type="submit">Send the link</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
+    }
     if (reachMode === 'email') {
-      var subject = family.row.suggested_title ? 'A guide: ' + family.row.suggested_title : 'Following up on our conversation';
+      var mail = guideMail(family);
+      var subject = pendingInvite ? pendingInvite.subject : mail.subject;
+      var draft = pendingInvite ? pendingInvite.body : mail.body;
       return '<form class="composer" data-reach="email">' + emails +
         '<label for="reach-subject">Subject</label><input id="reach-subject" name="reach-subject" type="text" required value="' + esc(subject) + '">' +
-        '<label for="reach-body">Email</label><textarea id="reach-body" name="reach-body" rows="8" required>' + esc(emailDraft(family)) + '</textarea>' +
+        '<label for="reach-body">Email</label><textarea id="reach-body" name="reach-body" rows="8" required>' + esc(draft) + '</textarea>' +
         '<div class="composer-actions"><button class="btn" type="submit">Send email</button><button type="button" data-act="close">Close</button></div><p class="status-line" id="reach-status" role="status"></p></form>';
     }
     if (reachMode === 'retire') {
@@ -637,6 +799,134 @@
       contractors.map(function(contractor){
         return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
       }).join('') + '</select></label>';
+  }
+  function holdLine(family){
+    var lead = bills.filter(function(item){ return item.kind === 'lead' && Number(item.registration_id) === family.id; })[0];
+    var job = bills.filter(function(item){ return item.kind === 'job' && Number(item.registration_id) === family.id; })[0];
+    var stage = stages.filter(function(item){ return item.id === stageFor(family); })[0];
+    var name = stage ? String(stage.name || '').trim().toLowerCase() : '';
+    var bits = [];
+    if (lead) {
+      if (leadReleased(lead)) bits.push('The lead fee is ' + (Number(lead.amount_cents) > 0 ? money(lead.amount_cents) + ' and paid' : '$0') + '. Notes and contact are on their pay page.');
+      else bits.push('The lead fee is ' + money(lead.amount_cents) + '. Notes and contact stay off their pay page until it is paid.');
+    } else if (name === 'wants home visit') {
+      bits.push('No lead fee yet.');
+    }
+    if (job) {
+      var due = leadReleased(job) && !(Number(job.amount_cents) > 0) ? '$0' : money(job.amount_cents) + (job.status === 'paid' ? ' paid' : ' open');
+      bits.push('The job fee is ' + due + ' on a job of ' + money(job.job_cents) + '.');
+    }
+    if (!bits.length) return '';
+    return '<p class="hold-line">' + bits.map(function(bit){ return esc(bit); }).join(' ') +
+      (!lead && name === 'wants home visit' ? ' <button type="button" data-act="start-lead">Start the lead fee</button>' : '') +
+      '</p>';
+  }
+  function pad2(n){ return (n < 10 ? '0' : '') + n; }
+  function shiftStamp(value, days, hours){
+    var match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(stamp(value));
+    if (!match) return '';
+    var date = new Date(+match[1], +match[2] - 1, +match[3], +match[4], +match[5]);
+    if (days) date.setDate(date.getDate() + days);
+    if (hours) date.setTime(date.getTime() + hours * 3600000);
+    return date.getFullYear() + '-' + pad2(date.getMonth() + 1) + '-' + pad2(date.getDate()) + 'T' + pad2(date.getHours()) + ':' + pad2(date.getMinutes());
+  }
+  function seasonalDue(started, month, day){
+    var match = /^(\d{4})/.exec(stamp(started));
+    if (!match || !month || !day) return '';
+    var year = +match[1];
+    var candidate = year + '-' + pad2(month) + '-' + pad2(day) + 'T09:00';
+    if (candidate < stamp(started)) candidate = (year + 1) + '-' + pad2(month) + '-' + pad2(day) + 'T09:00';
+    return candidate;
+  }
+  function cadenceStepsFor(key){
+    return cadenceSteps.filter(function(step){ return step.sequence_key === key; })
+      .slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+  }
+  function cadenceNeedsEvent(key){
+    return cadenceStepsFor(key).some(function(step){ return step.timing === 'event'; });
+  }
+  function cadenceDue(step, run){
+    if (!run) return '';
+    if (step.timing === 'event') return run.anchor_at ? shiftStamp(run.anchor_at, 0, Number(step.hour_offset || 0)) : '';
+    if (step.timing === 'calendar') return seasonalDue(run.started_at, Number(step.month || 0), Number(step.day_of_month || 0));
+    return shiftStamp(run.started_at, Number(step.day_offset || 0), 0);
+  }
+  function cadenceChannel(channel){
+    if (channel === 'sms') return 'Text';
+    if (channel === 'call') return 'Call';
+    return 'Email';
+  }
+  function cadenceAsk(ask){
+    if (ask === 'hard') return 'Hard ask';
+    if (ask === 'soft') return 'Soft ask';
+    if (ask === 'none') return 'No ask';
+    return 'Reminder';
+  }
+  function cadenceResult(result){
+    if (result === 'answered') return 'Answered';
+    if (result === 'voicemail') return 'Voicemail';
+    if (result === 'no_answer') return 'No answer';
+    return '';
+  }
+  function ensureCadence(id){
+    if (!id || cadenceRuns[id]) return;
+    cadenceRuns[id] = {loading: true};
+    api('/office/cadence-run?registration_id=' + id).then(function(data){
+      cadenceRuns[id] = {loading: false, run: data && data.run ? data.run : null, outcomes: rows(data && data.outcomes)};
+      if (selectedId === id) detail(selectedFamily());
+    }).catch(function(){
+      cadenceRuns[id] = {loading: false, run: null, outcomes: [], error: true};
+      if (selectedId === id) detail(selectedFamily());
+    });
+  }
+  function cadencePanel(family){
+    ensureCadence(family.id);
+    var bag = cadenceRuns[family.id];
+    if (!bag || bag.loading) return '<section class="cadence-card"><h3>Cadence</h3><p>Loading the schedule…</p></section>';
+    if (bag.error) return '<section class="cadence-card"><h3>Cadence</h3><p>The schedule could not be loaded.</p></section>';
+    var run = bag.run && bag.run.status === 'active' ? bag.run : null;
+    var sequence = run ? cadenceSequences.filter(function(item){ return item.key === run.sequence_key; })[0] : null;
+    var showAnchor = cadenceNeedsEvent(run ? run.sequence_key : '');
+    var picker = '<label for="cadence-pick">Sequence <select id="cadence-pick">' +
+      '<option value="">Choose a cadence</option>' +
+      cadenceSequences.map(function(item){
+        return '<option value="' + esc(item.key) + '"' + (run && run.sequence_key === item.key ? ' selected' : '') + '>' + esc(item.name) + '</option>';
+      }).join('') + '</select></label>';
+    var anchorValue = run && run.anchor_at ? run.anchor_at : (family.occurrence || '');
+    var anchor = '<label for="cadence-anchor"' + (showAnchor || !run ? '' : ' hidden') + '>Session time <input id="cadence-anchor" type="datetime-local" value="' + esc(anchorValue) + '"></label>';
+    var buttons = '<div class="cadence-actions"><button type="button" data-cadence="start">Start</button>' +
+      (run ? '<button type="button" data-cadence="anchor">Save session time</button><button type="button" data-cadence="stop">Stop</button>' : '') +
+      '</div><p class="status-line" id="cadence-status" role="status"></p>';
+    var now = zonedNow(family.zone);
+    var items = '';
+    if (run && sequence) {
+      items = '<ol>' + cadenceStepsFor(run.sequence_key).map(function(step){
+        var due = cadenceDue(step, run);
+        var outcome = (bag.outcomes || []).filter(function(item){
+          return item.step_id === step.id && (!item.recorded_at || !run.started_at || item.recorded_at >= run.started_at);
+        })[0];
+        var state = step.channel === 'call'
+          ? (outcome ? cadenceResult(outcome.result) : (due && due > now ? 'Scheduled' : 'Call due'))
+          : (!due ? 'Set the session time' : (due > now ? 'Scheduled' : 'Waiting to send'));
+        var calls = step.channel === 'call'
+          ? '<div class="cadence-actions">' +
+            '<button type="button" data-cadence="result" data-step="' + step.id + '" data-result="answered" aria-pressed="' + (outcome && outcome.result === 'answered') + '">Answered</button>' +
+            '<button type="button" data-cadence="result" data-step="' + step.id + '" data-result="voicemail" aria-pressed="' + (outcome && outcome.result === 'voicemail') + '">Voicemail</button>' +
+            '<button type="button" data-cadence="result" data-step="' + step.id + '" data-result="no_answer" aria-pressed="' + (outcome && outcome.result === 'no_answer') + '">No answer</button>' +
+            '</div>'
+          : '';
+        var extra = step.companion_key ? '<p><a href="/admin/messages/?key=' + encodeURIComponent(step.companion_key) + '">Open the ' + (step.channel === 'sms' ? 'email' : 'text') + '</a></p>' : '';
+        var calendar = step.calendar_invite ? ' · Calendar invite' : '';
+        return '<li><p class="when">' + esc(step.when_label) + ' · ' + cadenceChannel(step.channel) + ' · ' + esc(cadenceAsk(step.ask)) + calendar + '</p>' +
+          '<p>' + esc(step.intent) + '</p>' +
+          '<p>' + (due ? 'Due ' + esc(pretty(due)) + ' · ' : '') + esc(state) + '</p>' +
+          '<p><a href="/admin/messages/?key=' + encodeURIComponent(step.message_key) + '">Open the ' + (step.channel === 'call' ? 'script' : step.channel === 'sms' ? 'text' : 'email') + '</a></p>' +
+          extra + calls + '</li>';
+      }).join('') + '</ol>';
+    }
+    return '<section class="cadence-card"><h3>Cadence</h3>' +
+      (sequence ? '<p>' + esc(sequence.name) + ' started ' + esc(pretty(run.started_at) || run.started_at) + '.</p>' : '<p>No cadence is running.</p>') +
+      picker + anchor + buttons + items + '</section>';
   }
   function stageField(family){
     if (!stages.length) return '';
@@ -670,13 +960,17 @@
       '<div class="detail-actions">' +
       contractorField(family) +
       stageField(family) +
+      holdLine(family) +
+      attendHtml(family) +
       '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<div class="reach" role="group" aria-label="Reach this person">' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
+      '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
       '</div></div></div>' +
+      cadencePanel(family) +
       reachPanel(family) +
       band(family);
     fromClick = false;
@@ -738,27 +1032,6 @@
     detail(list.filter(function(family){ return family.id === selectedId; })[0] || null);
   }
 
-  function renderUnmatched(list){
-    var box = document.getElementById('unmatched');
-    var target = document.getElementById('unmatched-list');
-    if (!box || !target) return;
-    box.hidden = list.length === 0;
-    var options = families.slice().sort(function(a, b){
-      return a.row.name.localeCompare(b.row.name);
-    }).map(function(family){
-      return '<option value="' + family.id + '">' + esc(family.row.name) + (isRetired(family) ? ' (retired)' : '') + '</option>';
-    }).join('');
-    target.innerHTML = list.map(function(item){
-      var who = item.direction === 'out' ? item.to_address : item.from_address;
-      var what = item.channel === 'email' ? 'Email' : (item.channel === 'voicemail' ? 'Voicemail' : 'Text');
-      var way = item.direction === 'out' ? 'to' : 'from';
-      var line = item.body || item.subject || '';
-      return '<li><strong>' + esc(what) + ' ' + esc(way) + ' ' + esc(who || 'unknown') + '</strong>' +
-        (line ? '<span>' + esc(line) + '</span>' : '') +
-        '<form class="attach" data-unmatched="' + item.id + '"><label>Person <select name="registration_id" required><option value="">Choose someone</option>' + options + '</select></label><button type="submit">Attach</button><span class="attach-status" role="status"></span></form></li>';
-    }).join('');
-  }
-
   function load(){
     var status = document.getElementById('dash-status');
     status.textContent = 'Loading…';
@@ -766,16 +1039,21 @@
       api('/office/meetings'),
       api('/office/signups'),
       api('/office/touches').catch(function(){ return []; }),
-      api('/office/unmatched').catch(function(){ return []; }),
       api('/office/pipeline'),
-      api('/office/households')
+      (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve()),
+      api('/office/households'),
+      api('/office/billing').catch(function(){ return {bills:[]}; }),
+      api('/office/cadences').catch(function(){ return {sequences:[], steps:[]}; })
     ]).then(function(result){
       var meetings = rows(result[0]);
       var signups = rows(result[1]);
       var touches = rows(result[2]);
-      var unmatched = rows(result[3]);
-      var pipeline = result[4] || {};
+      var pipeline = result[3] || {};
       var household = result[5] || {};
+      bills = rows((result[6] || {}).bills);
+      var cadence = result[7] || {};
+      cadenceSequences = rows(cadence.sequences).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+      cadenceSteps = rows(cadence.steps);
       stages = rows(pipeline.stages).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
       places = {};
       rows(pipeline.places).forEach(function(place){ places[place.registration_id] = place.stage_id; });
@@ -790,7 +1068,6 @@
         var meeting = meetings.filter(function(item){ return item.id === row.meeting_id; })[0];
         return build(row, meeting, touches, profiles[row.id] || null);
       });
-      renderUnmatched(unmatched);
       status.textContent = '';
       render();
     }).catch(function(err){
@@ -924,6 +1201,18 @@
       load();
     }).catch(function(err){ if (status) status.textContent = err.message; });
   }
+  function sendSmsAgree(family){
+    var status = document.getElementById('reach-status');
+    if (status) status.textContent = 'Sending the link…';
+    api('/office/sms-opt-in', {method:'POST', body:{registration_id: family.id}}).then(function(data){
+      if (data.sent) {
+        reachMode = '';
+        load();
+        return;
+      }
+      if (status) status.textContent = (data.message || 'This was not sent.') + (data.link ? ' Copy this link: ' + data.link : '');
+    }).catch(function(err){ if (status) status.textContent = err.message; });
+  }
   function retireFamily(family, engagement){
     var status = document.getElementById('reach-status');
     var reason = document.querySelector('[name="reason"]');
@@ -943,7 +1232,75 @@
       load();
     }).catch(function(err){ if (status) status.textContent = err.message; });
   }
+  function saveCadence(family, body){
+    var line = document.getElementById('cadence-status');
+    if (line) line.textContent = 'Saving the schedule…';
+    return api('/office/cadence-run', {method:'POST', body: body}).then(function(){
+      delete cadenceRuns[family.id];
+      ensureCadence(family.id);
+    }).catch(function(err){
+      if (line) line.textContent = err.message;
+    });
+  }
   document.getElementById('detail').addEventListener('click', function(event){
+    var cadenceButton = event.target.closest('[data-cadence]');
+    if (cadenceButton) {
+      var family = selectedFamily();
+      if (!family) return;
+      var bag = cadenceRuns[family.id] || {};
+      var run = bag.run || null;
+      var pick = document.getElementById('cadence-pick');
+      var anchorField = document.getElementById('cadence-anchor');
+      var action = cadenceButton.getAttribute('data-cadence');
+      if (action === 'result') {
+        var line = document.getElementById('cadence-status');
+        if (line) line.textContent = 'Saving the call…';
+        api('/office/cadence-outcome', {method:'POST', body:{
+          registration_id: family.id,
+          step_id: Number(cadenceButton.getAttribute('data-step')),
+          result: cadenceButton.getAttribute('data-result'),
+          recorded_at: zonedNow(family.zone)
+        }}).then(function(){
+          delete cadenceRuns[family.id];
+          ensureCadence(family.id);
+        }).catch(function(err){ if (line) line.textContent = err.message; });
+        return;
+      }
+      if (action === 'stop') {
+        saveCadence(family, {
+          registration_id: family.id,
+          sequence_key: run ? run.sequence_key : '',
+          started_at: run ? run.started_at : zonedNow(family.zone),
+          anchor_at: run ? run.anchor_at : zonedNow(family.zone),
+          status: 'stopped'
+        });
+        return;
+      }
+      if (action === 'anchor') {
+        if (!run) return;
+        saveCadence(family, {
+          registration_id: family.id,
+          sequence_key: run.sequence_key,
+          started_at: run.started_at,
+          anchor_at: anchorField && anchorField.value ? anchorField.value : run.anchor_at,
+          status: 'active'
+        });
+        return;
+      }
+      var key = pick ? pick.value : '';
+      var lineStart = document.getElementById('cadence-status');
+      if (!key) { if (lineStart) lineStart.textContent = 'Choose a cadence.'; return; }
+      var started = zonedNow(family.zone);
+      var anchor = anchorField && anchorField.value ? anchorField.value : (cadenceNeedsEvent(key) ? (family.occurrence || started) : started);
+      saveCadence(family, {
+        registration_id: family.id,
+        sequence_key: key,
+        started_at: started,
+        anchor_at: anchor,
+        status: 'active'
+      });
+      return;
+    }
     var tabBtn = event.target.closest('[data-tab]');
     if (tabBtn && tabBtn.closest('.band-tabs')) {
       detailTab = tabBtn.dataset.tab;
@@ -955,6 +1312,11 @@
     if (!button) return;
     var act = button.dataset.act;
     var family = selectedFamily();
+    if (act === 'start-lead') {
+      if (!family) return;
+      startLead(family);
+      return;
+    }
     if (act === 'clear-callback') {
       if (!family) return;
       api('/office/callback', {method:'POST', body:{registration_id: family.id, requested: false}})
@@ -982,7 +1344,27 @@
       if (window.AIPA_CALL_NOTES) window.AIPA_CALL_NOTES.open(family.id);
       return;
     }
-    if (act === 'call' || act === 'text' || act === 'email' || act === 'retire' || act === 'restore') {
+    if (act === 'attend') {
+      var kind = button.getAttribute('data-kind');
+      var turningOn = button.getAttribute('aria-pressed') !== 'true';
+      api('/office/attendance', {method:'POST', body:{registration_id: family.id, kind: kind, attended: turningOn}}).then(function(){
+        reachMode = turningOn ? 'invite' : (reachMode === 'invite' ? '' : reachMode);
+        if (!turningOn) pendingInvite = null;
+        return load();
+      }).catch(function(err){
+        var line = document.getElementById('dash-status');
+        if (line) line.textContent = err.message;
+      });
+      return;
+    }
+    if (act === 'invite-email' || act === 'invite-text') {
+      pendingInvite = inviteCopy(family);
+      reachMode = act === 'invite-email' ? 'email' : 'text';
+      render();
+      return;
+    }
+    if (act === 'call' || act === 'text' || act === 'email' || act === 'sms-agree' || act === 'invite' || act === 'retire' || act === 'restore') {
+      if (act === 'call' || act === 'text' || act === 'email') pendingInvite = null;
       if (callLive() && act === 'call') { reachMode = 'call'; render(); return; }
       reachMode = reachMode === act ? '' : act;
       render();
@@ -993,10 +1375,10 @@
           .then(function(r){ return r.json(); })
           .then(function(article){
             if (!article || !article.pdf_url || selectedId !== id || reachMode !== 'email') return;
-            var before = emailDraft(family);
+            var before = guideMail(family).body;
             family.handoutUrl = /^https?:/i.test(article.pdf_url) ? article.pdf_url : ('https://goaipa.com' + article.pdf_url);
             var box = document.querySelector('[name="reach-body"]');
-            if (box && box.value === before) box.value = emailDraft(family);
+            if (box && box.value === before) box.value = guideMail(family).body;
           })
           .catch(function(){});
       }
@@ -1004,6 +1386,7 @@
     }
     if (act === 'close') {
       reachMode = '';
+      pendingInvite = null;
       if (!callLive()) { dial.phase = ''; dial.error = ''; }
       render();
       return;
@@ -1023,6 +1406,7 @@
     if (form.dataset.reach === 'call') placeCall(family);
     else if (form.dataset.reach === 'text') sendMessage(family, 'sms');
     else if (form.dataset.reach === 'email') sendMessage(family, 'email');
+    else if (form.dataset.reach === 'sms-agree') sendSmsAgree(family);
     else if (form.dataset.reach === 'retire') retireFamily(family, 'retired');
     else if (form.dataset.reach === 'restore') retireFamily(family, 'active');
   });
@@ -1110,6 +1494,18 @@
     var family = selectedFamily();
     if (!family) return;
     movePerson(family.id, Number(event.target.value));
+  });
+  document.getElementById('job-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var box = document.getElementById('job-ask');
+    var input = document.getElementById('job-total');
+    if (!box || !input) return;
+    movePerson(Number(box.dataset.id), Number(box.dataset.stage), input.value);
+  });
+  document.getElementById('job-cancel').addEventListener('click', function(){
+    document.getElementById('job-ask').hidden = true;
+    document.getElementById('job-status').textContent = '';
+    render();
   });
 
   function parseCsv(text){
@@ -1279,7 +1675,8 @@
       })
       .catch(function(err){ status.textContent = err.message; });
   });
-  signout.addEventListener('click', function(){
+  signout.addEventListener('click', function(event){
+    event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
   });
@@ -1290,25 +1687,6 @@
         other.setAttribute('aria-pressed', String(other === button));
       });
       render();
-    });
-  });
-  var unmatchedBox = document.getElementById('unmatched');
-  if (unmatchedBox) unmatchedBox.addEventListener('submit', function(event){
-    var form = event.target;
-    if (!form || !form.dataset || !form.dataset.unmatched) return;
-    event.preventDefault();
-    var select = form.querySelector('[name="registration_id"]');
-    var note = form.querySelector('.attach-status');
-    if (!select || !select.value) {
-      if (note) note.textContent = 'Choose someone.';
-      return;
-    }
-    if (note) note.textContent = 'Attaching…';
-    api('/office/assign-message', {method:'POST', body:{
-      unmatched_id: Number(form.dataset.unmatched),
-      registration_id: Number(select.value)
-    }}).then(function(){ load(); }).catch(function(err){
-      if (note) note.textContent = err.message;
     });
   });
   window.addEventListener('aipa-family-changed', function(){ load(); });

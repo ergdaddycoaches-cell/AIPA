@@ -125,16 +125,39 @@
     var flag = kind === 'sms' ? profile.opt_in_call : profile.opt_in_email;
     return String(flag || '').trim().toLowerCase();
   }
-  function defaultSubject(){
+  function guideMail(note, pdf){
     var guide = chosenGuide();
-    return guide.title ? 'A guide: ' + guide.title : 'Following up on our conversation';
+    var tokens = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages() : {
+      live_qa: 'https://goaipa.com/live-qa/',
+      one_to_one: 'https://goaipa.com/ask-anything/',
+      library: 'https://goaipa.com/library/',
+      sms_opt_in: '',
+      first_name: ''
+    };
+    tokens.note = note || '';
+    tokens.guide = guide.title || '';
+    tokens.guide_pdf = pdf || '';
+    if (window.AIPA_MESSAGES) {
+      if (!guide.title) return AIPA_MESSAGES.compose('guide_followup_plain', tokens);
+      var mail = AIPA_MESSAGES.compose('guide_followup', tokens);
+      if (!pdf) mail.body = note || '';
+      else if (note && note.indexOf(pdf) !== -1) mail.body = note;
+      return mail;
+    }
+    if (!guide.title) return {subject: 'Following up on our conversation', body: note || ''};
+    if (!pdf) return {subject: 'A guide: ' + guide.title, body: note || ''};
+    if (note && note.indexOf(pdf) !== -1) return {subject: 'A guide: ' + guide.title, body: note};
+    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\nhttps://goaipa.com/ask-anything/\nOr call 833-AIPA-HUB.';
+    return {subject: 'A guide: ' + guide.title, body: note ? note + '\n\n' + handout : handout};
+  }
+  function defaultSubject(){
+    var note = applyGuideToken(document.getElementById('follow').value.trim(), chosenGuide().title);
+    return guideMail(note, '').subject;
   }
   function messageBody(kind, pdf){
     var note = applyGuideToken(document.getElementById('follow').value.trim(), chosenGuide().title);
-    if (kind === 'sms' || !pdf) return note;
-    if (note.indexOf(pdf) !== -1) return note;
-    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\nhttps://goaipa.com/ask-anything/\nOr call 833-AIPA-HUB.';
-    return note ? note + '\n\n' + handout : handout;
+    if (kind === 'sms') return note;
+    return guideMail(note, pdf).body;
   }
   function guidePdf(guide){
     if (!guide.slug) return Promise.resolve('');
@@ -384,7 +407,8 @@
       api('/office/signups'),
       api('/office/meetings'),
       api('/office/articles').catch(function(){ return []; }),
-      api('/office/households').catch(function(){ return {profiles:[]}; })
+      api('/office/households').catch(function(){ return {profiles:[]}; }),
+      (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve())
     ]).then(function(result){
       var family = rows(result[0]).filter(function(item){ return item.id === familyId; })[0];
       if (!family) {
@@ -555,7 +579,8 @@
         })
         .catch(function(err){ status.textContent = err.message; });
     });
-    signout.addEventListener('click', function(){
+    signout.addEventListener('click', function(event){
+      event.preventDefault();
       sessionStorage.removeItem(KEY);
       showLogin(true);
     });

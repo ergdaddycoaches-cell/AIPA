@@ -10,11 +10,17 @@
   var places = {};
   var families = [];
   var territories = [];
+  var touches = [];
+  var price = null;
+  var contracts = [];
+  var bills = [];
+  var pendingDeal = null;
   var ageFilter = 'all';
   var stageDraft = [];
   var selectedId = 0;
   var openedFromLink = false;
   var focusFromLink = false;
+  var territoryOpen = false;
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(t){
@@ -26,6 +32,33 @@
     if (Array.isArray(value)) return value;
     if (value && Array.isArray(value.items)) return value.items;
     return [];
+  }
+  function dollars(cents){
+    var n = Number(cents) || 0;
+    var abs = Math.abs(n);
+    var whole = Math.floor(abs / 100);
+    var c = abs % 100;
+    return (n < 0 ? '-' : '') + whole + (c ? '.' + (c < 10 ? '0' : '') + c : '');
+  }
+  function money(cents){
+    var n = Number(cents) || 0;
+    var abs = Math.abs(n);
+    var whole = Math.floor(abs / 100);
+    var c = abs % 100;
+    var s = String(whole);
+    var out = '';
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 === 0) out += ',';
+      out += s.charAt(i);
+    }
+    return (n < 0 ? '-' : '') + '$' + out + '.' + (c < 10 ? '0' : '') + c;
+  }
+  function contractFor(id){
+    return contracts.filter(function(row){ return Number(row.contractor_id) === Number(id); })[0] || null;
+  }
+  function releasedBill(bill){
+    if (!bill) return false;
+    return bill.status === 'paid' || bill.status === 'none' || !(Number(bill.amount_cents) > 0);
   }
   function showLogin(on){
     loginView.hidden = !on;
@@ -149,6 +182,17 @@
       .filter(Boolean)
       .sort();
   }
+  function territoryBlock(row){
+    var zips = zipsOf(row.id);
+    var summary = zips.length ? zips.length + ' ZIP code' + (zips.length === 1 ? '' : 's') : 'ZIP codes';
+    return '<details class="contractor-territory" id="territory-zips"' + (territoryOpen ? ' open' : '') + '>' +
+      '<summary>' + esc(summary) + '</summary>' +
+      '<textarea id="territory" rows="4" spellcheck="false">' + esc(zips.join('\n')) + '</textarea>' +
+      '<p class="contractor-meta">One ZIP per line. A house in that ZIP is assigned here.</p>' +
+      '<button type="button" id="territory-save">Save ZIP codes</button>' +
+      '<p class="status-line" id="territory-status" role="status"></p>' +
+      '</details>';
+  }
   function contactLine(row){
     var bits = [];
     if (row.contact_name) bits.push(esc(row.contact_name));
@@ -184,14 +228,20 @@
       return '<option value="' + item.id + '"' + (item.id === view.stageId ? ' selected' : '') + '>' + esc(item.name) + '</option>';
     }).join('') + '</select></label>';
     var list = people.length
-      ? '<ul class="contractor-families">' + people.map(function(person){ return '<li>' + esc(person.name) + '</li>'; }).join('') + '</ul>'
+      ? '<ul class="contractor-families">' + people.map(function(person){
+          var lead = bills.filter(function(bill){
+            return bill.kind === 'lead' && Number(bill.registration_id) === Number(person.registration_id);
+          })[0];
+          var state = lead ? (releasedBill(lead) ? 'Released' : 'Held') : '';
+          return '<li>' + esc(person.name) + (state ? ' <span class="bill-state">' + state + '</span>' : '') + '</li>';
+        }).join('') + '</ul>'
       : '<p class="contractor-meta">No families yet.</p>';
     var on = wantsCallback(row);
     var when = callbackDate(row.callback_requested_at);
-    box.innerHTML = '<h2>' + esc(row.name) + '</h2>' +
-      contactLine(row) +
-      utmLine(row) +
-      '<p class="contractor-meta">Id ' + row.id + ' · ' + esc(hereLine(view.days)) + '</p>' +
+    box.innerHTML =
+      '<div class="contractor-head">' +
+      '<div class="contractor-id"><h2>' + esc(row.name) + '</h2>' +
+      '<p class="contractor-meta">Id ' + row.id + ' · ' + esc(hereLine(view.days)) + '</p></div>' +
       stage +
       '<div class="contractor-callback">' +
       '<span id="callback-label">Wants a call back</span>' +
@@ -201,15 +251,68 @@
       '</div>' +
       '<label for="callback-date">Date</label>' +
       '<input id="callback-date" type="date"' + (on ? '' : ' disabled') + (when ? ' value="' + esc(when) + '"' : '') + '>' +
+      '</div></div>' +
+      '<div class="contractor-cols">' +
+      '<div>' +
+      contactLine(row) +
+      '<p class="contractor-meta"><b>Texts</b> ' + (row.opt_in_sms === 'yes' ? 'Yes' : 'Not agreed') + '</p>' +
+      utmLine(row) +
+      '<h3>Families</h3>' +
+      list +
       '</div>' +
-      '<div class="contractor-territory">' +
-      '<label for="territory">ZIP codes</label>' +
-      '<textarea id="territory" rows="5" spellcheck="false">' + esc(zipsOf(row.id).join('\n')) + '</textarea>' +
-      '<p class="contractor-meta">One ZIP per line. A house in that ZIP is assigned here.</p>' +
-      '<button type="button" id="territory-save">Save ZIP codes</button>' +
-      '<p class="status-line" id="territory-status" role="status"></p>' +
-      '</div>' +
-      list;
+      territoryBlock(row) +
+      '<div>' + pricePanel(row) + messageLog(row) + '</div>' +
+      '</div>';
+  }
+  function billList(row){
+    var mine = bills.filter(function(bill){ return Number(bill.contractor_id) === Number(row.id); });
+    if (!mine.length) return '<p class="contractor-meta">No charges yet.</p>';
+    return '<ul class="bill-list">' + mine.map(function(bill){
+      var person = families.filter(function(item){ return Number(item.registration_id) === Number(bill.registration_id); })[0];
+      var who = person ? person.name : 'Family';
+      var owe = releasedBill(bill) && !(Number(bill.amount_cents) > 0) ? 'Nothing due' : (bill.status === 'paid' ? 'Paid ' + money(bill.amount_cents) : 'Owes ' + money(bill.amount_cents));
+      var pay = bill.status === 'open' && Number(bill.amount_cents) > 0
+        ? ' <button type="button" class="btn" data-pay="' + bill.id + '">Pay</button>'
+        : '';
+      var kind = bill.kind === 'job' ? 'Completed job' : 'Home visit lead';
+      return '<li><b>' + esc(who) + '</b> · ' + kind + ' · ' + owe + pay +
+        '<p class="status-line" id="pay-status-' + bill.id + '" role="status"></p></li>';
+    }).join('') + '</ul>';
+  }
+  function pricePanel(row){
+    var contract = contractFor(row.id);
+    if (!contract) return '<p class="contractor-meta">No contract yet. Deal Won locks the prices from the <a href="/admin/prices/">Prices</a> page onto this contractor.</p>';
+    var link = 'https://goaipa.com/pay/?t=' + encodeURIComponent(contract.token);
+    var warn = 'Changing these prices changes this contractor only. Leads and completed jobs from here on use the new numbers. Charges that are already open stay at the old amount. Prices for new contracts stay on the Prices page.';
+    return '<div class="locked-prices"><h3>Locked prices</h3>' +
+      '<p>First lead ' + money(contract.first_lead_cents) + ' · Later leads ' + money(contract.later_lead_cents) + ' · ' + esc(contract.percent) + '% above ' + money(contract.threshold_cents) + '</p>' +
+      '<p class="contractor-meta">Their pay page <a href="' + esc(link) + '">' + esc(link) + '</a></p>' +
+      (location.hostname === 'goaipa.com' ? '' : '<p class="contractor-meta"><a href="/pay/?t=' + encodeURIComponent(contract.token) + '">Open the pay page on this site</a></p>') +
+      '<p class="status-line" id="pay-link-status" role="status"></p>' +
+      '<button type="button" id="copy-pay" data-url="' + esc(link) + '">Copy the pay page link</button>' +
+      billList(row) +
+      '<details class="price-warn"><summary>Change this contractor’s prices</summary>' +
+      '<p><b>' + esc(warn) + '</b></p>' +
+      '<form class="price-form" id="locked-form">' +
+      '<label>First lead <input name="first_lead" value="' + esc(dollars(contract.first_lead_cents)) + '" inputmode="decimal" required></label>' +
+      '<label>Each later lead <input name="later_lead" value="' + esc(dollars(contract.later_lead_cents)) + '" inputmode="decimal" required></label>' +
+      '<label>Percent <input name="percent" value="' + esc(contract.percent) + '" inputmode="decimal" required></label>' +
+      '<label>Threshold <input name="threshold" value="' + esc(dollars(contract.threshold_cents)) + '" inputmode="decimal" required></label>' +
+      '<button class="btn" type="submit">Change this contractor’s prices</button>' +
+      '</form><p class="status-line" id="locked-status" role="status"></p></details></div>';
+  }
+  function messageLog(row){
+    var list = touches.filter(function(item){ return item.contractor_id === row.id; });
+    if (!list.length) return '';
+    list.sort(function(a, b){ return String(b.occurred_at || '').localeCompare(String(a.occurred_at || '')); });
+    return '<h3>Messages</h3><ul class="contractor-log">' + list.map(function(item){
+      var kind = item.kind === 'email' ? 'Email' : (item.kind === 'voicemail' ? 'Voicemail' : (item.kind === 'call' ? 'Call' : 'Text'));
+      var who = item.direction === 'out' ? item.to_address : item.from_address;
+      return '<li><b>' + esc(kind) + '</b> ' + esc(who || '') +
+        (item.note ? '<p class="message-body">' + esc(item.note) + '</p>' : '') +
+        (item.recording_url ? '<button type="button" class="btn quiet message-play" data-play="contractor" data-play-id="' + item.id + '">Play</button>' : '') +
+        '</li>';
+    }).join('') + '</ul>';
   }
   function wantsCallback(row){
     return !!(row && (row.callback_requested === true || row.callback_requested === 1));
@@ -274,7 +377,9 @@
       });
       button.addEventListener('click', function(){
         if (button.dataset.dragged === 'yes') { button.dataset.dragged = ''; return; }
-        selectedId = Number(button.dataset.id);
+        var nextId = Number(button.dataset.id);
+        if (nextId !== selectedId) territoryOpen = false;
+        selectedId = nextId;
         render();
       });
     });
@@ -297,11 +402,76 @@
     if (!id || !stageId) return;
     var row = contractors.filter(function(item){ return item.id === id; })[0];
     if (row && stageFor(row) === stageId) return;
+    if (stageName(stageId).trim().toLowerCase() === 'deal won' && !contractFor(id)) {
+      openDeal(id, stageId);
+      return;
+    }
     var note = document.getElementById('dash-status');
     note.textContent = 'Moving…';
     api('/office/contractor-pipeline-move', {method:'POST', body:{contractor_id: id, stage_id: stageId}})
       .then(function(){ note.textContent = ''; return load(); })
       .catch(function(err){ note.textContent = err.message; });
+  }
+  function openDeal(id, stageId){
+    pendingDeal = {id: id, stageId: stageId};
+    var box = document.getElementById('deal-confirm');
+    var body = document.getElementById('deal-body');
+    var status = document.getElementById('deal-status');
+    var create = document.getElementById('deal-create');
+    if (status) status.textContent = '';
+    var who = contractors.filter(function(item){ return item.id === id; })[0];
+    if (!price) {
+      if (body) body.innerHTML = '<p>Set the prices for new contracts before ' + esc(who ? who.name : 'this contractor') + ' can reach Deal Won. <a href="/admin/prices/">Open Prices</a>.</p>';
+      if (create) create.hidden = true;
+    } else {
+      if (create) create.hidden = false;
+      if (body) body.innerHTML = '<p>Create a contract for <b>' + esc(who ? who.name : 'this contractor') + '</b> at the prices below. Later changes on the Prices page leave this contract as it is.</p>' +
+        '<ul class="price-list"><li>First lead ' + money(price.first_lead_cents) + '</li>' +
+        '<li>Each later lead ' + money(price.later_lead_cents) + '</li>' +
+        '<li>' + esc(price.percent) + '% of the job amount above ' + money(price.threshold_cents) + '</li></ul>';
+    }
+    render();
+    if (box) {
+      box.hidden = false;
+      box.scrollIntoView({block:'nearest'});
+    }
+  }
+  function payBill(billId){
+    var row = selected();
+    var contract = row && contractFor(row.id);
+    var line = document.getElementById('pay-status-' + billId);
+    var publicBase = (CFG.apiBase || '').replace(/\/$/, '');
+    if (!contract || !publicBase) {
+      if (line) line.textContent = 'Stripe is not connected yet.';
+      return;
+    }
+    if (line) line.textContent = 'Checking Stripe…';
+    fetch(publicBase + '/pay', {
+      method: 'POST',
+      headers: {'Accept':'application/json', 'Content-Type':'application/json'},
+      body: JSON.stringify({t: contract.token, bill_id: billId})
+    }).then(function(r){ return r.json().catch(function(){ return {}; }); }).then(function(data){
+      if (line) line.textContent = data.message || 'Stripe is not connected yet.';
+    }).catch(function(){
+      if (line) line.textContent = 'Stripe is not connected yet.';
+    });
+  }
+  function saveLocked(form){
+    var row = selected();
+    var status = document.getElementById('locked-status');
+    if (!row) return;
+    var warn = 'Changing these prices changes this contractor only. Leads and completed jobs from here on use the new numbers. Charges that are already open stay at the old amount. Prices for new contracts stay on the Prices page.';
+    if (!window.confirm(warn)) return;
+    if (status) status.textContent = 'Saving…';
+    api('/office/contract-price', {method:'POST', body:{
+      contractor_id: row.id,
+      first_lead: form.first_lead.value,
+      later_lead: form.later_lead.value,
+      percent: form.percent.value,
+      threshold: form.threshold.value
+    }}).then(function(){ return load(); }).catch(function(err){
+      if (status) status.textContent = err.message;
+    });
   }
   function saveTerritory(){
     var row = selected();
@@ -309,6 +479,7 @@
     var note = document.getElementById('territory-status');
     if (!row || !box || !note) return;
     note.textContent = 'Saving ZIP codes…';
+    territoryOpen = true;
     api('/office/contractor-zips', {method:'POST', body:{contractor_id: row.id, zips: box.value}})
       .then(function(){ return load(); })
       .then(function(){
@@ -317,13 +488,36 @@
       })
       .catch(function(err){ note.textContent = err.message; });
   }
+  function callbackInstant(value){
+    var raw = String(value || '').trim();
+    if (!raw) return null;
+    var iso = raw.replace(' ', 'T').replace(/([+-]\d{2})(\d{2})$/, '$1:$2');
+    var parsed = new Date(iso);
+    if (isNaN(parsed.getTime())) parsed = new Date(raw.replace(' ', 'T'));
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
   function callbackWhen(value){
-    var parsed = new Date(String(value || '').replace(' ', 'T'));
-    if (isNaN(parsed.getTime())) return '';
+    var parsed = callbackInstant(value);
+    if (!parsed) return '';
     return parsed.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+  }
+  function callbackDay(value){
+    var parsed = callbackInstant(value);
+    if (!parsed) return '';
+    try {
+      return new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Los_Angeles', year:'numeric', month:'2-digit', day:'2-digit'
+      }).format(parsed);
+    } catch (err) {
+      return '';
+    }
   }
   function renderCallbacks(list){
     var box = document.getElementById('callback-list');
+    var title = document.getElementById('callbacks-title');
+    var today = zonedToday();
+    var due = list.filter(function(row){ return callbackDay(row.created_at) === today; }).length;
+    if (title) title.textContent = 'Callback requests · ' + list.length + ' total · ' + due + ' due today';
     if (!box) return;
     if (!list.length) {
       box.innerHTML = '<li>No callback requests yet.</li>';
@@ -335,7 +529,7 @@
       var when = callbackWhen(row.created_at);
       return '<li><b>' + esc(row.name) + '</b> · ' + esc(row.company) +
         '<span class="meta"><a href="tel:' + esc(tel) + '">' + esc(phone) + '</a> · ' + esc(row.email) +
-        (when ? ' · ' + esc(when) : '') + '</span></li>';
+        (when ? ' · ' + esc(when) : '') + ' · ' + (row.opt_in_sms === 'yes' ? 'Texts agreed' : 'Texts not agreed') + '</span></li>';
     }).join('');
   }
   function load(){
@@ -344,7 +538,9 @@
       api('/office/households').catch(function(){ return {profiles:[]}; }),
       api('/office/signups').catch(function(){ return []; }),
       api('/office/contractor-zips').catch(function(){ return {zips:[]}; }),
-      api('/office/contractor-callbacks').catch(function(){ return []; })
+      api('/office/contractor-callbacks').catch(function(){ return []; }),
+      api('/office/contractor-touches').catch(function(){ return []; }),
+      api('/office/billing').catch(function(){ return {price:null, contracts:[], bills:[]}; })
     ]).then(function(result){
       var data = result[0] || {};
       var household = result[1] || {};
@@ -367,6 +563,11 @@
       rows(result[2]).forEach(function(row){ signupName[row.id] = String(row.name || '').trim(); });
       territories = rows((result[3] || {}).zips);
       renderCallbacks(rows(result[4]));
+      touches = rows(result[5]);
+      var billing = result[6] || {};
+      price = billing.price || null;
+      contracts = rows(billing.contracts);
+      bills = rows(billing.bills);
       document.querySelectorAll('.pulse button').forEach(function(button){
         button.setAttribute('aria-pressed', button.dataset.age === ageFilter ? 'true' : 'false');
       });
@@ -376,6 +577,7 @@
         var profileName = [profile.first_name, profile.last_name].filter(function(part){ return part; }).join(' ');
         return {
           contractor_id: Number(profile.contractor_id) || 0,
+          registration_id: Number(profile.registration_id) || 0,
           name: profileName || signupName[profile.registration_id] || 'Unnamed family'
         };
       });
@@ -487,9 +689,27 @@
       return load();
     }).catch(function(err){ status.textContent = err.message; });
   });
+  document.getElementById('detail').addEventListener('toggle', function(event){
+    if (!event.target || event.target.id !== 'territory-zips') return;
+    territoryOpen = !!event.target.open;
+  }, true);
   document.getElementById('detail').addEventListener('click', function(event){
     var button = event.target.closest('button');
     if (!button) return;
+    if (button.id === 'copy-pay') {
+      var url = button.getAttribute('data-url') || '';
+      var line = document.getElementById('pay-link-status');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function(){
+          if (line) line.textContent = 'Copied.';
+        }).catch(function(){ if (line) line.textContent = url; });
+      } else if (line) line.textContent = url;
+      return;
+    }
+    if (button.hasAttribute('data-pay')) {
+      payBill(Number(button.getAttribute('data-pay')));
+      return;
+    }
     if (button.id === 'territory-save') {
       saveTerritory();
       return;
@@ -519,6 +739,34 @@
       render();
     });
   });
+  document.getElementById('detail').addEventListener('submit', function(event){
+    if (!event.target || event.target.id !== 'locked-form') return;
+    event.preventDefault();
+    saveLocked(event.target);
+  });
+  document.getElementById('deal-cancel').addEventListener('click', function(){
+    pendingDeal = null;
+    document.getElementById('deal-confirm').hidden = true;
+    document.getElementById('deal-status').textContent = '';
+    render();
+  });
+  document.getElementById('deal-create').addEventListener('click', function(){
+    if (!pendingDeal) return;
+    var status = document.getElementById('deal-status');
+    status.textContent = 'Creating the contract…';
+    var deal = pendingDeal;
+    api('/office/contract', {method:'POST', body:{contractor_id: deal.id}}).then(function(){
+      return api('/office/contractor-pipeline-move', {method:'POST', body:{
+        contractor_id: deal.id,
+        stage_id: deal.stageId
+      }});
+    }).then(function(){
+      pendingDeal = null;
+      document.getElementById('deal-confirm').hidden = true;
+      status.textContent = '';
+      return load();
+    }).catch(function(err){ status.textContent = err.message; });
+  });
   document.getElementById('login-form').addEventListener('submit', function(event){
     event.preventDefault();
     var status = document.getElementById('login-status');
@@ -533,7 +781,8 @@
       })
       .catch(function(err){ status.textContent = err.message; });
   });
-  signout.addEventListener('click', function(){
+  signout.addEventListener('click', function(event){
+    event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
   });

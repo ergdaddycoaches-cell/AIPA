@@ -8,6 +8,10 @@
   var signout = document.getElementById('signout');
   var dayInput = document.getElementById('day');
   var calls = [];
+  var parked = [];
+  var directory = {families: [], contractors: []};
+  var needsQuery = {};
+  var needsNote = {};
   var day = '';
   var editing = null;
   var emailNote = {};
@@ -27,6 +31,7 @@
     loginView.hidden = !on;
     desk.hidden = on;
     signout.hidden = on;
+    if (!on) pinMast();
   }
   function api(path, options){
     options = options || {};
@@ -70,9 +75,10 @@
   var dial = { contractorId: 0, name: '', company: '', number: '', call: null, device: null, token: '', muted: false, started: 0, timer: 0, phase: '', error: '' };
 
   function rank(item){
-    if (item.group === 'session') return 0;
-    if (item.group === 'email') return 1;
-    return 2;
+    if (item.group === 'message') return 0;
+    if (item.group === 'session') return 1;
+    if (item.group === 'email') return 2;
+    return 3;
   }
   function byName(a, b){
     var order = rank(a) - rank(b);
@@ -164,7 +170,22 @@
       '<span class="meta">' + esc(item.when) + '</span>' +
       '<span class="meta">' + (people ? 'Signed up: ' + people : 'No one signed up yet.') + '</span></li>';
   }
+  function audioHtml(side, id, url){
+    if (!url || !id) return '';
+    return '<button type="button" class="btn quiet message-play" data-play="' + esc(side) + '" data-play-id="' + id + '">Play</button>';
+  }
+  function messageHtml(item){
+    var who = item.detail ? '<span class="meta">' + esc(item.detail) + '</span>' : '';
+    return '<li><span class="action-kind">' + esc(item.kind) + '</span>' +
+      '<a class="name" href="' + esc(item.href) + '">' + esc(item.name) + '</a>' +
+      who +
+      (item.from ? '<span class="meta">' + esc(item.from) + '</span>' : '') +
+      (item.note ? '<p class="message-body">' + esc(item.note) + '</p>' : '') +
+      audioHtml(item.side, item.touch_id, item.recording_url) +
+      '<div class="action-review"><button class="btn" type="button" data-handle="' + esc(item.side) + '" data-touch="' + item.touch_id + '">Handled</button></div></li>';
+  }
   function itemHtml(item){
+    if (item.group === 'message') return messageHtml(item);
     if (item.group === 'email') return emailHtml(item);
     if (item.group === 'session') return sessionHtml(item);
     if (item.kind === 'Contractor') {
@@ -210,6 +231,78 @@
   function countButton(span, count, label){
     var word = count === 1 ? '1 item' : count + ' items';
     return '<button type="button" class="' + (span === 'past' && count ? 'is-past' : '') + '" data-span="' + span + '" aria-label="' + word + ' ' + label.toLowerCase() + '"><b>' + count + '</b><span>' + label + '</span></button>';
+  }
+  function sideLabel(side){
+    return side === 'contractor' ? 'Contractor' : 'Family';
+  }
+  function attachButton(item, person, allowRemember){
+    var word = item.channel === 'email' ? 'email' : 'number';
+    var remember = allowRemember
+      ? '<label class="remember"><input type="checkbox" data-remember="1"> Remember this ' + word + ' on this record</label>'
+      : '';
+    var detail = person.detail ? ' · ' + esc(person.detail) : '';
+    return '<div class="attach-row">' + remember +
+      '<button class="btn" type="button" data-attach="' + item.id + '" data-side="' + esc(person.side) + '" data-record="' + person.id + '">Attach to ' + esc(person.name) + detail + ' · ' + sideLabel(person.side) + '</button></div>';
+  }
+  function searchPeople(query){
+    var text = String(query || '').trim().toLowerCase();
+    var digits = text.replace(/\D/g, '');
+    if (text.length < 2) return [];
+    var found = [];
+    directory.families.forEach(function(row){
+      var blob = [row.name, row.email, row.phone, row.guest_email, row.guest_phone].join(' ').toLowerCase();
+      var phones = [row.phone, row.guest_phone].join('').replace(/\D/g, '');
+      if (blob.indexOf(text) === -1 && !(digits.length >= 3 && phones.indexOf(digits) !== -1)) return;
+      found.push({side:'family', id:row.id, name:row.name || 'Unnamed', detail:''});
+    });
+    directory.contractors.forEach(function(row){
+      var person = row.contact_name || '';
+      var blob = [row.name, person, row.email, row.phone].join(' ').toLowerCase();
+      var phones = String(row.phone || '').replace(/\D/g, '');
+      if (blob.indexOf(text) === -1 && !(digits.length >= 3 && phones.indexOf(digits) !== -1)) return;
+      found.push({side:'contractor', id:row.id, name:person || row.name || 'Unnamed contractor', detail:person && row.name ? row.name : ''});
+    });
+    return found.slice(0, 8);
+  }
+  function needsHtml(item){
+    var channel = item.channel === 'email' ? 'Email' : (item.channel === 'voicemail' ? 'Voicemail' : 'Text');
+    var from = item.direction === 'out' ? item.to_address : item.from_address;
+    var body = item.body || item.subject || '';
+    var choices = (item.candidates || []).map(function(person){ return attachButton(item, person, false); }).join('');
+    var finder = '';
+    if (!(item.candidates || []).length) {
+      var query = needsQuery[item.id] || '';
+      var results = searchPeople(query).map(function(person){ return attachButton(item, person, true); }).join('');
+      finder = '<label class="needs-find">Search families and contractors<input data-needs-search="' + item.id + '" value="' + esc(query) + '" autocomplete="off"></label>' + results;
+    }
+    var note = needsNote[item.id] ? '<p class="status-line" role="status">' + esc(needsNote[item.id]) + '</p>' : '';
+    return '<li><span class="action-kind">' + channel + '</span>' +
+      '<span class="name">' + esc(from || 'Unknown sender') + '</span>' +
+      (body ? '<p class="message-body">' + esc(body) + '</p>' : '') +
+      audioHtml('parked', item.id, item.recording_url) +
+      choices + finder + note + '</li>';
+  }
+  function renderNeeds(){
+    var box = document.getElementById('needs-person');
+    var list = document.getElementById('needs-list');
+    if (!box || !list) return;
+    if (!parked.length) {
+      box.hidden = true;
+      list.innerHTML = '';
+      return;
+    }
+    var active = document.activeElement;
+    var activeId = active && active.getAttribute ? active.getAttribute('data-needs-search') : '';
+    box.hidden = false;
+    list.innerHTML = parked.map(needsHtml).join('');
+    if (activeId) {
+      var again = list.querySelector('[data-needs-search="' + activeId + '"]');
+      if (again) {
+        again.focus();
+        var end = again.value.length;
+        if (again.setSelectionRange) again.setSelectionRange(end, end);
+      }
+    }
   }
   function render(){
     var y = window.scrollY;
@@ -261,6 +354,7 @@
     var openBox = document.getElementById('undated');
     openBox.hidden = !open.length;
     document.getElementById('undated-list').innerHTML = listHtml(open);
+    renderNeeds();
     if (y) window.scrollTo(0, y);
     if (editing && editing.focus) {
       var box = document.getElementById('email-date');
@@ -273,7 +367,8 @@
     var section = document.getElementById('day-' + iso);
     if (!section) return;
     var stick = document.getElementById('action-stick');
-    var top = section.getBoundingClientRect().top + window.scrollY - (stick ? stick.offsetHeight : 0) - 4;
+    var cover = stick ? stick.getBoundingClientRect().bottom : 0;
+    var top = section.getBoundingClientRect().top + window.scrollY - cover - 12;
     spyLock = true;
     day = iso;
     dayInput.value = iso;
@@ -393,11 +488,16 @@
     return Promise.all([
       api('/office/signups'),
       api('/office/meetings'),
-      api('/office/contractor-pipeline')
+      api('/office/contractor-pipeline'),
+      api('/office/inbox').catch(function(){ return {parked:[], open:[]}; })
     ]).then(function(result){
       var signups = rows(result[0]);
       var meetings = rows(result[1]);
       var contractors = rows((result[2] || {}).contractors);
+      var inbox = result[3] || {};
+      directory.families = signups;
+      directory.contractors = contractors;
+      parked = rows(inbox.parked);
       calls = [];
       signups.filter(function(row){ return wants(row) && isFamily(row, meetings); }).forEach(function(row){
         calls.push({
@@ -444,6 +544,22 @@
         });
       });
       sessionItems(meetings, signups).forEach(function(item){ calls.push(item); });
+      rows(inbox.open).forEach(function(item){
+        var family = item.side !== 'contractor';
+        calls.push({
+          group: 'message',
+          kind: item.kind === 'email' ? 'Email' : (item.kind === 'voicemail' ? 'Voicemail' : 'Text'),
+          name: item.name || 'Unnamed',
+          detail: item.detail || '',
+          from: item.from_address || '',
+          note: item.note || item.subject || '',
+          recording_url: item.recording_url || '',
+          side: family ? 'family' : 'contractor',
+          touch_id: item.touch_id,
+          href: family ? '/admin/families/call/?id=' + item.registration_id : '/admin/contractors/?id=' + item.contractor_id,
+          date: today()
+        });
+      });
       render();
       if (!options.keep) reveal(today(), false);
     }).catch(function(err){
@@ -615,7 +731,46 @@
     if (dial.call) dial.call.disconnect();
     else finishCall('Call ended.');
   }
+  document.getElementById('desk').addEventListener('input', function(event){
+    var box = event.target.closest('[data-needs-search]');
+    if (!box) return;
+    needsQuery[box.getAttribute('data-needs-search')] = box.value;
+    renderNeeds();
+  });
   document.getElementById('desk').addEventListener('click', function(event){
+    var handle = event.target.closest('[data-handle]');
+    if (handle) {
+      api('/office/message-handled', {method:'POST', body:{
+        side: handle.getAttribute('data-handle'),
+        touch_id: Number(handle.getAttribute('data-touch'))
+      }}).then(function(){ return load({keep:true}); }).catch(function(err){
+        document.getElementById('day-count').textContent = err.message;
+      });
+      return;
+    }
+    var attach = event.target.closest('[data-attach]');
+    if (attach) {
+      var parkedId = attach.getAttribute('data-attach');
+      var row = attach.closest('.attach-row');
+      var remember = !!(row && row.querySelector('[data-remember]') && row.querySelector('[data-remember]').checked);
+      var side = attach.getAttribute('data-side');
+      needsNote[parkedId] = 'Attaching…';
+      renderNeeds();
+      api('/office/assign-message', {method:'POST', body:{
+        unmatched_id: Number(parkedId),
+        registration_id: side === 'family' ? Number(attach.getAttribute('data-record')) : 0,
+        contractor_id: side === 'contractor' ? Number(attach.getAttribute('data-record')) : 0,
+        remember: remember
+      }}).then(function(){
+        delete needsNote[parkedId];
+        delete needsQuery[parkedId];
+        return load({keep:true});
+      }).catch(function(err){
+        needsNote[parkedId] = err.message;
+        renderNeeds();
+      });
+      return;
+    }
     var emailButton = event.target.closest('[data-email-act]');
     if (emailButton) {
       var emailId = Number(emailButton.getAttribute('data-email-id'));
@@ -686,9 +841,22 @@
       })
       .catch(function(err){ status.textContent = err.message; });
   });
-  signout.addEventListener('click', function(){
+  signout.addEventListener('click', function(event){
+    event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
+  });
+  document.getElementById('password-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var status = document.getElementById('password-status');
+    status.textContent = 'Updating…';
+    api('/office/password', {method:'POST', body:{
+      current: document.getElementById('current-password').value,
+      next: document.getElementById('next-password').value
+    }}).then(function(){
+      document.getElementById('password-form').reset();
+      status.textContent = 'Password updated.';
+    }).catch(function(err){ status.textContent = err.message; });
   });
   document.getElementById('desk').addEventListener('change', function(event){
     var input = event.target.closest('[data-delay-date]');
@@ -725,6 +893,20 @@
     var button = event.target.closest('[data-span]');
     if (button) jumpSpan(button.getAttribute('data-span'));
   });
+  function pinMast(){
+    var mast = document.querySelector('.mast');
+    var stick = document.getElementById('action-stick');
+    if (mast) document.documentElement.style.setProperty('--mast-h', Math.ceil(mast.getBoundingClientRect().height) + 'px');
+    if (stick && !desk.hidden) document.documentElement.style.setProperty('--stick-h', Math.ceil(stick.offsetHeight) + 'px');
+  }
+  pinMast();
+  if (window.ResizeObserver) {
+    var watcher = new ResizeObserver(pinMast);
+    var mastEl = document.querySelector('.mast');
+    var stickEl = document.getElementById('action-stick');
+    if (mastEl) watcher.observe(mastEl);
+    if (stickEl) watcher.observe(stickEl);
+  }
   window.addEventListener('scroll', function(){
     if (spyLock || desk.hidden) return;
     var stick = document.getElementById('action-stick');

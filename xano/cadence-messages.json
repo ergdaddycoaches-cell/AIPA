@@ -1,0 +1,434 @@
+﻿[
+    {
+        "key":  "cad_react_1",
+        "name":  "Reactivation, introduction",
+        "channel":  "email",
+        "subject":  "A note from {{contractor}} and the Aging in Place Alliance",
+        "body":  "Hi {{first_name}},\r\n\r\nSome time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there\u0027s no rush.\r\n\r\n{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. Our guides are people in their 50s, 60s and 70s, so we understand the questions from the same side of the table.\r\n\r\nHere\u0027s a short guide many people find useful: {{guide}}\r\n{{library}}\r\n\r\nWarm regards,\r\n[Host name]\r\nAging in Place Alliance\r\n\r\nP.S. We host a free Live Q\u0026A where you can ask anything, with no sales pitch. The next one is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  21
+    },
+    {
+        "key":  "cad_react_2",
+        "name":  "Reactivation, why people wait",
+        "channel":  "email",
+        "subject":  "Is it too early to think about this?",
+        "body":  "Hi {{first_name}},\r\n\r\nIt\u0027s the question we hear most. The honest answer is that the best time to plan is while it\u0027s still a choice, not a necessity.\r\n\r\nPlanning early doesn\u0027t mean doing everything at once. Many people make one or two changes now and save the rest for later.\r\n\r\nThis short guide explains how: {{guide}}\r\n{{library}}\r\n\r\nIf a question comes to mind, just reply. A real person reads every note.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  22
+    },
+    {
+        "key":  "cad_react_3",
+        "name":  "Reactivation, Live Q\u0026A invite",
+        "channel":  "email",
+        "subject":  "You\u0027re invited: Live Q\u0026A on [Date]",
+        "body":  "Hi {{first_name}},\r\n\r\nI\u0027d like to invite you to our next Live Q\u0026A.\r\n\r\n[Day, Date] at [Time], about 45 minutes, from your own computer or tablet.\r\n\r\nWe\u0027ll cover what changes are worth making, what they really cost, and how to plan them without upheaval. You can ask questions or simply listen. No one will try to sell you anything.\r\n\r\nSave my seat: {{live_qa}}\r\n\r\nNo obligation, of course. If the timing isn\u0027t right, that\u0027s perfectly fine.\r\n\r\n[Host name]\r\n\r\nP.S. If you\u0027d rather talk it through privately, you can book an Ask Anything 1:1 instead. Book a 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  23
+    },
+    {
+        "key":  "cad_react_4",
+        "name":  "Reactivation, three ideas",
+        "channel":  "email",
+        "subject":  "Three ideas that keep people waiting",
+        "body":  "Hi {{first_name}},\r\n\r\nWe hear the same three worries again and again. Each one is understandable, and each one is worth a second look.\r\n\r\n\"It will look like a hospital.\" Today\u0027s grab bars, showers and lighting can look like any well-designed home. Many people\u0027s guests never notice.\r\n\r\n\"It all has to be done at once.\" Most people start with one or two changes and plan the rest over time.\r\n\r\n\"It\u0027s for people who already need it.\" The changes are easiest to make while they\u0027re still a choice, not after a fall.\r\n\r\nMore on each: {{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Our next Live Q\u0026A is [Day, Date] at [Time]. Save a seat: {{live_qa}} Or book a private Ask Anything 1:1. Book a 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  24
+    },
+    {
+        "key":  "cad_react_5",
+        "name":  "Reactivation, one question",
+        "channel":  "email",
+        "subject":  "What\u0027s your one question?",
+        "body":  "Hi {{first_name}},\r\n\r\nIf you could ask one question about making your home easier to live in for the long run, what would it be?\r\n\r\nJust reply to this email with your question. I\u0027ll answer it at our next Live Q\u0026A on [Day, Date] at [Time], and I won\u0027t use your name.\r\n\r\nSave my seat: {{live_qa}}\r\n\r\nOf course, you\u0027re under no obligation. I\u0027m happy to answer by email too.\r\n\r\n[Host name]\r\n\r\nP.S. If you\u0027d prefer a private conversation, book an Ask Anything 1:1. {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  25
+    },
+    {
+        "key":  "cad_react_6",
+        "name":  "Reactivation, the common mistake",
+        "channel":  "email",
+        "subject":  "The most common mistake we see",
+        "body":  "Hi {{first_name}},\r\n\r\nIt isn\u0027t choosing the wrong grab bar or tile. It\u0027s waiting until after a fall, when every decision has to be made in a hurry.\r\n\r\nHere\u0027s a short guide on making changes on your own schedule: {{guide}}\r\n{{library}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  26
+    },
+    {
+        "key":  "cad_react_7",
+        "name":  "Reactivation, close the file",
+        "channel":  "email",
+        "subject":  "Should I close your file?",
+        "body":  "Hi {{first_name}},\r\n\r\nI don\u0027t want to fill your inbox with notes you don\u0027t need, so I\u0027ll ask simply. Just reply with a letter:\r\n\r\nA. Save me a seat at the next Live Q\u0026A\r\nB. Not now, but check back later\r\nC. Please close my file\r\n\r\nAny answer is fine, and I\u0027ll respect it.\r\n\r\nThank you,\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  27
+    },
+    {
+        "key":  "cad_attend_confirm",
+        "name":  "Registered, confirmation",
+        "channel":  "email",
+        "subject":  "You\u0027re registered: Live Q\u0026A on [Date]",
+        "body":  "Hi {{first_name}},\r\n\r\nYou\u0027re all set for [Day, Date] at [Time].\r\n\r\nJoin here: {{zoom}}\r\nA calendar invitation is attached so it\u0027s easy to remember.\r\n\r\nIf there\u0027s something you\u0027d like me to cover, reply with your question and I\u0027ll make sure we get to it.\r\n\r\nSee you then,\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  28
+    },
+    {
+        "key":  "cad_attend_call",
+        "name":  "Registered, host reminder call",
+        "channel":  "call",
+        "subject":  "",
+        "body":  "Call from the host, 24 hours before the Live Q\u0026A.\r\n\r\nHello, is this {{first_name}}? This is [Host name] from the Aging in Place Alliance. I\u0027m calling to say I\u0027m looking forward to seeing you at tomorrow\u0027s Live Q\u0026A at [Time]. Do you have the link handy, or shall I send it again? Is there anything in particular you\u0027d like me to cover? Wonderful. See you tomorrow.\r\n\r\nIf nobody answers, leave this voicemail, then send the text:\r\n\r\nHello {{first_name}}, it\u0027s [Host name] from the Aging in Place Alliance. Just a friendly reminder about tomorrow\u0027s Live Q\u0026A at [Time]. I\u0027ll text you the link. Look forward to seeing you.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  29
+    },
+    {
+        "key":  "cad_attend_call_sms",
+        "name":  "Registered, text if the reminder call is missed",
+        "channel":  "sms",
+        "subject":  "",
+        "body":  "Hi {{first_name}}, it\u0027s [Host name] from the Aging in Place Alliance. Looking forward to seeing you at tomorrow\u0027s Live Q\u0026A at [Time]. Here\u0027s the link: {{zoom}} Reply STOP to opt out.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  30
+    },
+    {
+        "key":  "cad_attend_day",
+        "name":  "Registered, one day before",
+        "channel":  "email",
+        "subject":  "Tomorrow at [Time]: Live Q\u0026A",
+        "body":  "Hi {{first_name}},\r\n\r\nA quick reminder that our Live Q\u0026A is tomorrow, [Day] at [Time].\r\n\r\nJoin here: {{zoom}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  31
+    },
+    {
+        "key":  "cad_attend_hour",
+        "name":  "Registered, one hour before",
+        "channel":  "email",
+        "subject":  "We start in one hour",
+        "body":  "Hi {{first_name}}, our Live Q\u0026A begins at [Time]. Join here: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  32
+    },
+    {
+        "key":  "cad_attend_hour_sms",
+        "name":  "Registered, text one hour before",
+        "channel":  "sms",
+        "subject":  "",
+        "body":  "Hi {{first_name}}, our Live Q\u0026A starts in one hour, at [Time]. Join here: {{zoom}}. [Host name] Reply STOP to opt out.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  33
+    },
+    {
+        "key":  "cad_attend_now",
+        "name":  "Registered, starting now",
+        "channel":  "email",
+        "subject":  "We\u0027re starting now",
+        "body":  "Hi {{first_name}}, we\u0027re starting now. Come in whenever you\u0027re ready: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  34
+    },
+    {
+        "key":  "cad_attend_now_sms",
+        "name":  "Registered, text as it starts",
+        "channel":  "sms",
+        "subject":  "",
+        "body":  "We\u0027re starting now, {{first_name}}. Join here: {{zoom}}. [Host name] Reply STOP to opt out.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  35
+    },
+    {
+        "key":  "cad_noshow_1",
+        "name":  "Missed Live Q\u0026A, same day",
+        "channel":  "email",
+        "subject":  "Sorry we missed you",
+        "body":  "Hi {{first_name}},\r\n\r\nWe missed you at today\u0027s Live Q\u0026A. No worries, life happens.\r\n\r\nHere\u0027s a short clip of the question that came up most: {{library}}\r\n\r\nThe next session is [Day, Date] at [Time]. Save a seat: {{live_qa}}\r\n\r\nOr, if a private conversation suits you better, book an Ask Anything 1:1. {{one_to_one}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  36
+    },
+    {
+        "key":  "cad_noshow_2",
+        "name":  "Missed Live Q\u0026A, next date",
+        "channel":  "email",
+        "subject":  "A seat for you on [Date]",
+        "body":  "Hi {{first_name}},\r\n\r\nI\u0027d be glad to save you a seat at our next Live Q\u0026A: [Day, Date] at [Time].\r\n\r\nSave my seat: {{live_qa}}\r\n\r\nNo obligation. If now isn\u0027t the right time, that\u0027s fine too.\r\n\r\n[Host name]\r\n\r\nP.S. Prefer one-on-one? Book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  37
+    },
+    {
+        "key":  "cad_noshow_3",
+        "name":  "Missed Live Q\u0026A, a guide",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\nI thought you might find this useful: {{guide}}\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. The next Live Q\u0026A is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  38
+    },
+    {
+        "key":  "cad_attendee_call",
+        "name":  "Attendee, host call",
+        "channel":  "call",
+        "subject":  "",
+        "body":  "Call from the host who ran the Live Q\u0026A, two days later.\r\n\r\nHello {{first_name}}, this is [Host name] from the Aging in Place Alliance. Thank you for joining the Live Q\u0026A on [Day]. I wanted to ask if anything came up afterward that you\u0027d like to talk through? Many people find it helpful to have a short private conversation about their own home. Would you like me to set up an Ask Anything 1:1? I have [time option 1] or [time option 2]. And if now isn\u0027t the right time, that\u0027s perfectly fine.\r\n\r\nIf nobody answers, leave this voicemail, then send the text:\r\n\r\nHello {{first_name}}, it\u0027s [Host name] from the Aging in Place Alliance. Thank you for joining us on [Day]. I\u0027m calling to see if any questions came up. I\u0027ll send you a short text, and you can always reach us at 833-AIPA-HUB.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  39
+    },
+    {
+        "key":  "cad_attendee_guide",
+        "name":  "Attendee, a guide from the session",
+        "channel":  "email",
+        "subject":  "More on [topic from the session]",
+        "body":  "Hi {{first_name}},\r\n\r\nThe question we heard most at the session was about [topic from the session]. Here\u0027s a short guide that goes a bit deeper: {{guide}}\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. If you\u0027d like to talk about your own home, book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  40
+    },
+    {
+        "key":  "cad_attendee_last",
+        "name":  "Attendee, last call for a 1:1",
+        "channel":  "email",
+        "subject":  "A few 1:1 times left this month",
+        "body":  "Hi {{first_name}},\r\n\r\nOur guides have a few Ask Anything 1:1 times left this month, and I wanted to make sure you had the chance.\r\n\r\nAbout 30 minutes, about your home, at no cost. Your daughter or son is welcome to join.\r\n\r\nBook my 1:1: {{one_to_one}}\r\n\r\nThere\u0027s no obligation, and you\u0027re free to wait. We\u0027ll still be here.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  41
+    },
+    {
+        "key":  "cad_oto_confirm",
+        "name":  "Ask Anything 1:1, confirmation",
+        "channel":  "email",
+        "subject":  "Your Ask Anything 1:1 is confirmed",
+        "body":  "Hi {{first_name}},\r\n\r\nYour Ask Anything 1:1 is set for [Day, Date] at [Time]. A calendar invitation is attached.\r\n\r\nYou\u0027ll be speaking with [Guide name]. [Guide photo] [One line about the guide.]\r\n\r\nYou\u0027re welcome to invite your daughter or son to join. Just forward them this email. Here\u0027s the link: {{zoom}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  42
+    },
+    {
+        "key":  "cad_oto_day",
+        "name":  "Ask Anything 1:1, one day before",
+        "channel":  "email",
+        "subject":  "Tomorrow: your Ask Anything 1:1",
+        "body":  "Hi {{first_name}}, a friendly reminder that you\u0027re speaking with [Guide name] tomorrow at [Time]. Join here: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  43
+    },
+    {
+        "key":  "cad_oto_day_sms",
+        "name":  "Ask Anything 1:1, text one day before",
+        "channel":  "sms",
+        "subject":  "",
+        "body":  "Hi {{first_name}}, a reminder that your 1:1 with [Guide name] is tomorrow at [Time]. Link: {{zoom}} Reply STOP to opt out.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  44
+    },
+    {
+        "key":  "cad_oto_soon_sms",
+        "name":  "Ask Anything 1:1, text one hour before",
+        "channel":  "sms",
+        "subject":  "",
+        "body":  "Hi {{first_name}}, it\u0027s [Guide name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}} Reply STOP to opt out.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  45
+    },
+    {
+        "key":  "cad_oto_soon_email",
+        "name":  "Ask Anything 1:1, email one hour before",
+        "channel":  "email",
+        "subject":  "Talk soon",
+        "body":  "Hi {{first_name}}, it\u0027s [Guide name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  46
+    },
+    {
+        "key":  "cad_oto_miss_1",
+        "name":  "Missed Ask Anything 1:1, same day",
+        "channel":  "email",
+        "subject":  "Shall we find another time?",
+        "body":  "Hi {{first_name}},\r\n\r\nWe missed each other today. Not a problem at all. Would you like to choose another time? {{one_to_one}}\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  47
+    },
+    {
+        "key":  "cad_oto_miss_2",
+        "name":  "Missed Ask Anything 1:1, rebook",
+        "channel":  "email",
+        "subject":  "Another time for your Ask Anything 1:1",
+        "body":  "Hi {{first_name}},\r\n\r\nI\u0027d be glad to find another time for your Ask Anything 1:1.\r\n\r\n{{one_to_one}}\r\n\r\nNo obligation. If now isn\u0027t the right time, that\u0027s fine too.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  48
+    },
+    {
+        "key":  "cad_oto_miss_3",
+        "name":  "Missed Ask Anything 1:1, a guide",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\nI thought you might find this useful: {{guide}}\r\n{{library}}\r\n\r\n[Guide name]\r\n\r\nP.S. If you\u0027d like another time, book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  49
+    },
+    {
+        "key":  "cad_visit_plan",
+        "name":  "After the 1:1, the plan",
+        "channel":  "email",
+        "subject":  "Your 10+ Year Freedom Plan",
+        "body":  "Hi {{first_name}},\r\n\r\nThank you for the conversation today. Here\u0027s a summary of what we talked about, so you have it in one place.\r\n\r\nYour home: [one or two lines]\r\nWhat matters most to you: [in their own words]\r\nChanges to consider now: [short list]\r\nChanges that can wait: [short list]\r\n\r\nDownload your plan: [link]\r\n\r\nWhen you\u0027re ready, the next step is a measuring visit at your home. [Book a visit]\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  50
+    },
+    {
+        "key":  "cad_visit_guide",
+        "name":  "After the 1:1, the hesitation guide",
+        "channel":  "email",
+        "subject":  "About [their hesitation]",
+        "body":  "Hi {{first_name}},\r\n\r\nWhen we spoke, you mentioned [their hesitation in their words]. That\u0027s a very common concern, and a fair one.\r\n\r\nThis short guide addresses it directly: {{guide}}\r\n{{library}}\r\n\r\nIf it raises any questions, just reply.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  51
+    },
+    {
+        "key":  "cad_visit_call",
+        "name":  "After the 1:1, guide call",
+        "channel":  "call",
+        "subject":  "",
+        "body":  "Call from the same guide who ran the Ask Anything 1:1, four days later.\r\n\r\nHello {{first_name}}, it\u0027s [Guide name]. I enjoyed our conversation on [Day]. Have any questions come up since then? The next step, whenever you\u0027re ready, is a measuring visit. Someone comes to your home, takes measurements and talks through options. It\u0027s about an hour, and you keep the measurements whatever you decide. I could arrange [time option 1] or [time option 2]. Would either suit you? And if you\u0027d rather wait, that\u0027s perfectly fine.\r\n\r\nIf nobody answers, leave this voicemail, then send the text:\r\n\r\nHello {{first_name}}, it\u0027s [Guide name] from the Aging in Place Alliance. I enjoyed our talk on [Day] and wanted to see if any questions came up. I\u0027ll send a short text. You can always reach us at 833-AIPA-HUB.",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  52
+    },
+    {
+        "key":  "cad_visit_family",
+        "name":  "After the 1:1, note for adult children",
+        "channel":  "email",
+        "subject":  "For your family: what we talked about",
+        "body":  "Hi {{first_name}},\r\n\r\nMany people like to share their plan with their children. If that\u0027s helpful, simply forward this email.\r\n\r\n---\r\n\r\nFor {{first_name}}\u0027s family:\r\n\r\nI\u0027m [Guide name] from the Aging in Place Alliance. {{first_name}} and I recently talked about making their home easier to live in for the years ahead. Here\u0027s the plan we put together: [link]\r\n\r\nThe next step, if they choose, is a measuring visit at the home. You\u0027re welcome to be there. [Book a visit]\r\n\r\nQuestions are always welcome: 833-AIPA-HUB.\r\n\r\n---\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  53
+    },
+    {
+        "key":  "cad_visit_ask",
+        "name":  "After the 1:1, the measuring visit",
+        "channel":  "email",
+        "subject":  "A one-hour measuring visit",
+        "body":  "Hi {{first_name}},\r\n\r\nWhen you\u0027re ready, the next step is small: a measuring visit at your home.\r\n\r\n- About an hour\r\n- Measurements taken and options talked through\r\n- You keep the measurements, whatever you decide\r\n- No obligation\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, of course. There\u0027s no deadline.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  54
+    },
+    {
+        "key":  "cad_visit_story",
+        "name":  "After the 1:1, what the visit is like",
+        "channel":  "email",
+        "subject":  "What happens at a measuring visit",
+        "body":  "Hi {{first_name}},\r\n\r\nIt\u0027s natural to wonder what a visit will be like, so here it is, step by step:\r\n\r\n1. A short conversation first. The estimator asks how you use your home and what matters to you.\r\n2. Measurements. Doorways, the bathroom, steps, and anything else on your plan.\r\n3. Options, not pressure. You hear what\u0027s possible and roughly what it costs.\r\n4. Time to think. You keep the measurements, and no one asks you to decide on the spot.\r\n\r\nYou\u0027re welcome to have your daughter or son there too.\r\n\r\n[Guide name]\r\n\r\nP.S. When you\u0027re ready: [Book a measuring visit]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  55
+    },
+    {
+        "key":  "cad_visit_last",
+        "name":  "After the 1:1, last ask",
+        "channel":  "email",
+        "subject":  "One last note from me",
+        "body":  "Hi {{first_name}},\r\n\r\nI don\u0027t want to keep nudging, so this is my last note about the visit for now.\r\n\r\nIf you\u0027d like a measuring visit, you can choose a time here: [Book a visit]\r\n\r\nIf now isn\u0027t right, that\u0027s completely fine. You\u0027re free to wait, and we\u0027ll still be here. I\u0027ll send a useful guide now and then, and you can reach me anytime at 833-AIPA-HUB.\r\n\r\nWith respect,\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  56
+    },
+    {
+        "key":  "cad_nurture_new_1",
+        "name":  "Nurture, first month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\nThis month\u0027s guide: {{guide}}. [One sentence on why it\u0027s useful.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  57
+    },
+    {
+        "key":  "cad_nurture_new_2",
+        "name":  "Nurture, second month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\nThis month\u0027s guide: {{guide}}. [One sentence on why it\u0027s useful.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  58
+    },
+    {
+        "key":  "cad_nurture_new_3",
+        "name":  "Nurture, third month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\n[One or two sentences introducing this month\u0027s guide.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Our next Live Q\u0026A is [Day, Date] at [Time]. Save a seat: {{live_qa}}\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  59
+    },
+    {
+        "key":  "cad_nurture_qa_1",
+        "name":  "Nurture after a Live Q\u0026A, first month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\nThis month\u0027s guide: {{guide}}. [One sentence on why it\u0027s useful.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  60
+    },
+    {
+        "key":  "cad_nurture_qa_2",
+        "name":  "Nurture after a Live Q\u0026A, second month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\n[One or two sentences introducing this month\u0027s guide.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Our next Live Q\u0026A is [Day, Date] at [Time]. Save a seat: {{live_qa}}\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  61
+    },
+    {
+        "key":  "cad_nurture_qa_3",
+        "name":  "Nurture after a Live Q\u0026A, third month",
+        "channel":  "email",
+        "subject":  "An invitation for [Month]",
+        "body":  "Hi {{first_name}},\r\n\r\nOur next Live Q\u0026A is [Day, Date] at [Time]. Bring a question, or just listen.\r\n\r\nSave my seat: {{live_qa}}\r\n\r\nNo obligation. If now isn\u0027t the time, that\u0027s fine.\r\n\r\n[Host name]\r\n\r\nP.S. Prefer a private conversation? Book an Ask Anything 1:1: {{one_to_one}}\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  62
+    },
+    {
+        "key":  "cad_nurture_visit_1",
+        "name":  "Nurture after a 1:1, soft month",
+        "channel":  "email",
+        "subject":  "{{guide}}",
+        "body":  "Hi {{first_name}},\r\n\r\n[One or two sentences introducing this month\u0027s guide.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Whenever you\u0027re ready, [Guide name] can arrange a measuring visit. [Book a visit]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  63
+    },
+    {
+        "key":  "cad_nurture_visit_2",
+        "name":  "Nurture after a 1:1, the visit",
+        "channel":  "email",
+        "subject":  "Whenever you\u0027re ready",
+        "body":  "Hi {{first_name}},\r\n\r\nJust a gentle note that [Guide name] would be glad to arrange your measuring visit: about an hour, no obligation, and you keep the measurements.\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, and we\u0027ll still be here.\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  64
+    },
+    {
+        "key":  "cad_season_thanks",
+        "name":  "Seasonal, before Thanksgiving",
+        "channel":  "email",
+        "subject":  "Something to share with your family this Thanksgiving",
+        "body":  "Hi {{first_name}},\r\n\r\nWhen children come home for the holidays, they often notice things we\u0027ve learned to work around.\r\n\r\nIf it would help, forward this short checklist. It shows what to look for, kindly and without fuss:\r\n\r\n- Is the tub or shower easy to step in and out of?\r\n- Are the stairs well lit, with a sturdy rail on both sides?\r\n- Is there a clear, lit path from bed to bathroom at night?\r\n- Any near-slips or stumbles lately?\r\n\r\nRead the full checklist: {{library}}\r\n\r\nWishing you a warm Thanksgiving,\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  65
+    },
+    {
+        "key":  "cad_season_dec",
+        "name":  "Seasonal, early December",
+        "channel":  "email",
+        "subject":  "A holiday checklist worth sharing",
+        "body":  "Hi {{first_name}},\r\n\r\nAs family gathers this month, here\u0027s a short checklist that makes a good conversation starter.\r\n\r\nRead the checklist: {{library}}\r\n\r\nHappy holidays,\r\n[Host name]\r\n\r\nP.S. Our next Live Q\u0026A is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  66
+    },
+    {
+        "key":  "cad_season_jan",
+        "name":  "Seasonal, after the holidays",
+        "channel":  "email",
+        "subject":  "Did the holidays raise anything?",
+        "body":  "Hi {{first_name}},\r\n\r\nHoliday visits often bring up the conversation about the house: the stairs, the shower, the \"what if.\" If that happened in your family, you\u0027re not alone.\r\n\r\nOur next Live Q\u0026A is a good place to start: [Day, Date] at [Time].\r\n\r\nSave my seat: {{live_qa}}\r\n\r\nOr, for a private conversation, book an Ask Anything 1:1: {{one_to_one}}\r\n\r\nThere\u0027s no obligation, and no rush.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  67
+    },
+    {
+        "key":  "cad_season_jan_2",
+        "name":  "Seasonal, later in January",
+        "channel":  "email",
+        "subject":  "A calm way to start planning",
+        "body":  "Hi {{first_name}},\r\n\r\nIf the holidays raised questions, this short guide shows how to plan in phases, starting with the one change that matters most: {{guide}}\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. When you\u0027d like to talk it through, book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
+        "sort":  68
+    }
+]

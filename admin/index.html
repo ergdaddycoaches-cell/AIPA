@@ -3,37 +3,46 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex">
-<title>Back office | Aging in Place Alliance</title>
+<meta name="robots" content="noindex, nofollow">
+<title>Actions | Aging in Place Alliance</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/seminar-format.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
+<script src="/assets/js/recording.js" defer></script>
+<script src="/assets/js/actions.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="mast">
   <div class="wrap">
-    <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Staff back office</small></span></a>
-    <div class="mast-actions">
-      <a class="btn quiet" href="/admin/actions/">Actions</a>
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+            <a class="btn quiet" href="/admin/" aria-current="page">Actions</a>
       <a class="btn quiet" href="/admin/families/">Families</a>
       <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
+      <a class="btn quiet" href="/admin/prices/">Prices</a>
       <a class="btn quiet" href="/admin/glossary/">Glossary</a>
       <a class="btn quiet" href="/admin/standards/">Standards</a>
-      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
-    </div>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
   </div>
 </header>
 <main id="main">
   <section class="office wrap" id="login-view">
     <form class="login-card" id="login-form">
-      <h1>Back office</h1>
-      <p class="lede">Write guides and schedule seminars. Drafts stay off the site until you publish them.</p>
+      <h1>Actions</h1>
+      <p class="lede">Messages, callbacks, delayed emails, and scheduled sessions. Sign in with the staff password.</p>
       <label for="password">Staff password</label>
       <input id="password" type="password" autocomplete="current-password" required>
       <div class="actions"><button class="btn" type="submit">Sign in</button></div>
@@ -42,277 +51,25 @@
   </section>
 
   <section class="office wrap" id="desk" hidden>
-    <div class="chips" id="office-nav" role="group" aria-label="Back office sections">
-      <button class="chip" type="button" data-panel="guides" aria-pressed="true">Guides</button>
-      <button class="chip" type="button" data-panel="seminars" aria-pressed="false">Seminars</button>
-    </div>
-    <div id="panel-guides">
-    <div class="sec-head">
-      <h1>Guides</h1>
-      <p>Drafts stay off the site. Publishing puts a guide in the library and in search. Retiring takes it back off.</p>
-    </div>
-    <div class="chips" role="group" aria-label="Filter guides">
-      <button class="chip" type="button" data-filter="" aria-pressed="true">All</button>
-      <button class="chip" type="button" data-filter="draft" aria-pressed="false">Drafts</button>
-      <button class="chip" type="button" data-filter="published" aria-pressed="false">Live</button>
-      <button class="chip" type="button" data-filter="retired" aria-pressed="false">Retired</button>
-    </div>
-    <div class="desk">
-      <div>
-        <button class="btn" type="button" id="new-guide">New guide</button>
-        <ul class="guide-list" id="guide-list"></ul>
+    <div class="action-stick" id="action-stick">
+      <div class="action-bar">
+        <button class="btn quiet" type="button" id="day-prev">Previous day</button>
+        <label for="day">Day</label>
+        <input id="day" type="date">
+        <button class="btn quiet" type="button" id="day-today">Today</button>
+        <button class="btn quiet" type="button" id="day-next">Next day</button>
       </div>
-      <form class="editor" id="editor">
-        <p class="badge draft" id="editor-status">New draft</p>
-        <label for="title">Title</label>
-        <input id="title" name="title" required>
-        <label for="section">Section</label>
-        <select id="section" name="section_slug" required></select>
-        <label for="slug">Web address</label>
-        <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank">
-        <label for="summary">Summary</label>
-        <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
-        <div class="markup">
-          <h2>Start from markup</h2>
-          <p class="note">Paste a text file, or choose one. Fill this guide replaces the draft on screen. To bring in several guides, separate them with a line that says [article], then save them all as drafts. A photo block is left empty so you can crop the picture after.</p>
-          <textarea id="markup" rows="8" spellcheck="false" placeholder="[title]&#10;Where grab bars go&#10;&#10;[section]&#10;Bathrooms&#10;&#10;[summary]&#10;One or two sentences.&#10;&#10;[paragraph]&#10;The first paragraph.&#10;^ An optional footnote&#10;&#10;[paragraph_image_left 3:2]&#10;The words beside the photo.&#10;&#10;[bullets]&#10;- First point&#10;- Second point ^ A footnote for this point"></textarea>
-          <div class="actions">
-            <label class="btn quiet" for="markup-file">Choose a text file</label>
-            <input id="markup-file" type="file" accept=".txt,text/plain">
-            <button class="btn quiet" type="button" id="markup-fill">Fill this guide</button>
-            <button class="btn quiet" type="button" id="markup-import">Save all as drafts</button>
-          </div>
-        </div>
-        <div class="guide-build">
-          <h2>Guide</h2>
-          <p class="note">The title, the phone number, and the booking code are added to the handout for you. A footnote on a paragraph or a bullet is collected at the bottom. What the photo shows is read aloud and is not printed.</p>
-          <div id="blocks"></div>
-          <div class="block-add" role="group" aria-label="Add to the guide">
-            <button class="btn quiet" type="button" data-add="headline">Headline</button>
-            <button class="btn quiet" type="button" data-add="paragraph">Paragraph</button>
-            <button class="btn quiet" type="button" data-add="photo-left">Photo on the left</button>
-            <button class="btn quiet" type="button" data-add="photo-right">Photo on the right</button>
-            <button class="btn quiet" type="button" data-add="bullets">Bulleted list</button>
-          </div>
-        </div>
-        <label for="tags">Words people might search</label>
-        <input id="tags" name="tags" placeholder="walk-in, mom, how much">
-        <div class="actions">
-          <button class="btn quiet" type="button" id="preview-handout">Preview the handout</button>
-          <button class="btn quiet" type="button" id="save-draft">Save draft</button>
-          <button class="btn" type="button" id="publish">Publish</button>
-          <button class="btn danger" type="button" id="retire">Retire</button>
-        </div>
-        <p class="status-line" id="editor-msg" role="status"></p>
-        <p class="note" id="live-link"></p>
-      </form>
-      <div id="crop-dialog" class="crop-dialog" hidden>
-        <div class="crop-card">
-          <h2>Crop the photo</h2>
-          <p>Pick a shape, then drag the photo and use the slider to zoom.</p>
-          <label for="crop-ratio">Shape</label>
-          <select id="crop-ratio">
-            <option value="3:2" selected>3:2 landscape</option>
-            <option value="4:3">4:3 landscape</option>
-            <option value="1:1">Square</option>
-            <option value="3:4">3:4 portrait</option>
-          </select>
-          <canvas id="crop-canvas" width="360" height="240"></canvas>
-          <label for="crop-zoom">Zoom</label>
-          <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1">
-          <div class="actions">
-            <button class="btn" type="button" id="crop-apply">Use this crop</button>
-            <button class="btn quiet" type="button" id="crop-cancel">Cancel</button>
-          </div>
-        </div>
-      </div>
+      <div class="action-counts" id="day-count" role="status"></div>
     </div>
-    </div>
-
-    <div id="panel-seminars" hidden>
-      <div class="sec-head">
-        <h1>Seminars</h1>
-        <p>The standing Zoom link can be used any time. A meeting is either one session or a series, and it stays off the site until you publish it.</p>
-      </div>
-      <form class="editor" id="zoom-form">
-        <h2>Standing Zoom link</h2>
-        <label for="standing-zoom">Link anyone can use</label>
-        <input id="standing-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
-        <div class="actions"><button class="btn quiet" type="submit">Save Zoom link</button></div>
-        <p class="status-line" id="zoom-status" role="status"></p>
-      </form>
-      <div class="chips" role="group" aria-label="Filter seminars">
-        <button class="chip" type="button" data-seminar-filter="" aria-pressed="true">All</button>
-        <button class="chip" type="button" data-seminar-filter="draft" aria-pressed="false">Drafts</button>
-        <button class="chip" type="button" data-seminar-filter="published" aria-pressed="false">Live</button>
-        <button class="chip" type="button" data-seminar-filter="retired" aria-pressed="false">Retired</button>
-      </div>
-      <div class="desk">
-        <div>
-          <button class="btn" type="button" id="new-meeting">New meeting</button>
-          <ul class="guide-list" id="meeting-list"></ul>
-        </div>
-        <form class="editor" id="meeting-editor">
-          <p class="badge draft" id="meeting-status">New draft</p>
-          <label for="meeting-type">Type</label>
-          <select id="meeting-type" required>
-            <option value="contractor_orientation">Contractor Orientation</option>
-            <option value="contractor_deep_dive">Contractor Deep Dive</option>
-            <option value="live_qa">Live Q&amp;A</option>
-            <option value="family_1_1">Ask Anything 1:1</option>
-            <option value="ad_hoc">Ad Hoc</option>
-          </select>
-          <label for="meeting-title">Title</label>
-          <input id="meeting-title" required>
-          <label for="meeting-summary">What they will hear</label>
-          <textarea id="meeting-summary" rows="3"></textarea>
-          <fieldset class="kind-set">
-            <legend>Schedule</legend>
-            <label class="check"><input type="radio" name="meeting-kind" value="one_time" checked> One-time meeting</label>
-            <label class="check"><input type="radio" name="meeting-kind" value="recurring"> Recurring meeting</label>
-          </fieldset>
-          <div id="frequency-wrap" hidden>
-            <label for="meeting-frequency">Repeats</label>
-            <select id="meeting-frequency">
-              <option value="weekly">Every week</option>
-              <option value="every_two_weeks">Every two weeks</option>
-              <option value="monthly">Every month</option>
-            </select>
-          </div>
-          <div class="pair">
-            <div>
-              <label for="meeting-starts" id="meeting-starts-label">Date and time</label>
-              <input id="meeting-starts" type="datetime-local">
-            </div>
-            <div>
-              <label for="meeting-zone">Timezone</label>
-              <select id="meeting-zone">
-                <option value="America/Honolulu">Hawaii</option>
-                <option value="America/Los_Angeles">Pacific</option>
-                <option value="America/Denver">Mountain</option>
-                <option value="America/Chicago">Central</option>
-                <option value="America/New_York">Eastern</option>
-              </select>
-            </div>
-          </div>
-          <label for="meeting-duration">Length in minutes</label>
-          <input id="meeting-duration" type="number" min="15" max="240" value="45">
-          <label for="meeting-zoom">Zoom link for this meeting</label>
-          <input id="meeting-zoom" type="url" inputmode="url" placeholder="Leave blank to use the standing link">
-          <fieldset class="kind-set">
-            <legend>Reminders</legend>
-            <label class="check"><input id="remind-email" type="checkbox"> Email</label>
-            <label class="check"><input id="remind-sms" type="checkbox"> Text message</label>
-          </fieldset>
-          <label for="remind-hours">Hours before the session</label>
-          <input id="remind-hours" type="number" min="1" max="168" value="24">
-          <p class="note">Email and text choices are saved with the meeting. Sending them through Twilio and email is not connected yet.</p>
-          <div class="actions">
-            <button class="btn quiet" type="button" id="meeting-draft">Save draft</button>
-            <button class="btn" type="button" id="meeting-publish">Publish</button>
-            <button class="btn danger" type="button" id="meeting-retire">Retire</button>
-          </div>
-          <p class="status-line" id="meeting-msg" role="status"></p>
-        </form>
-      </div>
-      <section class="signup-panel" aria-labelledby="signup-heading">
-        <h2 id="signup-heading">Signups</h2>
-        <label for="signup-session">Session</label>
-        <select id="signup-session">
-          <option value="">All sessions</option>
-        </select>
-        <p class="note" id="signup-empty">No one has signed up yet.</p>
-        <div class="tablewrap">
-          <table id="signup-table" hidden>
-            <caption class="sr">People signed up for sessions</caption>
-            <thead>
-              <tr>
-                <th>Session</th>
-                <th>When</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Cell</th>
-                <th>Guest</th>
-                <th>Their email</th>
-                <th>Their cell</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="signup-rows"></tbody>
-          </table>
-        </div>
-        <section id="family-notes" class="family-notes" hidden aria-labelledby="family-notes-heading">
-          <h3 id="family-notes-heading">Notes</h3>
-          <p class="note" id="family-notes-who"></p>
-          <form id="family-notes-form">
-            <label class="check" for="notes-consent"><input id="notes-consent" type="checkbox"> They agreed to a transcript</label>
-            <label for="notes-transcript">Transcript</label>
-            <textarea id="notes-transcript" class="tall"></textarea>
-            <label for="notes-summary">Summary</label>
-            <textarea id="notes-summary" class="tall"></textarea>
-            <label for="notes-topics">Topics, one per line</label>
-            <textarea id="notes-topics"></textarea>
-            <div class="pair">
-              <div>
-                <label for="notes-readiness">Estimator visit</label>
-                <select id="notes-readiness">
-                  <option value="">Not set</option>
-                  <option value="not_ready">Not ready</option>
-                  <option value="unsure">Unsure</option>
-                  <option value="ready">Ready</option>
-                </select>
-              </div>
-              <div>
-                <label for="follow-up-status">Follow-up</label>
-                <select id="follow-up-status">
-                  <option value="none">Not started</option>
-                  <option value="draft">Draft</option>
-                  <option value="sent">Sent</option>
-                </select>
-              </div>
-            </div>
-            <label for="notes-readiness-note">Why that readiness</label>
-            <textarea id="notes-readiness-note"></textarea>
-            <fieldset>
-              <legend>People on the call</legend>
-              <p class="note">Internal only. These reads are not sent out.</p>
-              <div id="attendee-reads"></div>
-              <button class="btn quiet" type="button" id="add-attendee">Add a person</button>
-            </fieldset>
-            <h4>Guide to send</h4>
-            <div class="pair">
-              <div>
-                <label for="suggested-id">Article id</label>
-                <input id="suggested-id" type="number" min="0" inputmode="numeric">
-              </div>
-              <div>
-                <label for="suggested-slug">Slug</label>
-                <input id="suggested-slug" autocomplete="off">
-              </div>
-            </div>
-            <label for="suggested-title">Title</label>
-            <input id="suggested-title" autocomplete="off">
-            <label for="suggested-reason">Why this guide</label>
-            <textarea id="suggested-reason"></textarea>
-            <fieldset>
-              <legend>Other guides</legend>
-              <div id="other-suggestions"></div>
-              <button class="btn quiet" type="button" id="add-suggestion">Add a guide</button>
-            </fieldset>
-            <label for="follow-up-note">Follow-up note</label>
-            <textarea id="follow-up-note" class="tall"></textarea>
-            <p class="note">Marking the follow-up sent records that you sent it. Email and text are not connected yet.</p>
-            <p class="note" id="notes-meta"></p>
-            <div class="actions">
-              <button class="btn" type="submit">Save notes</button>
-              <button class="btn quiet" type="button" id="notes-close">Close</button>
-            </div>
-            <p class="status-line" id="notes-msg" role="status"></p>
-          </form>
-        </section>
-      </section>
-    </div>
-
+    <section class="needs-person" id="needs-person" hidden>
+      <h2>Needs association</h2>
+      <ul class="action-list" id="needs-list"></ul>
+    </section>
+    <div id="day-groups"></div>
+    <section class="action-open" id="undated" hidden>
+      <h2>No date yet</h2>
+      <ul class="action-list" id="undated-list"></ul>
+    </section>
     <form class="password-box" id="password-form">
       <h2>Change password</h2>
       <label for="current-password">Current password</label>
@@ -324,14 +81,5 @@
     </form>
   </section>
 </main>
-<script src="/assets/js/seminar-format.js"></script>
-<script src="/assets/js/qrcode-generator.js"></script>
-<script src="/assets/js/jspdf.umd.min.js"></script>
-<script src="/assets/js/guide-close.js"></script>
-<script src="/assets/js/handout.js"></script>
-<script src="/assets/js/guide-editor.js"></script>
-<script src="/assets/js/guide-markup.js"></script>
-<script src="/assets/js/admin.js"></script>
-<script src="/assets/js/seminars.js"></script>
 </body>
 </html>

@@ -4,6 +4,9 @@
   var KEY = 'aipa_office_token';
   var meetings = [];
   var signups = [];
+  var profiles = {};
+  var followId = 0;
+  var rosterNote = {};
   var filter = '';
   var signupFilter = '';
   var fillingSessions = false;
@@ -31,16 +34,26 @@
     var picked = document.querySelector('input[name="meeting-kind"]:checked');
     return picked ? picked.value : 'one_time';
   }
+  function showLogin(on){
+    var loginView = document.getElementById('login-view');
+    var desk = document.getElementById('desk');
+    var signout = document.getElementById('signout');
+    if (loginView) loginView.hidden = !on;
+    if (desk) desk.hidden = on;
+    if (signout) signout.hidden = on;
+  }
   function api(path, options){
     options = options || {};
-    var headers = {'Accept':'application/json', Authorization:'Bearer ' + token()};
+    var headers = {'Accept':'application/json'};
     if (options.body) headers['Content-Type'] = 'application/json';
+    if (options.auth !== false) headers.Authorization = 'Bearer ' + token();
     return fetch(base + path, {
       method: options.method || 'GET',
       headers: headers,
       body: options.body ? JSON.stringify(options.body) : undefined
     }).then(function(r){
       return r.json().catch(function(){ return {}; }).then(function(data){
+        if (r.status === 401) { sessionStorage.removeItem(KEY); showLogin(true); }
         if (!r.ok) throw new Error(data.message || data.error || 'Something went wrong.');
         return data;
       });
@@ -300,6 +313,165 @@
     });
   }
 
+  function rosterKind(meeting){
+    if (!meeting) return '';
+    if (meeting.meeting_type === 'live_qa') return 'seminar';
+    if (meeting.meeting_type === 'family_1_1') return '1_1';
+    return '';
+  }
+
+  function personFirst(row){
+    var profile = profiles[row.id] || {};
+    var first = String(profile.first_name || '').trim();
+    if (first) return first;
+    var name = String(row.name || '').trim();
+    var space = name.indexOf(' ');
+    return space > 0 ? name.slice(0, space) : name;
+  }
+
+  function followCopy(row, kind){
+    if (window.AIPA_MESSAGES) {
+      var tokens = AIPA_MESSAGES.pages();
+      tokens.first_name = personFirst(row);
+      var profile = profiles[row.id] || {};
+      if (profile.sms_token) tokens.sms_opt_in = 'https://goaipa.com/admin/families/sms/?t=' + profile.sms_token;
+      var email = AIPA_MESSAGES.compose(kind === '1_1' ? 'invite_visit' : 'invite_qa', tokens);
+      var sms = AIPA_MESSAGES.compose(kind === '1_1' ? 'invite_visit_sms' : 'invite_qa_sms', tokens);
+      return {
+        next: kind === '1_1' ? 'a home visit' : 'an Ask Anything 1:1',
+        subject: email.subject,
+        body: email.body,
+        sms: sms.body
+      };
+    }
+    var who = personFirst(row);
+    var hello = who ? 'Hello ' + who + ',' : 'Hello,';
+    if (kind === '1_1') {
+      return {
+        next: 'a home visit',
+        subject: 'A home visit',
+        body: hello + '\n\nThank you for the Ask Anything 1:1.\n\nThe next step is a home visit, if you want a contractor to look at the house.\n\nReply to this email or call 833-AIPA-HUB.\n\nAging in Place Alliance',
+        sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Guide name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+      };
+    }
+    return {
+      next: 'an Ask Anything 1:1',
+      subject: 'Thank you for joining us today',
+      body: (who ? 'Hi ' + who + ',' : 'Hi,') + '\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: https://goaipa.com/ask-anything/\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB',
+      sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Host name]. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: https://goaipa.com/ask-anything/ Reply STOP to opt out.'
+    };
+  }
+
+  function attendedOn(row, kind){
+    return kind === '1_1' ? row.attended_1_1 === 'yes' : row.attended_seminar === 'yes';
+  }
+
+  function whenLabel(row){
+    var meeting = meetingFor(row);
+    if (!row.occurrence_at || !window.AIPA_SEMINAR) return 'Date not set';
+    return window.AIPA_SEMINAR.format({
+      starts_at: row.occurrence_at,
+      timezone: meeting ? meeting.timezone : 'America/Los_Angeles',
+      kind: 'one_time'
+    });
+  }
+
+  function renderRoster(){
+    var section = document.getElementById('seminar-roster');
+    var list = document.getElementById('roster-list');
+    var hint = document.getElementById('roster-hint');
+    var empty = document.getElementById('roster-empty');
+    var kind = rosterKind(current);
+    if (!section || !list) return;
+    if (!kind) {
+      section.hidden = true;
+      list.innerHTML = '';
+      followId = 0;
+      return;
+    }
+    section.hidden = false;
+    hint.textContent = kind === '1_1'
+      ? 'Check who came. Follow up invites them to a home visit.'
+      : 'Check who came. Follow up invites them to book an Ask Anything 1:1.';
+    var people = signups.filter(function(row){
+      return Number(row.meeting_id) === Number(current.id);
+    }).sort(function(a, b){
+      if (a.occurrence_at < b.occurrence_at) return -1;
+      if (a.occurrence_at > b.occurrence_at) return 1;
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+    empty.hidden = people.length > 0;
+    empty.textContent = kind === '1_1' ? 'No one has signed up for this 1:1 yet.' : 'No one has signed up for this seminar yet.';
+    list.innerHTML = people.map(function(row){
+      var on = attendedOn(row, kind);
+      var bits = [whenLabel(row), row.email || 'No email', row.phone || 'No cell'].join(' · ');
+      var note = rosterNote[row.id] ? '<p class="status-line" role="status">' + esc(rosterNote[row.id]) + '</p>' : '';
+      var form = '';
+      if (followId === row.id) {
+        var profile = profiles[row.id] || {};
+        var draft = followCopy(row, kind);
+        var emailBlock = profile.opt_in_email === 'no'
+          ? '<p class="note">They asked not to be emailed.</p>'
+          : (row.email
+            ? '<label for="follow-subject-' + row.id + '">Subject</label><input id="follow-subject-' + row.id + '" value="' + esc(draft.subject) + '">' +
+              '<label for="follow-email-' + row.id + '">Email</label><textarea id="follow-email-' + row.id + '">' + esc(draft.body) + '</textarea>' +
+              '<div class="actions"><button class="btn" type="button" data-send="' + row.id + '" data-channel="email">Send email</button></div>'
+            : '<p class="note">There is no email on this signup.</p>');
+        var textBlock = profile.opt_in_sms === 'yes'
+          ? (row.phone
+            ? '<label for="follow-sms-' + row.id + '">Text</label><textarea class="short" id="follow-sms-' + row.id + '">' + esc(draft.sms) + '</textarea>' +
+              '<div class="actions"><button class="btn quiet" type="button" data-send="' + row.id + '" data-channel="sms">Send text</button></div>'
+            : '<p class="note">There is no cell on this signup.</p>')
+          : '<p class="note">They have not agreed to texts. Use Text agreement on their family record first.</p>';
+        form = '<form class="roster-send"><p>Invite them to ' + esc(draft.next) + '.</p>' + emailBlock + textBlock +
+          '<p class="status-line" id="follow-status-' + row.id + '" role="status"></p></form>';
+      }
+      return '<li><label class="roster-attend"><input type="checkbox" data-attend="' + row.id + '"' + (on ? ' checked' : '') + '> Attended</label>' +
+        '<span class="roster-who"><b>' + esc(row.name || 'No name') + '</b><span class="meta">' + esc(bits) + '</span></span>' +
+        '<button class="btn quiet" type="button" data-follow="' + row.id + '">' + (followId === row.id ? 'Close' : 'Follow up') + '</button>' +
+        note + form + '</li>';
+    }).join('');
+  }
+
+  function signupById(id){
+    return signups.filter(function(row){ return row.id === id; })[0] || null;
+  }
+
+  function sendFollow(id, channel){
+    var row = signupById(id);
+    var subject = document.getElementById('follow-subject-' + id);
+    var body = document.getElementById(channel === 'sms' ? 'follow-sms-' + id : 'follow-email-' + id);
+    var status = document.getElementById('follow-status-' + id);
+    var to = row ? (channel === 'sms' ? row.phone : row.email) : '';
+    if (!body || !String(body.value).trim()) {
+      if (status) status.textContent = 'Write the message first.';
+      return;
+    }
+    if (!to) {
+      if (status) status.textContent = channel === 'sms' ? 'There is no cell on this signup.' : 'There is no email on this signup.';
+      return;
+    }
+    if (status) status.textContent = channel === 'sms' ? 'Sending the text…' : 'Sending the email…';
+    api('/office/send', {method:'POST', body:{
+      registration_id: id,
+      channel: channel,
+      to: to,
+      subject: subject ? subject.value : '',
+      body: body.value
+    }}).then(function(data){
+      if (!data.configured || data.ok === false) {
+        rosterNote[id] = data.message || 'This was not sent.';
+        renderRoster();
+        return;
+      }
+      followId = 0;
+      rosterNote[id] = channel === 'sms' ? 'Text sent.' : 'Email sent.';
+      renderRoster();
+    }).catch(function(err){
+      if (status) status.textContent = err.message;
+    });
+  }
+
   function renderSignups(){
     var table = document.getElementById('signup-table');
     var body = document.getElementById('signup-rows');
@@ -320,16 +492,12 @@
       ? 'No one has signed up for this session.'
       : 'No one has signed up yet.';
     body.innerHTML = rows.map(function(row){
-      var meeting = meetingFor(row);
-      var session = window.AIPA_SEMINAR.format({
-        starts_at: row.occurrence_at,
-        timezone: meeting ? meeting.timezone : 'America/Los_Angeles',
-        kind: 'one_time'
-      });
+      var session = window.AIPA_SEMINAR.date(row.occurrence_at);
       var notes = isFamily(row)
         ? '<button class="notes-open" type="button" data-notes="' + row.id + '" aria-pressed="' + (notesId === row.id) + '">Notes</button>'
         : '';
       return '<tr>' +
+        '<td>' + notes + '</td>' +
         '<td>' + esc(sessionTitle(row)) + '</td>' +
         '<td>' + esc(session) + '</td>' +
         '<td>' + esc(row.name) + '</td>' +
@@ -338,7 +506,6 @@
         '<td>' + guestCell(row, 'name') + '</td>' +
         '<td>' + guestCell(row, 'email') + '</td>' +
         '<td>' + guestCell(row, 'phone') + '</td>' +
-        '<td>' + notes + '</td>' +
       '</tr>';
     }).join('');
     body.querySelectorAll('[data-notes]').forEach(function(button){
@@ -362,14 +529,27 @@
         (typeName ? ' · ' + esc(typeName) : '') + ' · ' + esc(when) + '</span>' +
         '</button></li>';
     }).join('') || '<li><p class="note">No meetings in this list.</p></li>';
+    renderRoster();
     list.querySelectorAll('button').forEach(function(button){
       button.addEventListener('click', function(){
         var id = Number(button.dataset.id);
+        if (!current || current.id !== id) followId = 0;
         current = meetings.filter(function(meeting){ return meeting.id === id; })[0] || null;
         fill();
         render();
+        var roster = document.getElementById('seminar-roster');
+        if (roster && !roster.hidden) roster.scrollIntoView({behavior:'smooth', block:'nearest'});
       });
     });
+  }
+
+  function paintZoom(){
+    var input = document.getElementById('standing-zoom');
+    var summary = document.getElementById('zoom-summary');
+    if (!input || !summary) return;
+    var url = input.value.trim();
+    summary.textContent = url;
+    summary.hidden = !url;
   }
 
   function load(){
@@ -377,11 +557,18 @@
     return Promise.all([
       api('/office/zoom'),
       api('/office/meetings'),
-      api('/office/signups').catch(function(){ return []; })
+      api('/office/signups').catch(function(){ return []; }),
+      api('/office/households').catch(function(){ return {}; }),
+      (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve())
     ]).then(function(result){
       document.getElementById('standing-zoom').value = (result[0] && result[0].zoom_url) || '';
+      paintZoom();
       meetings = rows(result[1]);
       signups = rows(result[2]);
+      profiles = {};
+      rows((result[3] || {}).profiles).forEach(function(profile){
+        profiles[profile.registration_id] = profile;
+      });
       render();
       renderSignups();
     }).catch(function(err){
@@ -422,6 +609,8 @@
     save('draft');
   });
 
+  document.getElementById('standing-zoom').addEventListener('input', paintZoom);
+
   document.getElementById('zoom-form').addEventListener('submit', function(e){
     e.preventDefault();
     var status = document.getElementById('zoom-status');
@@ -429,6 +618,7 @@
     api('/office/zoom', {method:'POST', body:{zoom_url: document.getElementById('standing-zoom').value.trim()}})
       .then(function(data){
         document.getElementById('standing-zoom').value = data.zoom_url || '';
+        paintZoom();
         status.textContent = data.zoom_url ? 'Standing Zoom link saved.' : 'Standing Zoom link cleared.';
       })
       .catch(function(err){ status.textContent = err.message; });
@@ -466,6 +656,72 @@
   document.getElementById('add-attendee').addEventListener('click', function(){ addPerson(); });
   document.getElementById('add-suggestion').addEventListener('click', function(){ addGuide(); });
 
+  var rosterList = document.getElementById('roster-list');
+  if (rosterList) {
+    rosterList.addEventListener('submit', function(event){ event.preventDefault(); });
+    rosterList.addEventListener('change', function(event){
+      var box = event.target;
+      if (!box || !box.hasAttribute('data-attend')) return;
+      var id = Number(box.getAttribute('data-attend'));
+      var row = signupById(id);
+      var kind = rosterKind(current);
+      if (!row || !kind) return;
+      var on = box.checked;
+      box.disabled = true;
+      api('/office/attendance', {method:'POST', body:{registration_id:id, kind:kind, attended:on}}).then(function(data){
+        data = data || {};
+        row.attended_seminar = data.attended_seminar != null ? data.attended_seminar : (kind === 'seminar' ? (on ? 'yes' : '') : row.attended_seminar);
+        row.attended_1_1 = data.attended_1_1 != null ? data.attended_1_1 : (kind === '1_1' ? (on ? 'yes' : '') : row.attended_1_1);
+        box.checked = attendedOn(row, kind);
+        box.disabled = false;
+      }).catch(function(err){
+        box.checked = !on;
+        box.disabled = false;
+        rosterNote[id] = err.message;
+        renderRoster();
+      });
+    });
+    rosterList.addEventListener('click', function(event){
+      var follow = event.target.closest('[data-follow]');
+      if (follow) {
+        var next = Number(follow.getAttribute('data-follow'));
+        followId = followId === next ? 0 : next;
+        if (followId) delete rosterNote[followId];
+        renderRoster();
+        return;
+      }
+      var send = event.target.closest('[data-send]');
+      if (!send) return;
+      sendFollow(Number(send.getAttribute('data-send')), send.getAttribute('data-channel'));
+    });
+  }
+
   window.AIPA_SEMINARS = { load: load };
-  if (token()) load();
+  var loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function(event){
+      event.preventDefault();
+      var status = document.getElementById('login-status');
+      status.textContent = 'Signing in…';
+      api('/auth/login', {method:'POST', auth:false, body:{password:document.getElementById('password').value}})
+        .then(function(data){
+          sessionStorage.setItem(KEY, data.authToken);
+          document.getElementById('password').value = '';
+          status.textContent = '';
+          showLogin(false);
+          load();
+        })
+        .catch(function(err){ status.textContent = err.message; });
+    });
+  }
+  var signout = document.getElementById('signout');
+  if (signout) {
+    signout.addEventListener('click', function(event){
+      event.preventDefault();
+      sessionStorage.removeItem(KEY);
+      showLogin(true);
+    });
+  }
+  if (token()) { showLogin(false); load(); }
+  else showLogin(true);
 })();

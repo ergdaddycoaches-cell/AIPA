@@ -12,19 +12,26 @@
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
 <link rel="stylesheet" href="/assets/css/families.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="mast">
   <div class="wrap">
-    <a class="wordmark" href="/admin/families/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Call notes</small></span></a>
-    <div class="mast-actions">
-      <a class="btn quiet" href="/admin/actions/">Actions</a>
-      <a class="btn quiet" href="/admin/families/">Pipeline</a>
-      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
-    </div>
+    <a class="wordmark" href="/admin/families/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+            <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/" aria-current="page">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/prices/">Prices</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
   </div>
 </header>
 <main id="main">
@@ -110,6 +117,7 @@
     </form>
   </section>
 </main>
+<script src="/assets/js/message-copy.js"></script>
 <script src="/assets/js/call-notes.js"></script>
 </body>
 </html>

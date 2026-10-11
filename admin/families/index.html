@@ -12,21 +12,27 @@
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
 <link rel="stylesheet" href="/assets/css/families.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%A1%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
 <header class="mast">
   <div class="wrap">
-    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Ask Anything 1:1</small></span></a>
-    <div class="mast-actions">
-      <a class="btn quiet" href="/admin/actions/">Actions</a>
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+            <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/" aria-current="page">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
+      <a class="btn quiet" href="/admin/prices/">Prices</a>
       <a class="btn quiet" href="/admin/glossary/">Glossary</a>
       <a class="btn quiet" href="/admin/standards/">Standards</a>
-      <a class="btn quiet" href="/admin/">Back office</a>
-      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
-    </div>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
   </div>
 </header>
 <main id="main">
@@ -50,11 +56,6 @@
       <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
     </div>
 
-    <section id="unmatched" class="unmatched" hidden>
-      <h2>Needs a name</h2>
-      <p>These calls and messages did not match a cell or email we have. Attach a voicemail to the person it belongs to. That marks them for a call back.</p>
-      <ul id="unmatched-list"></ul>
-    </section>
     <div class="board-tools">
       <div class="tool-row">
         <label class="contractor-filter">Contractor
@@ -69,6 +70,18 @@
         <button type="button" id="stages-open">Edit stages</button>
       </div>
     </div>
+    <section id="job-ask" class="stage-editor" hidden>
+      <h2>Contract completed</h2>
+      <p>Enter the job total for <b id="job-who"></b>. The fee is this contractor’s percent of the amount above their threshold. A job at or under the threshold adds nothing.</p>
+      <form id="job-form" class="price-form">
+        <label>Job total <input id="job-total" name="job_total" inputmode="decimal" autocomplete="off" required></label>
+        <div class="stage-actions">
+          <button class="btn" type="submit">Save the job total</button>
+          <button type="button" id="job-cancel">Cancel</button>
+        </div>
+      </form>
+      <p class="status-line" id="job-status" role="status"></p>
+    </section>
     <section id="stage-editor" class="stage-editor" hidden>
       <h2>Stages</h2>
       <p>The name is the column heading. Up and down change the left-to-right order. A column can be removed only when nobody is in it.</p>
@@ -214,6 +227,8 @@
 </div>
 <script src="/assets/js/seminar-format.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
+<script src="/assets/js/recording.js"></script>
+<script src="/assets/js/message-copy.js"></script>
 <script src="/assets/js/families.js"></script>
 <script src="/assets/js/call-notes.js"></script>
 </body>
