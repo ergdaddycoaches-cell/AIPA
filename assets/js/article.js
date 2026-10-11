@@ -69,9 +69,32 @@
     } else if (article.body) parts.push(article.body);
     return parts.join(' ');
   }
+  function robotsMeta(content){
+    var robots = document.querySelector('meta[name="robots"]');
+    if (!robots) {
+      robots = document.createElement('meta');
+      robots.name = 'robots';
+      document.head.appendChild(robots);
+    }
+    robots.setAttribute('content', content);
+  }
   function missing(){
     document.title = 'Guide not in the library | Aging in Place Alliance';
+    robotsMeta('noindex');
+    var canon = document.querySelector('link[rel="canonical"]');
+    if (canon) canon.remove();
     root.innerHTML = '<h1>This guide is not in the library.</h1><p class="lede">It may be a draft, or it may have been retired. The rest of the library is still here.</p><p><a class="btn" href="/library/">Browse the library</a></p>';
+  }
+  function publishGuide(slug){
+    robotsMeta('index, follow');
+    var href = 'https://goaipa.com/library/article/?slug=' + encodeURIComponent(slug);
+    var canon = document.querySelector('link[rel="canonical"]');
+    if (!canon) {
+      canon = document.createElement('link');
+      canon.rel = 'canonical';
+      document.head.appendChild(canon);
+    }
+    canon.href = href;
   }
 
   var slug = '';
@@ -85,6 +108,7 @@
       document.title = article.title + ' | Aging in Place Alliance library';
       var desc = document.querySelector('meta[name="description"]');
       if (desc) desc.setAttribute('content', article.summary || article.title);
+      publishGuide(slug);
       if (crumb && article.section_slug) {
         crumb.innerHTML = '<a href="/library/' + esc(article.section_slug) + '/">' + esc(article.section) + '</a>';
       }
@@ -92,7 +116,9 @@
       var body = bodyHtml ? '<div class="article-body">' + bodyHtml + '</div>' : '';
       var close = '';
       if (window.AIPA_CLOSE) {
-        var sentence = esc(window.AIPA_CLOSE.line(article)).replace('Ask Anything 1:1', '<a class="link" href="/ask-anything/">Ask Anything 1:1</a>');
+        var sentence = esc(window.AIPA_CLOSE.line(article))
+          .replace('Live Q&A', '<a class="link" href="/live-qa/">Live Q&A</a>, <span data-qa-day>the next open session</span>')
+          .replace('Ask Anything 1:1', '<a class="link" href="/ask-anything/">Ask Anything 1:1</a>');
         close = '<p class="guide-close">' + sentence + '</p>';
       }
       var pdf = article.pdf_url

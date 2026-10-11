@@ -19,6 +19,7 @@
       }
       var meetings = data.meetings || [];
       if (meetings.length) {
+        html += '<p class="qa-later">If this one does not work, these are the other sessions.</p>';
         html += '<ul class="seminar-list">' + meetings.map(function(meeting){
           var link = meeting.zoom_url
             ? '<a href="' + esc(meeting.zoom_url) + '">' + esc(meeting.title) + '</a>'

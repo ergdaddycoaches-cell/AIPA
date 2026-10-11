@@ -154,7 +154,8 @@
       line = "At these numbers the two sides match over five years. This leaves out meals, the value of the house, and care that may get heavier. It is a sketch, not a reason to stay or to move.";
     }
     var range = own > 0 ? "Using the price you typed." : (picked ? "Using the middle of the spreads, " + money(low) + " to " + money(high) + "." : "");
-    out.innerHTML = "<h2>Five years, side by side</h2><p>" + esc(range) + "</p><div class=\"bars\"><div><p><b>Adapting the home</b> " + money(homeFive) + "</p><div class=\"track\"><div class=\"fill\" style=\"width:" + homePct + "%\"></div></div><p class=\"muted\">" + money(homeOnce) + " once, plus " + money(help) + " a month of help.</p></div><div><p><b>Assisted living</b> " + money(careFive) + "</p><div class=\"track\"><div class=\"fill alt\" style=\"width:" + carePct + "%\"></div></div><p class=\"muted\">" + money(care) + " a month, for five years.</p></div></div><p>" + esc(line) + "</p>";
+    out.innerHTML = "<h2>Five years, side by side</h2><p>" + esc(range) + "</p><div class=\"bars\"><div><p><b>Adapting the home</b> " + money(homeFive) + "</p><div class=\"track\"><div class=\"fill\" style=\"width:" + homePct + "%\"></div></div><p class=\"muted\">" + money(homeOnce) + " once, plus " + money(help) + " a month of help.</p></div><div><p><b>Assisted living</b> " + money(careFive) + "</p><div class=\"track\"><div class=\"fill alt\" style=\"width:" + carePct + "%\"></div></div><p class=\"muted\">" + money(care) + " a month, for five years.</p></div></div><p>" + esc(line) + "</p>" +
+      '<p class="tool-qa">Bring this to the next <a href="/live-qa/">Live Q&A</a>, <span data-qa-day>the next open session</span>.</p>';
   }
 
   function answer(input) {

@@ -48,7 +48,7 @@
     return title.charAt(0).toLowerCase() + title.slice(1);
   }
   function line(guide){
-    return 'If you have more questions about ' + topic(guide) + ', or about any other part of adapting your home, book a free Ask Anything 1:1 with an AIPA Guide. Nothing to sign.';
+    return 'If you have more questions about ' + topic(guide) + ', bring them to the next Live Q&A. You can also book a free Ask Anything 1:1 with an AIPA Guide.';
   }
   window.AIPA_CLOSE = { topic: topic, line: line };
 })();

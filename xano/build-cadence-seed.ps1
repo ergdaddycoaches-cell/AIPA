@@ -22,7 +22,7 @@ Hi {{first_name}},
 
 Some time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there's no rush.
 
-{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. Our guides are people in their 50s, 60s and 70s, so we understand the questions from the same side of the table.
+{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Colin. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.
 
 Here's a short guide many people find useful: {{guide}}
 {{library}}
@@ -221,7 +221,7 @@ P.S. If you'd like to talk about your own home, book an Ask Anything 1:1: {{one_
 Add-Email 'cad_attendee_last' 'Attendee, last call for a 1:1' 'A few 1:1 times left this month' @"
 Hi {{first_name}},
 
-Our guides have a few Ask Anything 1:1 times left this month, and I wanted to make sure you had the chance.
+I have a few Ask Anything 1:1 times left this month, and I wanted to make sure you had the chance.
 
 About 30 minutes, about your home, at no cost. Your daughter or son is welcome to join.
 

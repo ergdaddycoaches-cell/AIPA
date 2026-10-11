@@ -27,13 +27,14 @@
       });
 
       vols.forEach(function(vol){
-        var heading = vol.querySelector('h3 a');
+        var heading = vol.querySelector('h3 a, h4 a');
         var list = vol.querySelector('ul');
         if (!heading || !list) return;
         var match = (heading.getAttribute('href') || '').match(/\/library\/([a-z0-9-]+)\/?$/);
         if (!match) return;
         var listed = by[match[1]] || [];
         if (!listed.length) return;
+        if (vol.closest('.library')) listed = listed.slice(0, 3);
         list.innerHTML = listed.map(function(article){
           return '<li><a href="' + esc(article.url) + '">' + esc(article.title) + '</a></li>';
         }).join('');

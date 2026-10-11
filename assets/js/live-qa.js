@@ -9,6 +9,30 @@
   var viewIndex = 0;
   var selectedDay = '';
   var focusTarget = '';
+  var choseOwn = false;
+
+  function zoneStamp(timeZone) {
+    var bag = {};
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: timeZone || 'America/Los_Angeles',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).formatToParts(new Date()).forEach(function (part) { bag[part.type] = part.value; });
+    var hour = bag.hour === '24' ? '00' : bag.hour;
+    return bag.year + '-' + bag.month + '-' + bag.day + 'T' + hour + ':' + bag.minute;
+  }
+
+  function earliest(list) {
+    var found = null;
+    list.forEach(function (month, mi) {
+      (month.slots || []).forEach(function (slot) {
+        var when = String(slot.occurrence_at || '');
+        if (!when || when < zoneStamp(slot.timezone)) return;
+        if (!found || when < found.slot.occurrence_at) found = { slot: slot, month: mi };
+      });
+    });
+    return found;
+  }
 
   function esc(t){
     return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){
@@ -22,10 +46,17 @@
       kind: 'one_time'
     });
   }
+  function spokenWhen(slot){
+    var p = parts(slot);
+    if (!p) return when(slot);
+    var phrase = weekday(p) + ', ' + monthName(p) + ' ' + p.d;
+    if (String(p.y) !== zoneStamp(slot.timezone).slice(0, 4)) phrase += ', ' + p.y;
+    return phrase + ', at ' + clock(slot);
+  }
 
   function formHtml(slot){
     return '<form class="signup" id="signup-form">' +
-      '<h3>Sign up</h3>' +
+      '<h3>Join this session</h3>' +
       '<p class="note">' + esc(slot.title) + ' · ' + esc(when(slot)) + '</p>' +
       '<label for="signup-name">Your name</label>' +
       '<input id="signup-name" name="name" autocomplete="name" required>' +
@@ -33,7 +64,7 @@
       '<input id="signup-email" name="email" type="email" autocomplete="email" required>' +
       '<label for="signup-phone">Cell phone <span class="optional">optional</span></label>' +
       '<input id="signup-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">' +
-      '<label class="check"><input id="signup-invite" type="checkbox"> Invite someone else</label>' +
+      '<label class="check"><input id="signup-invite" type="checkbox"> The person who decides with you</label>' +
       '<div id="guest-fields" hidden>' +
         '<label for="guest-name">Their name</label>' +
         '<input id="guest-name" name="guest_name" autocomplete="off">' +
@@ -92,13 +123,13 @@
       }).then(function(data){
         var guestLine = data.guest_name ? ' ' + data.guest_name + ' is invited too.' : '';
         var zoom = data.zoom_url ? ' <a href="' + esc(data.zoom_url) + '">Join on Zoom</a> when it starts.' : '';
-        form.innerHTML = '<p class="status-line">You\'re signed up.' + esc(guestLine) + zoom + '</p>';
+        form.innerHTML = '<p class="status-line">You\'re signed up for ' + esc(spokenWhen(slot)) + '. No camera is needed.' + esc(guestLine) + zoom + '</p>';
       }).catch(function(err){
         button.disabled = false;
         msg.textContent = err.message;
       });
     });
-    document.getElementById('signup-name').focus();
+    document.getElementById('signup-name').focus({ preventScroll: true });
   }
 
   function pad(n){ return (n < 10 ? '0' : '') + n; }
@@ -145,7 +176,7 @@
       return '<li class="slot"><span class="when">' + esc(clock(slot) + length) + '</span>' +
         '<h3>' + esc(slot.title) + '</h3>' +
         (slot.summary ? '<p class="summary">' + esc(slot.summary) + '</p>' : '') +
-        (selected ? formHtml(slot) : '<button class="btn" type="button" data-key="' + esc(key) + '">Sign up</button>') +
+        (selected ? formHtml(slot) : '<button class="btn" type="button" data-key="' + esc(key) + '">Join</button>') +
         '</li>';
     }).join('');
     return '<div class="day-panel" id="day-panel"><h3>' + esc(weekday(head) + ', ' + monthName(head) + ' ' + head.d) + '</h3><ul class="slot-list">' + items + '</ul></div>';
@@ -156,6 +187,17 @@
       months.innerHTML = '';
       status.textContent = 'No Live Q&A sessions are on the calendar in the next two months. Call 833-AIPA-HUB and we can save you a seat.';
       return;
+    }
+    var justOpened = false;
+    if (!choseOwn) {
+      var next = earliest(list);
+      choseOwn = true;
+      if (next) {
+        viewIndex = next.month;
+        selectedDay = String(next.slot.occurrence_at).slice(0, 10);
+        openSlot = next.slot;
+        justOpened = true;
+      }
     }
     if (viewIndex < 0) viewIndex = 0;
     if (viewIndex > list.length - 1) viewIndex = list.length - 1;
@@ -222,8 +264,10 @@
     months.querySelectorAll('button[data-day]').forEach(function(button){
       button.addEventListener('click', function(){
         selectedDay = button.dataset.day;
-        if (openSlot && String(openSlot.occurrence_at || '').slice(0, 10) !== selectedDay) openSlot = null;
-        focusTarget = 'day';
+        var daySlots = byDay[selectedDay] || [];
+        var onDay = openSlot && String(openSlot.occurrence_at || '').slice(0, 10) === selectedDay;
+        if (!onDay) openSlot = daySlots[0] || null;
+        focusTarget = 'form';
         render(list);
       });
     });
@@ -234,16 +278,19 @@
           if (slot.meeting_id + '|' + slot.occurrence_at === button.dataset.key) found = slot;
         });
         openSlot = found;
-        focusTarget = '';
+        focusTarget = 'form';
         render(list);
       });
     });
-    if (openSlot) bindForm(openSlot);
-    else if (focusTarget === 'day') {
-      var reserve = months.querySelector('button[data-key]');
-      var panel = document.getElementById('day-panel');
-      if (reserve) reserve.focus();
-      if (panel) panel.scrollIntoView({block: 'nearest', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+    if (openSlot) {
+      bindForm(openSlot);
+      if (justOpened || focusTarget === 'form') {
+        var form = document.getElementById('signup-form');
+        if (form) {
+          if (location.hash !== '#signup-form') history.replaceState(null, '', '#signup-form');
+          form.scrollIntoView({ block: 'start', behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }
+      }
     } else if (focusTarget === 'reserve') {
       var again = months.querySelector('button[data-key]');
       if (again) again.focus();

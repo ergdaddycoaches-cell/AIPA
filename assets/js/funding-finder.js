@@ -115,6 +115,7 @@
       return "<li><p>" + item.slice(4, -5) + "</p></li>";
     }).join("");
     document.getElementById("funding-out").innerHTML = "<h2>What may apply in " + esc(state) + "</h2><p>These are places to ask. The program decides, not this page. Names, amounts, and wait lists change.</p><ul class=\"result-list\">" + list + "</ul>" +
+      '<p class="tool-qa">Bring this to the next <a href="/live-qa/">Live Q&A</a>, <span data-qa-day>the next open session</span>.</p>' +
       '<p class="no-print" style="margin-top:1.25rem"><button type="button" class="btn" id="funding-print">Print this list</button></p>';
     document.getElementById("funding-print").addEventListener("click", function () {
       var goPrint = function () { window.print(); };

@@ -4,7 +4,7 @@
         "name":  "Reactivation, introduction",
         "channel":  "email",
         "subject":  "A note from {{contractor}} and the Aging in Place Alliance",
-        "body":  "Hi {{first_name}},\r\n\r\nSome time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there\u0027s no rush.\r\n\r\n{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. Our guides are people in their 50s, 60s and 70s, so we understand the questions from the same side of the table.\r\n\r\nHere\u0027s a short guide many people find useful: {{guide}}\r\n{{library}}\r\n\r\nWarm regards,\r\n[Host name]\r\nAging in Place Alliance\r\n\r\nP.S. We host a free Live Q\u0026A where you can ask anything, with no sales pitch. The next one is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nSome time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there\u0027s no rush.\r\n\r\n{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Colin. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.\r\n\r\nHere\u0027s a short guide many people find useful: {{guide}}\r\n{{library}}\r\n\r\nWarm regards,\r\n[Host name]\r\nAging in Place Alliance\r\n\r\nP.S. We host a free Live Q\u0026A where you can ask anything, with no sales pitch. The next one is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  21
     },
@@ -184,7 +184,7 @@
         "name":  "Attendee, last call for a 1:1",
         "channel":  "email",
         "subject":  "A few 1:1 times left this month",
-        "body":  "Hi {{first_name}},\r\n\r\nOur guides have a few Ask Anything 1:1 times left this month, and I wanted to make sure you had the chance.\r\n\r\nAbout 30 minutes, about your home, at no cost. Your daughter or son is welcome to join.\r\n\r\nBook my 1:1: {{one_to_one}}\r\n\r\nThere\u0027s no obligation, and you\u0027re free to wait. We\u0027ll still be here.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nI have a few Ask Anything 1:1 times left this month, and I wanted to make sure you had the chance.\r\n\r\nAbout 30 minutes, about your home, at no cost. Your daughter or son is welcome to join.\r\n\r\nBook my 1:1: {{one_to_one}}\r\n\r\nThere\u0027s no obligation, and you\u0027re free to wait. We\u0027ll still be here.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  41
     },
