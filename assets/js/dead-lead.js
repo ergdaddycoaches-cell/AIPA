@@ -184,6 +184,7 @@
       row('end' + (loss ? ' is-loss' : ''), 'Net found margin', m.net);
     document.getElementById('roi-fall-sr').textContent = 'Waterfall: recovered revenue ' + money(m.recoveredRevenue) + ', gross profit ' + money(m.recoveredProfit) + ', our fees ' + money(m.fees) + ', net found margin ' + money(m.net) + '.';
     paintLine();
+    if (window.AIPA_SCREEN && window.AIPA_SCREEN.syncCta) window.AIPA_SCREEN.syncCta();
   }
   function paintLine(){
     var pts = [];
@@ -276,9 +277,13 @@
     params.set('recovery', String(Math.round(recovery * 1000) / 10));
     params.set('spent_dead', String(Math.round(m.moneySpentDead)));
     params.set('net_margin', String(Math.round(m.net)));
-    history.replaceState(null, '', location.pathname + '?' + params.toString() + '#screening');
+    var api = window.AIPA_SCREEN;
+    var state = api && api.state ? api.state() : 'open';
+    var hash = state === 'passed' ? '#callback-form' : state === 'done' ? '#callback-next' : '#screen-title';
+    history.replaceState(null, '', location.pathname + '?' + params.toString() + hash);
     track('roi_cta', {recovery: recovery, net_margin: Math.round(m.net)});
-    var target = document.getElementById('screening');
+    if (state === 'open' && api && api.showFirst) api.showFirst();
+    var target = document.querySelector(hash);
     if (target) {
       event.preventDefault();
       target.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});

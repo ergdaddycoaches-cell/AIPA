@@ -135,6 +135,7 @@
     } else {
       miss.hidden = false;
     }
+    syncCta();
   }
 
   document.getElementById('retake').addEventListener('click', function(){
@@ -144,6 +145,7 @@
     screen.hidden = false;
     status.textContent = '';
     showSlide(0);
+    syncCta();
   });
 
   callback.addEventListener('submit', function(e){
@@ -180,9 +182,45 @@
       if (section) section.setAttribute('aria-labelledby', 'callback-next-title');
       var head = document.getElementById('callback-next-title');
       if (head) head.focus();
+      syncCta();
     }).catch(function(err){
       button.disabled = false;
       msg.textContent = err.message;
     });
   });
+
+  function screenState(){
+    if (next && !next.hidden) return 'done';
+    if (callback && !callback.hidden) return 'passed';
+    return 'open';
+  }
+  function syncCta(){
+    var cta = document.getElementById('roi-cta');
+    if (!cta) return;
+    var state = screenState();
+    if (state === 'done') {
+      cta.textContent = 'See what happens next.';
+      cta.setAttribute('href', '#callback-next');
+    } else if (state === 'passed') {
+      cta.textContent = 'Request a callback.';
+      cta.setAttribute('href', '#callback-form');
+    } else {
+      cta.textContent = 'Start at question 1.';
+      cta.setAttribute('href', '#screening');
+    }
+  }
+  function showFirst(){
+    miss.hidden = true;
+    callback.hidden = true;
+    screen.hidden = false;
+    status.textContent = '';
+    var qualify = document.getElementById('screen-title');
+    if (qualify) qualify.hidden = false;
+    var section = document.getElementById('screening');
+    if (section) section.setAttribute('aria-labelledby', 'screen-title');
+    showSlide(0);
+    syncCta();
+  }
+  window.AIPA_SCREEN = {state: screenState, showFirst: showFirst, syncCta: syncCta};
+  syncCta();
 })();

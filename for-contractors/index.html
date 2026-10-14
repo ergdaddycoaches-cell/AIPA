@@ -20,94 +20,16 @@
 <a class="skip" href="#main">Skip to main content</a>
 <header class="mast">
   <div class="wrap">
-    <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b><small>Guides for adapting a home</small></span></a>
+    <a class="wordmark" href="/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
   </div>
 </header>
 <main id="main">
-  <section class="page-hero" aria-labelledby="pt">
+  <section class="page-hero" aria-labelledby="pt pt-line">
     <div class="wrap">
-      <h1 id="pt">That lead isn’t cold. They just haven’t talked to someone who listens and relates.</h1>
-    </div>
-  </section>
-  <section class="roi" id="roi">
-    <div class="wrap">
-      <div id="roi-ask">
-        <p class="roi-step" id="roi-step">1 of 5</p>
-        <div class="roi-meter" id="roi-meter" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-labelledby="roi-step"><span id="roi-meter-fill"></span></div>
-        <h2 id="roi-q"></h2>
-        <p class="roi-help" id="roi-help"></p>
-        <div class="roi-field">
-          <span id="roi-prefix" aria-hidden="true"></span>
-          <input id="roi-num" inputmode="decimal" autocomplete="off" aria-labelledby="roi-q" aria-describedby="roi-help roi-note">
-          <span id="roi-suffix" aria-hidden="true"></span>
-        </div>
-        <input id="roi-range" type="range" aria-labelledby="roi-q" aria-describedby="roi-help">
-        <p class="roi-note" id="roi-note">Starting values are placeholders. Change them to your own numbers.</p>
-        <div class="actions">
-          <button class="btn quiet" type="button" id="roi-back" hidden>Back</button>
-          <button class="btn" type="button" id="roi-next">Next</button>
-        </div>
-      </div>
-
-      <div id="roi-cost" hidden>
-        <h2>What your dead leads already cost you</h2>
-        <p class="roi-hero" id="roi-spent" aria-hidden="true">$0</p>
-        <p class="roi-hero-label">spent on leads that never bought, in the last 2 years.</p>
-        <p class="roi-sr" id="roi-spent-live" aria-live="polite"></p>
-        <figure class="roi-waffle-wrap">
-          <div class="roi-waffle" id="roi-waffle" aria-hidden="true"></div>
-          <figcaption>
-            <span class="roi-key job">Became jobs</span>
-            <span class="roi-key quiet" id="roi-quiet-label">Went quiet</span>
-          </figcaption>
-          <p class="roi-sr" id="roi-waffle-sr"></p>
-        </figure>
-        <p class="roi-line" id="roi-spent-line"></p>
-        <div class="actions">
-          <button class="btn quiet" type="button" id="roi-cost-back">Back</button>
-          <button class="btn" type="button" id="roi-worth-go">See what they’re still worth →</button>
-        </div>
-      </div>
-
-      <div id="roi-worth" hidden>
-        <h2>What they could still be worth</h2>
-        <div class="roi-recover">
-          <p class="roi-recover-label" id="roi-recover-label">If <b id="roi-pct">2%</b> of your dead leads became jobs…</p>
-          <input id="roi-recover" type="range" min="1" max="10" step="0.5" value="2" aria-labelledby="roi-recover-label" aria-valuemin="1" aria-valuemax="10" aria-valuenow="2">
-          <div class="roi-scale" aria-hidden="true"><span class="roi-tick">Our planning estimate</span></div>
-        </div>
-        <div class="roi-cards">
-          <article class="roi-card">
-            <h3>Jobs back on your calendar</h3>
-            <p class="roi-stat" id="roi-jobs">0</p>
-            <p class="roi-houses" id="roi-houses" aria-hidden="true"></p>
-          </article>
-          <article class="roi-card">
-            <h3>Recovered revenue</h3>
-            <p class="roi-stat" id="roi-revenue">$0</p>
-          </article>
-          <article class="roi-card roi-net" id="roi-net-card">
-            <h3>Net found margin</h3>
-            <p class="roi-stat" id="roi-net">$0</p>
-            <p class="roi-loss" id="roi-loss" hidden>At these numbers, recovery doesn’t pay. Let’s talk about why.</p>
-          </article>
-        </div>
-        <figure>
-          <ul class="roi-fall" id="roi-fall" aria-hidden="true"></ul>
-          <p class="roi-sr" id="roi-fall-sr"></p>
-        </figure>
-        <figure class="roi-sens">
-          <svg id="roi-line" viewBox="0 0 320 150" role="img" aria-labelledby="roi-line-sr"></svg>
-          <p class="roi-sr" id="roi-line-sr"></p>
-          <p class="roi-caption" id="roi-caption">Even at the low end, this is margin from leads you’d written off.</p>
-        </figure>
-        <p class="roi-fine">These are illustrations based on your inputs, not a guarantee. We’re new, and our pilot exists to measure real results with your leads.</p>
-        <div class="actions">
-          <button class="btn quiet" type="button" id="roi-worth-back">Back</button>
-          <a class="btn" id="roi-cta" href="#screening">Check if your market is open.</a>
-        </div>
-        <p class="roi-fine">One contractor partner per market (15-mile radius).</p>
-      </div>
+      <h1 id="pt">That lead isn’t cold.</h1>
+      <p class="lead-line" id="pt-line">They just haven’t talked to someone who listens and relates.</p>
+      <p class="lead-path">Watch the video, answer ten questions, then see what those quiet leads are worth.</p>
+      <figure class="fpo wistia-fpo" aria-label="Placeholder for a Wistia video"><span>FPO: Wistia video</span></figure>
     </div>
   </section>
   <section id="screening" aria-labelledby="screen-title">
@@ -117,7 +39,7 @@
         <div class="q-carousel">
         <div class="q-track" id="q-track">
         <div class="tool-q" role="group" aria-labelledby="q1-label">
-          <p class="q-num" aria-hidden="true">1</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">1</p><p class="q-of" aria-hidden="true">1 of 10</p></div>
           <p class="q-label" id="q1-label">Does your business have at least 50 Google reviews with an average of 4.5 stars or higher?</p>
           <div class="picks">
             <label><input type="radio" name="q1" value="yes" required>Yes</label>
@@ -125,7 +47,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q2-label">
-          <p class="q-num" aria-hidden="true">2</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">2</p><p class="q-of" aria-hidden="true">2 of 10</p></div>
           <p class="q-label" id="q2-label">Is your average aging-in-place project over $15,000?</p>
           <div class="picks">
             <label><input type="radio" name="q2" value="yes" required>Yes</label>
@@ -133,7 +55,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q3-label">
-          <p class="q-num" aria-hidden="true">3</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">3</p><p class="q-of" aria-hidden="true">3 of 10</p></div>
           <p class="q-label" id="q3-label">Does your estimator close at least 30% of the in-home estimates they run?</p>
           <div class="picks">
             <label><input type="radio" name="q3" value="yes" required>Yes</label>
@@ -141,7 +63,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q4-label">
-          <p class="q-num" aria-hidden="true">4</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">4</p><p class="q-of" aria-hidden="true">4 of 10</p></div>
           <p class="q-label" id="q4-label">Do you have at least 400 cold leads?</p>
           <div class="picks">
             <label><input type="radio" name="q4" value="yes" required>Yes</label>
@@ -149,7 +71,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q5-label">
-          <p class="q-num" aria-hidden="true">5</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">5</p><p class="q-of" aria-hidden="true">5 of 10</p></div>
           <p class="q-label" id="q5-label">Do you believe that some of your cold leads aren't actually cold, they just haven't been made to feel safe in taking the next step?</p>
           <div class="picks">
             <label><input type="radio" name="q5" value="yes" required>Yes</label>
@@ -157,7 +79,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q6-label">
-          <p class="q-num" aria-hidden="true">6</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">6</p><p class="q-of" aria-hidden="true">6 of 10</p></div>
           <p class="q-label" id="q6-label">Do you believe that peer-led conversations help put older buyers at ease?</p>
           <div class="picks">
             <label><input type="radio" name="q6" value="yes" required>Yes</label>
@@ -165,7 +87,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q7-label">
-          <p class="q-num" aria-hidden="true">7</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">7</p><p class="q-of" aria-hidden="true">7 of 10</p></div>
           <p class="q-label" id="q7-label">Do you believe that many of your deals fall apart because of unsurfaced differences of opinion within the family?</p>
           <div class="picks">
             <label><input type="radio" name="q7" value="yes" required>Yes</label>
@@ -173,7 +95,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q8-label">
-          <p class="q-num" aria-hidden="true">8</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">8</p><p class="q-of" aria-hidden="true">8 of 10</p></div>
           <p class="q-label" id="q8-label">Does your team have the tools and patience to do long arc lead nurturing?</p>
           <div class="picks">
             <label><input type="radio" name="q8" value="yes" required>Yes</label>
@@ -181,7 +103,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q9-label">
-          <p class="q-num" aria-hidden="true">9</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">9</p><p class="q-of" aria-hidden="true">9 of 10</p></div>
           <p class="q-label" id="q9-label">Are you willing to let a 3rd party represent you in cold lead follow up?</p>
           <div class="picks">
             <label><input type="radio" name="q9" value="yes" required>Yes</label>
@@ -189,7 +111,7 @@
           </div>
         </div>
         <div class="tool-q" role="group" aria-labelledby="q10-label">
-          <p class="q-num" aria-hidden="true">10</p>
+          <div class="q-head"><p class="q-num" aria-hidden="true">10</p><p class="q-of" aria-hidden="true">10 of 10</p></div>
           <p class="q-label" id="q10-label">Are you open to a commission-only arrangement in which you only pay when leads agree to an in-home inspection?</p>
           <div class="picks">
             <label><input type="radio" name="q10" value="yes" required>Yes</label>
@@ -207,7 +129,7 @@
       </form>
 
       <div id="screen-miss" hidden aria-live="polite">
-        <p class="lead-thanks">Thank you for your time. Based on your answers, we wouldn't be the right fit.</p>
+        <p class="lead-thanks">Thank you for your time. We aren’t a match, so we won’t go further.</p>
         <div class="actions">
           <button class="btn" type="button" id="retake">Retake the Qualification Screener</button>
         </div>
@@ -275,8 +197,95 @@
       <noscript><p>This page needs JavaScript to continue.</p></noscript>
     </div>
   </section>
+  <section class="roi" id="roi">
+    <div class="wrap">
+      <h2 class="roi-title">See what your quiet leads are worth.</h2>
+      <div id="roi-ask">
+        <p class="roi-step" id="roi-step">1 of 5</p>
+        <div class="roi-meter" id="roi-meter" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-labelledby="roi-step"><span id="roi-meter-fill"></span></div>
+        <h2 id="roi-q"></h2>
+        <p class="roi-help" id="roi-help"></p>
+        <div class="roi-entry">
+          <div class="roi-field-col">
+            <div class="roi-field">
+              <span id="roi-prefix" aria-hidden="true"></span>
+              <input id="roi-num" inputmode="decimal" autocomplete="off" aria-labelledby="roi-q" aria-describedby="roi-help roi-note">
+              <span id="roi-suffix" aria-hidden="true"></span>
+            </div>
+            <div class="roi-scrub">
+              <input id="roi-range" type="range" aria-labelledby="roi-q" aria-describedby="roi-help">
+            </div>
+          </div>
+          <button class="btn" type="button" id="roi-next">Next</button>
+        </div>
+        <p class="roi-note" id="roi-note">Starting values are placeholders. Change them to your own numbers.</p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="roi-back" hidden>Back</button>
+        </div>
+      </div>
+
+      <div id="roi-cost" hidden>
+        <h2>What your dead leads already cost you</h2>
+        <p class="roi-hero" id="roi-spent" aria-hidden="true">$0</p>
+        <p class="roi-hero-label">spent on leads that never bought, in the last 2 years.</p>
+        <p class="roi-sr" id="roi-spent-live" aria-live="polite"></p>
+        <div class="actions roi-hero-actions">
+          <button class="btn" type="button" id="roi-worth-go">See what they’re still worth →</button>
+          <button class="btn quiet" type="button" id="roi-cost-back">Back</button>
+        </div>
+        <figure class="roi-waffle-wrap">
+          <div class="roi-waffle" id="roi-waffle" aria-hidden="true"></div>
+          <figcaption>
+            <span class="roi-key job">Became jobs</span>
+            <span class="roi-key quiet" id="roi-quiet-label">Went quiet</span>
+          </figcaption>
+          <p class="roi-sr" id="roi-waffle-sr"></p>
+        </figure>
+        <p class="roi-line" id="roi-spent-line"></p>
+      </div>
+
+      <div id="roi-worth" hidden>
+        <h2>What they could still be worth</h2>
+        <div class="roi-recover">
+          <p class="roi-recover-label" id="roi-recover-label">If <b id="roi-pct">2%</b> of your dead leads became jobs…</p>
+          <input id="roi-recover" type="range" min="1" max="10" step="0.5" value="2" aria-labelledby="roi-recover-label" aria-valuemin="1" aria-valuemax="10" aria-valuenow="2">
+          <div class="roi-scale" aria-hidden="true"><span class="roi-tick">Our planning estimate</span></div>
+        </div>
+        <div class="roi-cards">
+          <article class="roi-card">
+            <h3>Jobs back on your calendar</h3>
+            <p class="roi-stat" id="roi-jobs">0</p>
+            <p class="roi-houses" id="roi-houses" aria-hidden="true"></p>
+          </article>
+          <article class="roi-card">
+            <h3>Recovered revenue</h3>
+            <p class="roi-stat" id="roi-revenue">$0</p>
+          </article>
+          <article class="roi-card roi-net" id="roi-net-card">
+            <h3>Net found margin</h3>
+            <p class="roi-stat" id="roi-net">$0</p>
+            <p class="roi-loss" id="roi-loss" hidden>At these numbers, recovery doesn’t pay. Let’s talk about why.</p>
+          </article>
+        </div>
+        <figure>
+          <ul class="roi-fall" id="roi-fall" aria-hidden="true"></ul>
+          <p class="roi-sr" id="roi-fall-sr"></p>
+        </figure>
+        <figure class="roi-sens">
+          <svg id="roi-line" viewBox="0 0 320 150" role="img" aria-labelledby="roi-line-sr"></svg>
+          <p class="roi-sr" id="roi-line-sr"></p>
+          <p class="roi-caption" id="roi-caption">Even at the low end, this is margin from leads you’d written off.</p>
+        </figure>
+        <p class="roi-fine">These are illustrations based on your inputs, not a guarantee. We’re new, and our pilot exists to measure real results with your leads.</p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="roi-worth-back">Back</button>
+          <a class="btn" id="roi-cta" href="#screening">Start at question 1.</a>
+        </div>
+        <p class="roi-fine">One contractor partner per market (15-mile radius).</p>
+      </div>
+    </div>
+  </section>
 </main>
-<div class="foot-qa"><div class="wrap"><p class="voice-cta"><a class="btn" href="/live-qa/">Join a Live Q&amp;A<span class="cta-when">Next: <span data-qa-next>the next open session</span></span></a></p></div></div>
 <footer>
   <div class="wrap">
     <div class="legal">
