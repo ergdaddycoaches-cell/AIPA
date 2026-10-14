@@ -58,13 +58,16 @@
     return '<form class="signup" id="signup-form">' +
       '<h3>Join this session</h3>' +
       '<p class="note">' + esc(slot.title) + ' · ' + esc(when(slot)) + '</p>' +
+      '<p class="note ease">(You can keep your camera off and stay anonymous on the call if you wish)</p>' +
       '<label for="signup-name">Your name</label>' +
       '<input id="signup-name" name="name" autocomplete="name" required>' +
       '<label for="signup-email">Email</label>' +
       '<input id="signup-email" name="email" type="email" autocomplete="email" required>' +
       '<label for="signup-phone">Cell phone <span class="optional">optional</span></label>' +
       '<input id="signup-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel">' +
-      '<label class="check"><input id="signup-invite" type="checkbox"> The person who decides with you</label>' +
+      '<label for="signup-zip">ZIP code of the house</label>' +
+      '<input id="signup-zip" name="house_zip" inputmode="numeric" autocomplete="postal-code" maxlength="10" required>' +
+      '<label class="check"><input id="signup-invite" type="checkbox"> Invite someone else</label>' +
       '<div id="guest-fields" hidden>' +
         '<label for="guest-name">Their name</label>' +
         '<input id="guest-name" name="guest_name" autocomplete="off">' +
@@ -99,12 +102,19 @@
       e.preventDefault();
       var msg = document.getElementById('signup-msg');
       var button = form.querySelector('button[type="submit"]');
+      var houseZip = document.getElementById('signup-zip').value.trim();
+      var zipDigits = houseZip.replace(/\D/g, '');
+      if (zipDigits.length !== 5 && zipDigits.length !== 9) {
+        msg.textContent = 'Add the 5-digit ZIP code of the house.';
+        return;
+      }
       var payload = {
         meeting_id: slot.meeting_id,
         occurrence_at: slot.occurrence_at,
         name: document.getElementById('signup-name').value.trim(),
         email: document.getElementById('signup-email').value.trim(),
         phone: document.getElementById('signup-phone').value.trim(),
+        house_zip: houseZip,
         guest_name: invite.checked ? document.getElementById('guest-name').value.trim() : '',
         guest_email: invite.checked ? document.getElementById('guest-email').value.trim() : '',
         guest_phone: invite.checked ? document.getElementById('guest-phone').value.trim() : ''
@@ -194,9 +204,11 @@
       choseOwn = true;
       if (next) {
         viewIndex = next.month;
-        selectedDay = String(next.slot.occurrence_at).slice(0, 10);
-        openSlot = next.slot;
-        justOpened = true;
+        if (location.hash !== '#slots') {
+          selectedDay = String(next.slot.occurrence_at).slice(0, 10);
+          openSlot = next.slot;
+          justOpened = true;
+        }
       }
     }
     if (viewIndex < 0) viewIndex = 0;

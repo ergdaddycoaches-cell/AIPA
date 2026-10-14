@@ -331,7 +331,7 @@
 
   function followCopy(row, kind){
     if (window.AIPA_MESSAGES) {
-      var tokens = AIPA_MESSAGES.pages();
+      var tokens = AIPA_MESSAGES.pages(row.suggested_slug);
       tokens.first_name = personFirst(row);
       var profile = profiles[row.id] || {};
       if (profile.sms_token) tokens.sms_opt_in = 'https://goaipa.com/admin/families/sms/?t=' + profile.sms_token;
@@ -351,7 +351,7 @@
         next: 'a home visit',
         subject: 'A home visit',
         body: hello + '\n\nThank you for the Ask Anything 1:1.\n\nThe next step is a home visit, if you want a contractor to look at the house.\n\nReply to this email or call 833-AIPA-HUB.\n\nAging in Place Alliance',
-        sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Guide name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+        sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Host name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
       };
     }
     return {

@@ -141,7 +141,7 @@
       editor = '<div class="delay-editor">' +
         '<label for="email-date">Date</label><input id="email-date" type="date" value="' + esc(item.date) + '">' +
         '<label for="email-subject">Subject</label><input id="email-subject" type="text" maxlength="200" value="' + esc(item.subject) + '">' +
-        '<label for="email-guide">Guide name</label><input id="email-guide" type="text" maxlength="200" value="' + esc(item.guide) + '">' +
+        '<label for="email-guide">Guide title</label><input id="email-guide" type="text" maxlength="200" value="' + esc(item.guide) + '">' +
         '<label for="email-body">Email</label><textarea id="email-body" rows="6" maxlength="20000">' + esc(item.body) + '</textarea>' +
         '<div class="action-review"><button class="btn" type="button" data-email-act="save" data-email-id="' + item.id + '">Save</button>' +
         '<button class="btn quiet" type="button" data-email-act="cancel">Cancel</button></div></div>';
@@ -586,7 +586,7 @@
     var item = emailById(id);
     if (!item) return;
     if (/\{\{guide\}\}/.test(item.body || '') && !String(item.guide || '').trim()) {
-      emailNote[id] = 'Add a guide name before approving this.';
+      emailNote[id] = 'Add a guide title before approving this.';
       render();
       return;
     }

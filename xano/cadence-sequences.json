@@ -1,4 +1,4 @@
-﻿[
+[
     {
         "goal":  "Rebuild trust with a lead that stalled, then get a Live Q\u0026A registration. If they finish without registering, move them to monthly nurture.",
         "key":  "reactivation",
@@ -36,7 +36,7 @@
         "sort":  6
     },
     {
-        "goal":  "Book the in-home visit for someone who wants to think about it. Every touch comes from the guide who ran the conversation. The day-4 text is the existing home-visit text, sent only if the call is not answered.",
+        "goal":  "Book the in-home visit for someone who wants to think about it. Every touch comes from the host who ran the conversation. The day-4 text is the existing home-visit text, sent only if the call is not answered.",
         "key":  "visit",
         "name":  "After an Ask Anything 1:1",
         "sort":  7

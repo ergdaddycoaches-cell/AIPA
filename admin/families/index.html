@@ -31,6 +31,7 @@
       <a class="btn quiet" href="/admin/prices/">Prices</a>
       <a class="btn quiet" href="/admin/glossary/">Glossary</a>
       <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="btn quiet" href="/admin/reports/">Reports</a>
       <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
     </nav>
   </div>
@@ -177,7 +178,7 @@
           <select id="guide" name="guide"><option value="">No guide</option></select>
           <label for="follow">Message</label>
           <textarea id="follow" name="follow_up_note" rows="5" maxlength="20000"></textarea>
-          <p class="send-note" id="guide-token-note">{{guide}} is filled in with the guide name when this is sent.</p>
+          <p class="send-note" id="guide-token-note">{{guide}} is the guide title. {{library}} is the link to the guide we send.</p>
           <button type="button" id="insert-guide">Insert {{guide}}</button>
           <div class="send-channels" role="group" aria-label="How to send">
             <button type="button" id="channel-email" aria-pressed="true">Email</button>
@@ -208,11 +209,11 @@
           <input id="delay-date" type="date">
           <label for="delay-subject">Subject</label>
           <input id="delay-subject" type="text" maxlength="200">
-          <label for="delay-guide">Guide name</label>
+          <label for="delay-guide">Guide title</label>
           <input id="delay-guide" type="text" maxlength="200">
           <label for="delay-body">Email</label>
           <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
-          <p class="send-note">{{guide}} is filled in with the guide name when you approve this on Actions.</p>
+          <p class="send-note">{{guide}} is the guide title. {{library}} is the link to the guide we send, filled in when you approve this on Actions.</p>
           <button type="button" id="delay-insert">Insert {{guide}}</button>
           <div class="call-actions">
             <button class="btn" type="submit">Save</button>

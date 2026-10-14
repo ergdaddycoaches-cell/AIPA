@@ -1,10 +1,10 @@
-﻿[
+[
     {
         "key":  "cad_react_1",
         "name":  "Reactivation, introduction",
         "channel":  "email",
         "subject":  "A note from {{contractor}} and the Aging in Place Alliance",
-        "body":  "Hi {{first_name}},\r\n\r\nSome time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there\u0027s no rush.\r\n\r\n{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Colin. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.\r\n\r\nHere\u0027s a short guide many people find useful: {{guide}}\r\n{{library}}\r\n\r\nWarm regards,\r\n[Host name]\r\nAging in Place Alliance\r\n\r\nP.S. We host a free Live Q\u0026A where you can ask anything, with no sales pitch. The next one is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nSome time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there\u0027s no rush.\r\n\r\n{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Shep. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.\r\n\r\nHere\u0027s a short guide many people find useful: {{guide}}\r\n{{library}}\r\n\r\nWarm regards,\r\n[Host name]\r\nAging in Place Alliance\r\n\r\nP.S. We host a free Live Q\u0026A where you can ask anything, with no sales pitch. The next one is [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  21
     },
@@ -193,7 +193,7 @@
         "name":  "Ask Anything 1:1, confirmation",
         "channel":  "email",
         "subject":  "Your Ask Anything 1:1 is confirmed",
-        "body":  "Hi {{first_name}},\r\n\r\nYour Ask Anything 1:1 is set for [Day, Date] at [Time]. A calendar invitation is attached.\r\n\r\nYou\u0027ll be speaking with [Guide name]. [Guide photo] [One line about the guide.]\r\n\r\nYou\u0027re welcome to invite your daughter or son to join. Just forward them this email. Here\u0027s the link: {{zoom}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nYour Ask Anything 1:1 is set for [Day, Date] at [Time]. A calendar invitation is attached.\r\n\r\nYou\u0027ll be speaking with [Host name]. [Host photo] [One line about the host.]\r\n\r\nYou\u0027re welcome to invite your daughter or son to join. Just forward them this email. Here\u0027s the link: {{zoom}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  42
     },
@@ -202,7 +202,7 @@
         "name":  "Ask Anything 1:1, one day before",
         "channel":  "email",
         "subject":  "Tomorrow: your Ask Anything 1:1",
-        "body":  "Hi {{first_name}}, a friendly reminder that you\u0027re speaking with [Guide name] tomorrow at [Time]. Join here: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}}, a friendly reminder that you\u0027re speaking with [Host name] tomorrow at [Time]. Join here: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  43
     },
@@ -211,7 +211,7 @@
         "name":  "Ask Anything 1:1, text one day before",
         "channel":  "sms",
         "subject":  "",
-        "body":  "Hi {{first_name}}, a reminder that your 1:1 with [Guide name] is tomorrow at [Time]. Link: {{zoom}} Reply STOP to opt out.",
+        "body":  "Hi {{first_name}}, a reminder that your 1:1 with [Host name] is tomorrow at [Time]. Link: {{zoom}} Reply STOP to opt out.",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  44
     },
@@ -220,7 +220,7 @@
         "name":  "Ask Anything 1:1, text one hour before",
         "channel":  "sms",
         "subject":  "",
-        "body":  "Hi {{first_name}}, it\u0027s [Guide name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}} Reply STOP to opt out.",
+        "body":  "Hi {{first_name}}, it\u0027s [Host name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}} Reply STOP to opt out.",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  45
     },
@@ -229,7 +229,7 @@
         "name":  "Ask Anything 1:1, email one hour before",
         "channel":  "email",
         "subject":  "Talk soon",
-        "body":  "Hi {{first_name}}, it\u0027s [Guide name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}}, it\u0027s [Host name]. Looking forward to talking with you at [Time]. Here\u0027s the link: {{zoom}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  46
     },
@@ -238,7 +238,7 @@
         "name":  "Missed Ask Anything 1:1, same day",
         "channel":  "email",
         "subject":  "Shall we find another time?",
-        "body":  "Hi {{first_name}},\r\n\r\nWe missed each other today. Not a problem at all. Would you like to choose another time? {{one_to_one}}\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nWe missed each other today. Not a problem at all. Would you like to choose another time? {{one_to_one}}\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  47
     },
@@ -247,7 +247,7 @@
         "name":  "Missed Ask Anything 1:1, rebook",
         "channel":  "email",
         "subject":  "Another time for your Ask Anything 1:1",
-        "body":  "Hi {{first_name}},\r\n\r\nI\u0027d be glad to find another time for your Ask Anything 1:1.\r\n\r\n{{one_to_one}}\r\n\r\nNo obligation. If now isn\u0027t the right time, that\u0027s fine too.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nI\u0027d be glad to find another time for your Ask Anything 1:1.\r\n\r\n{{one_to_one}}\r\n\r\nNo obligation. If now isn\u0027t the right time, that\u0027s fine too.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  48
     },
@@ -256,7 +256,7 @@
         "name":  "Missed Ask Anything 1:1, a guide",
         "channel":  "email",
         "subject":  "{{guide}}",
-        "body":  "Hi {{first_name}},\r\n\r\nI thought you might find this useful: {{guide}}\r\n{{library}}\r\n\r\n[Guide name]\r\n\r\nP.S. If you\u0027d like another time, book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nI thought you might find this useful: {{guide}}\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. If you\u0027d like another time, book an Ask Anything 1:1: {{one_to_one}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  49
     },
@@ -265,7 +265,7 @@
         "name":  "After the 1:1, the plan",
         "channel":  "email",
         "subject":  "Your 10+ Year Freedom Plan",
-        "body":  "Hi {{first_name}},\r\n\r\nThank you for the conversation today. Here\u0027s a summary of what we talked about, so you have it in one place.\r\n\r\nYour home: [one or two lines]\r\nWhat matters most to you: [in their own words]\r\nChanges to consider now: [short list]\r\nChanges that can wait: [short list]\r\n\r\nDownload your plan: [link]\r\n\r\nWhen you\u0027re ready, the next step is a measuring visit at your home. [Book a visit]\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nThank you for the conversation today. Here\u0027s a summary of what we talked about, so you have it in one place.\r\n\r\nYour home: [one or two lines]\r\nWhat matters most to you: [in their own words]\r\nChanges to consider now: [short list]\r\nChanges that can wait: [short list]\r\n\r\nDownload your plan: [link]\r\n\r\nWhen you\u0027re ready, the next step is a measuring visit at your home. [Book a visit]\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  50
     },
@@ -274,7 +274,7 @@
         "name":  "After the 1:1, the hesitation guide",
         "channel":  "email",
         "subject":  "About [their hesitation]",
-        "body":  "Hi {{first_name}},\r\n\r\nWhen we spoke, you mentioned [their hesitation in their words]. That\u0027s a very common concern, and a fair one.\r\n\r\nThis short guide addresses it directly: {{guide}}\r\n{{library}}\r\n\r\nIf it raises any questions, just reply.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nWhen we spoke, you mentioned [their hesitation in their words]. That\u0027s a very common concern, and a fair one.\r\n\r\nThis short guide addresses it directly: {{guide}}\r\n{{library}}\r\n\r\nIf it raises any questions, just reply.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  51
     },
@@ -283,7 +283,7 @@
         "name":  "After the 1:1, guide call",
         "channel":  "call",
         "subject":  "",
-        "body":  "Call from the same guide who ran the Ask Anything 1:1, four days later.\r\n\r\nHello {{first_name}}, it\u0027s [Guide name]. I enjoyed our conversation on [Day]. Have any questions come up since then? The next step, whenever you\u0027re ready, is a measuring visit. Someone comes to your home, takes measurements and talks through options. It\u0027s about an hour, and you keep the measurements whatever you decide. I could arrange [time option 1] or [time option 2]. Would either suit you? And if you\u0027d rather wait, that\u0027s perfectly fine.\r\n\r\nIf nobody answers, leave this voicemail, then send the text:\r\n\r\nHello {{first_name}}, it\u0027s [Guide name] from the Aging in Place Alliance. I enjoyed our talk on [Day] and wanted to see if any questions came up. I\u0027ll send a short text. You can always reach us at 833-AIPA-HUB.",
+        "body":  "Call from the same host who ran the Ask Anything 1:1, four days later.\r\n\r\nHello {{first_name}}, it\u0027s [Host name]. I enjoyed our conversation on [Day]. Have any questions come up since then? The next step, whenever you\u0027re ready, is a measuring visit. Someone comes to your home, takes measurements and talks through options. It\u0027s about an hour, and you keep the measurements whatever you decide. I could arrange [time option 1] or [time option 2]. Would either suit you? And if you\u0027d rather wait, that\u0027s perfectly fine.\r\n\r\nIf nobody answers, leave this voicemail, then send the text:\r\n\r\nHello {{first_name}}, it\u0027s [Host name] from the Aging in Place Alliance. I enjoyed our talk on [Day] and wanted to see if any questions came up. I\u0027ll send a short text. You can always reach us at 833-AIPA-HUB.",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  52
     },
@@ -292,7 +292,7 @@
         "name":  "After the 1:1, note for adult children",
         "channel":  "email",
         "subject":  "For your family: what we talked about",
-        "body":  "Hi {{first_name}},\r\n\r\nMany people like to share their plan with their children. If that\u0027s helpful, simply forward this email.\r\n\r\n---\r\n\r\nFor {{first_name}}\u0027s family:\r\n\r\nI\u0027m [Guide name] from the Aging in Place Alliance. {{first_name}} and I recently talked about making their home easier to live in for the years ahead. Here\u0027s the plan we put together: [link]\r\n\r\nThe next step, if they choose, is a measuring visit at the home. You\u0027re welcome to be there. [Book a visit]\r\n\r\nQuestions are always welcome: 833-AIPA-HUB.\r\n\r\n---\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nMany people like to share their plan with their children. If that\u0027s helpful, simply forward this email.\r\n\r\n---\r\n\r\nFor {{first_name}}\u0027s family:\r\n\r\nI\u0027m [Host name] from the Aging in Place Alliance. {{first_name}} and I recently talked about making their home easier to live in for the years ahead. Here\u0027s the plan we put together: [link]\r\n\r\nThe next step, if they choose, is a measuring visit at the home. You\u0027re welcome to be there. [Book a visit]\r\n\r\nQuestions are always welcome: 833-AIPA-HUB.\r\n\r\n---\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  53
     },
@@ -301,7 +301,7 @@
         "name":  "After the 1:1, the measuring visit",
         "channel":  "email",
         "subject":  "A one-hour measuring visit",
-        "body":  "Hi {{first_name}},\r\n\r\nWhen you\u0027re ready, the next step is small: a measuring visit at your home.\r\n\r\n- About an hour\r\n- Measurements taken and options talked through\r\n- You keep the measurements, whatever you decide\r\n- No obligation\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, of course. There\u0027s no deadline.\r\n\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nWhen you\u0027re ready, the next step is small: a measuring visit at your home.\r\n\r\n- About an hour\r\n- Measurements taken and options talked through\r\n- You keep the measurements, whatever you decide\r\n- No obligation\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, of course. There\u0027s no deadline.\r\n\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  54
     },
@@ -310,7 +310,7 @@
         "name":  "After the 1:1, what the visit is like",
         "channel":  "email",
         "subject":  "What happens at a measuring visit",
-        "body":  "Hi {{first_name}},\r\n\r\nIt\u0027s natural to wonder what a visit will be like, so here it is, step by step:\r\n\r\n1. A short conversation first. The estimator asks how you use your home and what matters to you.\r\n2. Measurements. Doorways, the bathroom, steps, and anything else on your plan.\r\n3. Options, not pressure. You hear what\u0027s possible and roughly what it costs.\r\n4. Time to think. You keep the measurements, and no one asks you to decide on the spot.\r\n\r\nYou\u0027re welcome to have your daughter or son there too.\r\n\r\n[Guide name]\r\n\r\nP.S. When you\u0027re ready: [Book a measuring visit]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nIt\u0027s natural to wonder what a visit will be like, so here it is, step by step:\r\n\r\n1. A short conversation first. The estimator asks how you use your home and what matters to you.\r\n2. Measurements. Doorways, the bathroom, steps, and anything else on your plan.\r\n3. Options, not pressure. You hear what\u0027s possible and roughly what it costs.\r\n4. Time to think. You keep the measurements, and no one asks you to decide on the spot.\r\n\r\nYou\u0027re welcome to have your daughter or son there too.\r\n\r\n[Host name]\r\n\r\nP.S. When you\u0027re ready: [Book a measuring visit]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  55
     },
@@ -319,7 +319,7 @@
         "name":  "After the 1:1, last ask",
         "channel":  "email",
         "subject":  "One last note from me",
-        "body":  "Hi {{first_name}},\r\n\r\nI don\u0027t want to keep nudging, so this is my last note about the visit for now.\r\n\r\nIf you\u0027d like a measuring visit, you can choose a time here: [Book a visit]\r\n\r\nIf now isn\u0027t right, that\u0027s completely fine. You\u0027re free to wait, and we\u0027ll still be here. I\u0027ll send a useful guide now and then, and you can reach me anytime at 833-AIPA-HUB.\r\n\r\nWith respect,\r\n[Guide name]\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nI don\u0027t want to keep nudging, so this is my last note about the visit for now.\r\n\r\nIf you\u0027d like a measuring visit, you can choose a time here: [Book a visit]\r\n\r\nIf now isn\u0027t right, that\u0027s completely fine. You\u0027re free to wait, and we\u0027ll still be here. I\u0027ll send a useful guide now and then, and you can reach me anytime at 833-AIPA-HUB.\r\n\r\nWith respect,\r\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  56
     },
@@ -382,7 +382,7 @@
         "name":  "Nurture after a 1:1, soft month",
         "channel":  "email",
         "subject":  "{{guide}}",
-        "body":  "Hi {{first_name}},\r\n\r\n[One or two sentences introducing this month\u0027s guide.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Whenever you\u0027re ready, [Guide name] can arrange a measuring visit. [Book a visit]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\n[One or two sentences introducing this month\u0027s guide.]\r\n{{library}}\r\n\r\n[Host name]\r\n\r\nP.S. Whenever you\u0027re ready, [Host name] can arrange a measuring visit. [Book a visit]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  63
     },
@@ -391,7 +391,7 @@
         "name":  "Nurture after a 1:1, the visit",
         "channel":  "email",
         "subject":  "Whenever you\u0027re ready",
-        "body":  "Hi {{first_name}},\r\n\r\nJust a gentle note that [Guide name] would be glad to arrange your measuring visit: about an hour, no obligation, and you keep the measurements.\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, and we\u0027ll still be here.\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
+        "body":  "Hi {{first_name}},\r\n\r\nJust a gentle note that [Host name] would be glad to arrange your measuring visit: about an hour, no obligation, and you keep the measurements.\r\n\r\n[Choose a time]\r\n\r\nYou\u0027re free to wait, and we\u0027ll still be here.\r\n\r\n[Host name]\r\n\r\nNext Live Q\u0026A: [Day, Date] at [Time]. Save a seat: {{live_qa}}\n\nAging in Place Alliance\n833-AIPA-HUB",
         "hint":  "Edit the copy here. The Cadences page decides when it goes out.",
         "sort":  64
     },

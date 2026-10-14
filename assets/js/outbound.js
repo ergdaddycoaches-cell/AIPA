@@ -71,6 +71,7 @@
 
   var nextDay = "";
   var nextShort = "";
+  var nextDayNum = "";
 
   function paintQaDays() {
     var nodes, i;
@@ -85,6 +86,38 @@
       for (i = 0; i < nodes.length; i++) {
         if (nodes[i].textContent !== nextShort) nodes[i].textContent = nextShort;
       }
+    }
+    paintCalendars();
+  }
+
+  function calendarMark() {
+    var mark = document.createElement("span");
+    mark.className = "qa-cal";
+    mark.setAttribute("aria-hidden", "true");
+    mark.innerHTML = '<svg viewBox="0 0 36 42" aria-hidden="true"><rect x="1.75" y="7" width="32.5" height="33" rx="3.5" fill="currentColor" fill-opacity=".16" stroke="currentColor" stroke-width="1.6"/><path d="M1.75 16.5h32.5" stroke="currentColor" stroke-width="1.6"/><path d="M11 3.5v7M25 3.5v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span class="qa-cal-day"></span>';
+    return mark;
+  }
+
+  function paintCal(anchor) {
+    var mark = anchor.querySelector(":scope > .qa-cal");
+    if (!mark) {
+      var copy = document.createElement("span");
+      copy.className = "cta-copy";
+      while (anchor.firstChild) copy.appendChild(anchor.firstChild);
+      mark = calendarMark();
+      anchor.appendChild(mark);
+      anchor.appendChild(copy);
+    }
+    var num = mark.querySelector(".qa-cal-day");
+    if (num && num.textContent !== nextDayNum) num.textContent = nextDayNum;
+  }
+
+  function paintCalendars() {
+    if (!nextDayNum) return;
+    var nodes = document.querySelectorAll(".primary .nav-cta a, a.btn");
+    var i;
+    for (i = 0; i < nodes.length; i++) {
+      if (nodes[i].querySelector(".cta-when")) paintCal(nodes[i]);
     }
   }
 
@@ -142,6 +175,8 @@
         if (!next) return;
         nextDay = dayPhrase(next);
         var label = dateLabel(next.occurrence_at, next.timezone);
+        var dayMatch = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(next.occurrence_at || ""));
+        nextDayNum = dayMatch ? String(+dayMatch[3]) : "";
         nextShort = label;
         paintQaDays();
         if (label) {
@@ -152,6 +187,7 @@
             line.textContent = "Next: " + label;
             buttons[i].appendChild(line);
           }
+          paintCalendars();
         }
         var lead = document.getElementById("qa-when");
         if (lead) fillSessionLine(lead, next);

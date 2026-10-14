@@ -25,10 +25,10 @@
     var width = rh > rw ? 112 : 150;
     return {w: width, h: width * rh / rw};
   }
-  function qrImage(){
+  function qrImage(url){
     if (!window.qrcode) return '';
     var code = window.qrcode(0, 'M');
-    code.addData('https://goaipa.com/ask-anything/');
+    code.addData(url);
     code.make();
     var count = code.getModuleCount();
     var scale = 6;
@@ -173,9 +173,12 @@
     });
     doc.setFont(FACE, 'normal');
   }
-  function build(guide){
+  function build(guide, options){
     if (!window.jspdf || !window.jspdf.jsPDF) throw new Error('The handout builder did not load.');
-    var doc = new window.jspdf.jsPDF({unit:'pt', format:'letter'});
+    var sent = !!(options && options.sent);
+    var pageUrl = sent ? 'https://goaipa.com/ask-anything/' : 'https://goaipa.com/live-qa/';
+    var footUrl = sent ? 'goaipa.com/ask-anything' : 'goaipa.com/live-qa';
+    var doc = new window.jspdf.jsPDF({unit:'pt', format:'letter', compress:true});
     var margin = 50;
     var pageW = 612;
     var pageH = 792;
@@ -186,7 +189,7 @@
     useFonts(doc);
     var body = 14;
     var lead = 1.4;
-    var qr = qrImage();
+    var qr = qrImage(pageUrl);
     var qrSize = 54;
     var footTop = pageH - 28 - qrSize;
     var floor = footTop - 18;
@@ -332,7 +335,8 @@
         y += 3;
       });
     }
-    var closeText = window.AIPA_CLOSE ? window.AIPA_CLOSE.line(guide) : '';
+    var closeText = '';
+    if (window.AIPA_CLOSE) closeText = sent ? window.AIPA_CLOSE.sentLine(guide) : window.AIPA_CLOSE.line(guide);
     if (closeText) {
       var frame = 4;
       var padX = 14;
@@ -385,7 +389,7 @@
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(81, 70, 62);
-      doc.text('goaipa.com/ask-anything', urlX, mid);
+      doc.text(footUrl, urlX, mid);
       var label = page + ' of ' + total;
       doc.text(label, margin + inner - doc.getTextWidth(label), mid);
     }

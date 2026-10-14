@@ -48,7 +48,10 @@
     return title.charAt(0).toLowerCase() + title.slice(1);
   }
   function line(guide){
-    return 'If you have more questions about ' + topic(guide) + ', bring them to the next Live Q&A. You can also book a free Ask Anything 1:1 with an AIPA Guide.';
+    return 'If you have more questions about ' + topic(guide) + ', bring them to the next Live Q&A.';
   }
-  window.AIPA_CLOSE = { topic: topic, line: line };
+  function sentLine(guide){
+    return 'If you have more questions about ' + topic(guide) + ', book a free Ask Anything 1:1 with Shep.';
+  }
+  window.AIPA_CLOSE = { topic: topic, line: line, sentLine: sentLine };
 })();

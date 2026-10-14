@@ -40,19 +40,29 @@
         }).join('');
       });
 
+      if (!guides) {
+        var total = document.querySelector('.page-hero .facts .guide-count');
+        if (total) total.textContent = String(items.length);
+      }
+
       if (guides) {
         var scope = document.getElementById('results');
         var section = scope && scope.dataset.section;
         if (!section) return;
         var rows = by[section] || [];
         if (!rows.length) return;
+        var wait = guides.parentElement && guides.parentElement.querySelector('.guides-wait');
+        if (wait) wait.hidden = true;
         guides.innerHTML = rows.map(function(article, index){
           return '<li><a href="' + esc(article.url) + '"><span class="no">' + (index + 1) + '</span><span>' +
             (index === 0 ? '<span class="start">Start here</span>' : '') +
             '<span class="t">' + esc(article.title) + '</span><span class="sm">' + esc(article.summary) + '</span></span></a></li>';
         }).join('');
-        var count = document.querySelector('.facts span b');
-        if (count) count.textContent = String(rows.length);
+        var count = document.querySelector('.facts .guide-count');
+        if (count) {
+          count.textContent = String(rows.length);
+          if (count.nextSibling) count.nextSibling.textContent = rows.length === 1 ? ' guide' : ' guides';
+        }
       }
     })
     .catch(function(){});

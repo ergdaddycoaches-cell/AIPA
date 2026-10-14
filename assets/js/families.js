@@ -240,7 +240,7 @@
     if (!hasMessage && row.follow_up_status === 'sent') {
       var sentAt = stamp(row.follow_up_sent_at) || fromEpoch(row.follow_up_sent_at, zone);
       if (sentAt) {
-        events.push({kind:'email', occurred_at:sentAt, note:mergeGuide(row.follow_up_note, row.suggested_title), future: sentAt > now});
+        events.push({kind:'email', occurred_at:sentAt, note:mergeGuide(row.follow_up_note, row.suggested_title, row.suggested_slug, row.guide_token), future: sentAt > now});
       }
     }
     events.sort(function(a, b){
@@ -520,14 +520,16 @@
         (person.note ? '<p>' + esc(person.note) + '</p>' : '') + '</li>';
     }).join('') + '</ul>';
   }
-  function mergeGuide(text, title){
+  function mergeGuide(text, title, slug, token){
     var name = String(title || '').trim();
-    return String(text || '').replace(/\{\{guide\}\}/g, name || '{{guide}}');
+    return String(text || '')
+      .replace(/\{\{guide\}\}/g, name || '{{guide}}')
+      .replace(/\{\{library\}\}/g, sentGuide(slug, token));
   }
   function follow(row){
     if (!row.follow_up_note) return '';
     var label = row.follow_up_status === 'sent' ? 'Follow-up that went out' : row.follow_up_status === 'draft' ? 'Draft, not sent' : 'Follow-up note';
-    return '<div class="follow"><h3>' + esc(label) + '</h3><p>' + esc(mergeGuide(row.follow_up_note, row.suggested_title)) + '</p></div>';
+    return '<div class="follow"><h3>' + esc(label) + '</h3><p>' + esc(mergeGuide(row.follow_up_note, row.suggested_title, row.suggested_slug, row.guide_token)) + '</p></div>';
   }
   function firstSentence(text){
     var value = String(text || '').replace(/\s+/g, ' ').trim();
@@ -646,14 +648,26 @@
       (live ? '<button type="button" class="hangup" data-act="hangup">Hang up</button>' : '<button type="button" data-act="close">Close</button>') +
       '</div></div>';
   }
+  function sentGuide(slug, token){
+    var id = String(slug || '').trim();
+    if (window.AIPA_MESSAGES && AIPA_MESSAGES.guideLink) return AIPA_MESSAGES.guideLink(id, token);
+    if (!id) return 'https://goaipa.com/library/';
+    var url = 'https://goaipa.com/library/sent/?slug=' + encodeURIComponent(id);
+    var key = String(token || '').trim();
+    if (key) url += '&t=' + encodeURIComponent(key);
+    return url;
+  }
   function messageTokens(family){
-    var pages = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages() : {
+    var slug = family && family.row ? family.row.suggested_slug : '';
+    var guideToken = family && family.row ? family.row.guide_token : '';
+    var pages = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages(slug) : {
       live_qa: 'https://goaipa.com/live-qa/',
       one_to_one: 'https://goaipa.com/ask-anything/',
-      library: 'https://goaipa.com/library/',
+      library: sentGuide(slug, guideToken),
       sms_opt_in: '',
       first_name: ''
     };
+    pages.library = sentGuide(slug, guideToken);
     pages.first_name = firstName(family);
     var linkToken = family.profile && family.profile.sms_token;
     if (linkToken) pages.sms_opt_in = 'https://goaipa.com/admin/families/sms/?t=' + linkToken;
@@ -663,7 +677,7 @@
     var note = String(family.row.follow_up_note || '').trim();
     var slug = String(family.row.suggested_slug || '').trim();
     var title = String(family.row.suggested_title || '').trim();
-    var pdf = slug ? (family.handoutUrl || ('https://goaipa.com/library/pdf/' + slug + '.pdf')) : '';
+    var pdf = slug ? sentGuide(slug, family.row.guide_token) : '';
     var tokens = messageTokens(family);
     tokens.note = note;
     tokens.guide = title;
@@ -673,12 +687,15 @@
       var mail = AIPA_MESSAGES.compose('guide_followup', tokens);
       if (!pdf) mail.body = note;
       else if (note && note.indexOf(pdf) !== -1) mail.body = note;
+      else if (slug && mail.body.indexOf('/library/sent/') === -1) {
+        mail.body += '\n\nRead this guide:\n' + sentGuide(slug, family.row.guide_token);
+      }
       return mail;
     }
     if (!title) return {subject: 'Following up on our conversation', body: note};
     if (!pdf) return {subject: 'A guide: ' + title, body: note};
     if (note.indexOf(pdf) !== -1) return {subject: 'A guide: ' + title, body: note};
-    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\nhttps://goaipa.com/ask-anything/\nOr call 833-AIPA-HUB.';
+    var handout = 'Read this guide:\n' + sentGuide(slug, family.row.guide_token) + '\n\nPrint this guide:\n' + pdf + '\n\nOr call 833-AIPA-HUB.';
     return {subject: 'A guide: ' + title, body: note ? note + '\n\n' + handout : handout};
   }
   function firstName(family){
@@ -709,7 +726,7 @@
         next: 'a home visit',
         subject: 'A home visit',
         body: hello + '\n\nThank you for the Ask Anything 1:1.\n\nThe next step is a home visit, if you want a contractor to look at the house.\n\nReply to this email or call 833-AIPA-HUB.\n\nAging in Place Alliance',
-        sms: 'Hi ' + (who ? who : '') + (who ? ', ' : '') + 'it\'s [Guide name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+        sms: 'Hi ' + (who ? who : '') + (who ? ', ' : '') + 'it\'s [Host name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
       };
     }
     return {
@@ -1043,10 +1060,16 @@
       (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve()),
       api('/office/households'),
       api('/office/billing').catch(function(){ return {bills:[]}; }),
-      api('/office/cadences').catch(function(){ return {sequences:[], steps:[]}; })
+      api('/office/cadences').catch(function(){ return {sequences:[], steps:[]}; }),
+      api('/office/guide-links').catch(function(){ return []; })
     ]).then(function(result){
       var meetings = rows(result[0]);
-      var signups = rows(result[1]);
+      var guideTokens = {};
+      rows(result[8]).forEach(function(link){ guideTokens[link.registration_id] = link.token || ''; });
+      var signups = rows(result[1]).map(function(row){
+        row.guide_token = guideTokens[row.id] || '';
+        return row;
+      });
       var touches = rows(result[2]);
       var pipeline = result[3] || {};
       var household = result[5] || {};
@@ -1182,7 +1205,7 @@
     if (!picked) { if (status) status.textContent = 'Choose who to reach.'; return; }
     if (!body || !body.value.trim()) { if (status) status.textContent = 'Write the message first.'; return; }
     if (body.value.indexOf('{{guide}}') !== -1 && !String(family.row.suggested_title || '').trim()) {
-      if (status) status.textContent = 'Pick a guide so {{guide}} has a name.';
+      if (status) status.textContent = 'Pick a guide so {{guide}} has a title.';
       return;
     }
     if (status) status.textContent = channel === 'sms' ? 'Sending the text…' : 'Sending the email…';
@@ -1191,7 +1214,7 @@
       channel: channel,
       to: picked.value,
       subject: subject ? subject.value : '',
-      body: mergeGuide(body.value, family.row.suggested_title)
+      body: mergeGuide(body.value, family.row.suggested_title, family.row.suggested_slug, family.row.guide_token)
     }}).then(function(data){
       if (!data.configured || data.ok === false) {
         if (status) status.textContent = data.message || 'This was not sent.';

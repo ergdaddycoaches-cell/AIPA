@@ -14,14 +14,17 @@
     {token: '{{live_qa}}', label: 'Live Q&A registration'},
     {token: '{{one_to_one}}', label: '1:1 registration'},
     {token: '{{sms_opt_in}}', label: 'SMS opt-in page'},
-    {token: '{{library}}', label: 'Library'},
+    {token: '{{library}}', label: 'Guide we send'},
     {token: '{{zoom}}', label: 'Standing Zoom link'},
     {token: '{{first_name}}', label: 'First name'},
     {token: '{{contractor}}', label: 'Contractor'}
   ];
   var EXTRA_TOKENS = {
+    invite_qa_guest: [
+      {token: '{{inviter_name}}', label: 'Person who invited them'}
+    ],
     guide_followup: [
-      {token: '{{guide}}', label: 'Guide name'},
+      {token: '{{guide}}', label: 'Guide title'},
       {token: '{{guide_pdf}}', label: 'Handout'},
       {token: '{{note}}', label: 'Note'}
     ],

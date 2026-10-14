@@ -22,7 +22,7 @@ Hi {{first_name}},
 
 Some time ago you spoke with {{contractor}} about making changes to your home. Decisions like this deserve time, and there's no rush.
 
-{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Colin. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.
+{{contractor}} has partnered with us, the Aging in Place Alliance, so homeowners can get plain, honest answers before deciding anything. You'll be talking with me, Shep. I come from a Seattle remodeling background. I started this after watching my parents and their peers struggle to make good decisions in the face of insufficient -- and often predatory -- advice.
 
 Here's a short guide many people find useful: {{guide}}
 {{library}}
@@ -237,19 +237,19 @@ Hi {{first_name}},
 
 Your Ask Anything 1:1 is set for [Day, Date] at [Time]. A calendar invitation is attached.
 
-You'll be speaking with [Guide name]. [Guide photo] [One line about the guide.]
+You'll be speaking with [Host name]. [Host photo] [One line about the host.]
 
 You're welcome to invite your daughter or son to join. Just forward them this email. Here's the link: {{zoom}}
 
 [Host name]
 "@ $h
 Add-Email 'cad_oto_day' 'Ask Anything 1:1, one day before' 'Tomorrow: your Ask Anything 1:1' @"
-Hi {{first_name}}, a friendly reminder that you're speaking with [Guide name] tomorrow at [Time]. Join here: {{zoom}}
+Hi {{first_name}}, a friendly reminder that you're speaking with [Host name] tomorrow at [Time]. Join here: {{zoom}}
 "@ $h
-Add-Text 'cad_oto_day_sms' 'Ask Anything 1:1, text one day before' "Hi {{first_name}}, a reminder that your 1:1 with [Guide name] is tomorrow at [Time]. Link: {{zoom}}" $h
-Add-Text 'cad_oto_soon_sms' 'Ask Anything 1:1, text one hour before' "Hi {{first_name}}, it's [Guide name]. Looking forward to talking with you at [Time]. Here's the link: {{zoom}}" $h
+Add-Text 'cad_oto_day_sms' 'Ask Anything 1:1, text one day before' "Hi {{first_name}}, a reminder that your 1:1 with [Host name] is tomorrow at [Time]. Link: {{zoom}}" $h
+Add-Text 'cad_oto_soon_sms' 'Ask Anything 1:1, text one hour before' "Hi {{first_name}}, it's [Host name]. Looking forward to talking with you at [Time]. Here's the link: {{zoom}}" $h
 Add-Email 'cad_oto_soon_email' 'Ask Anything 1:1, email one hour before' 'Talk soon' @"
-Hi {{first_name}}, it's [Guide name]. Looking forward to talking with you at [Time]. Here's the link: {{zoom}}
+Hi {{first_name}}, it's [Host name]. Looking forward to talking with you at [Time]. Here's the link: {{zoom}}
 "@ $h
 
 Add-Email 'cad_oto_miss_1' 'Missed Ask Anything 1:1, same day' 'Shall we find another time?' @"
@@ -257,7 +257,7 @@ Hi {{first_name}},
 
 We missed each other today. Not a problem at all. Would you like to choose another time? {{one_to_one}}
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Email 'cad_oto_miss_2' 'Missed Ask Anything 1:1, rebook' 'Another time for your Ask Anything 1:1' @"
 Hi {{first_name}},
@@ -268,7 +268,7 @@ I'd be glad to find another time for your Ask Anything 1:1.
 
 No obligation. If now isn't the right time, that's fine too.
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Email 'cad_oto_miss_3' 'Missed Ask Anything 1:1, a guide' '{{guide}}' @"
 Hi {{first_name}},
@@ -276,7 +276,7 @@ Hi {{first_name}},
 I thought you might find this useful: {{guide}}
 {{library}}
 
-[Guide name]
+[Host name]
 
 P.S. If you'd like another time, book an Ask Anything 1:1: {{one_to_one}}
 "@ $h
@@ -295,7 +295,7 @@ Download your plan: [link]
 
 When you're ready, the next step is a measuring visit at your home. [Book a visit]
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Email 'cad_visit_guide' 'After the 1:1, the hesitation guide' 'About [their hesitation]' @"
 Hi {{first_name}},
@@ -307,16 +307,16 @@ This short guide addresses it directly: {{guide}}
 
 If it raises any questions, just reply.
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Call 'cad_visit_call' 'After the 1:1, guide call' @"
-Call from the same guide who ran the Ask Anything 1:1, four days later.
+Call from the same host who ran the Ask Anything 1:1, four days later.
 
-Hello {{first_name}}, it's [Guide name]. I enjoyed our conversation on [Day]. Have any questions come up since then? The next step, whenever you're ready, is a measuring visit. Someone comes to your home, takes measurements and talks through options. It's about an hour, and you keep the measurements whatever you decide. I could arrange [time option 1] or [time option 2]. Would either suit you? And if you'd rather wait, that's perfectly fine.
+Hello {{first_name}}, it's [Host name]. I enjoyed our conversation on [Day]. Have any questions come up since then? The next step, whenever you're ready, is a measuring visit. Someone comes to your home, takes measurements and talks through options. It's about an hour, and you keep the measurements whatever you decide. I could arrange [time option 1] or [time option 2]. Would either suit you? And if you'd rather wait, that's perfectly fine.
 
 If nobody answers, leave this voicemail, then send the text:
 
-Hello {{first_name}}, it's [Guide name] from the Aging in Place Alliance. I enjoyed our talk on [Day] and wanted to see if any questions came up. I'll send a short text. You can always reach us at 833-AIPA-HUB.
+Hello {{first_name}}, it's [Host name] from the Aging in Place Alliance. I enjoyed our talk on [Day] and wanted to see if any questions came up. I'll send a short text. You can always reach us at 833-AIPA-HUB.
 "@ $h
 Add-Email 'cad_visit_family' 'After the 1:1, note for adult children' 'For your family: what we talked about' @"
 Hi {{first_name}},
@@ -327,7 +327,7 @@ Many people like to share their plan with their children. If that's helpful, sim
 
 For {{first_name}}'s family:
 
-I'm [Guide name] from the Aging in Place Alliance. {{first_name}} and I recently talked about making their home easier to live in for the years ahead. Here's the plan we put together: [link]
+I'm [Host name] from the Aging in Place Alliance. {{first_name}} and I recently talked about making their home easier to live in for the years ahead. Here's the plan we put together: [link]
 
 The next step, if they choose, is a measuring visit at the home. You're welcome to be there. [Book a visit]
 
@@ -335,7 +335,7 @@ Questions are always welcome: 833-AIPA-HUB.
 
 ---
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Email 'cad_visit_ask' 'After the 1:1, the measuring visit' 'A one-hour measuring visit' @"
 Hi {{first_name}},
@@ -351,7 +351,7 @@ When you're ready, the next step is small: a measuring visit at your home.
 
 You're free to wait, of course. There's no deadline.
 
-[Guide name]
+[Host name]
 "@ $h
 Add-Email 'cad_visit_story' 'After the 1:1, what the visit is like' 'What happens at a measuring visit' @"
 Hi {{first_name}},
@@ -365,7 +365,7 @@ It's natural to wonder what a visit will be like, so here it is, step by step:
 
 You're welcome to have your daughter or son there too.
 
-[Guide name]
+[Host name]
 
 P.S. When you're ready: [Book a measuring visit]
 "@ $h
@@ -379,7 +379,7 @@ If you'd like a measuring visit, you can choose a time here: [Book a visit]
 If now isn't right, that's completely fine. You're free to wait, and we'll still be here. I'll send a useful guide now and then, and you can reach me anytime at 833-AIPA-HUB.
 
 With respect,
-[Guide name]
+[Host name]
 "@ $h
 
 Add-Email 'cad_nurture_new_1' 'Nurture, first month' '{{guide}}' @"
@@ -459,14 +459,14 @@ Hi {{first_name}},
 
 [Host name]
 
-P.S. Whenever you're ready, [Guide name] can arrange a measuring visit. [Book a visit]
+P.S. Whenever you're ready, [Host name] can arrange a measuring visit. [Book a visit]
 
 Next Live Q&A: [Day, Date] at [Time]. Save a seat: {{live_qa}}
 "@ $h
 Add-Email 'cad_nurture_visit_2' 'Nurture after a 1:1, the visit' "Whenever you're ready" @"
 Hi {{first_name}},
 
-Just a gentle note that [Guide name] would be glad to arrange your measuring visit: about an hour, no obligation, and you keep the measurements.
+Just a gentle note that [Host name] would be glad to arrange your measuring visit: about an hour, no obligation, and you keep the measurements.
 
 [Choose a time]
 
@@ -539,7 +539,7 @@ $sequences = @(
   @{ key='attendee'; name='Attendee follow-up'; sort=4; goal='Book the Ask Anything 1:1 while the Live Q&A is still fresh. The day-of email is the existing invite. The day-2 text is the existing invite text, sent only if the call is not answered.' }
   @{ key='one_to_one'; name='Ask Anything 1:1 reminders'; sort=5; goal='Get someone who booked an Ask Anything 1:1 to show up. Set the session time to the start of that conversation.' }
   @{ key='one_to_one_miss'; name='Missed Ask Anything 1:1'; sort=6; goal='Rebook the Ask Anything 1:1 after a missed conversation. If this finishes without a booking, move them to monthly nurture.' }
-  @{ key='visit'; name='After an Ask Anything 1:1'; sort=7; goal='Book the in-home visit for someone who wants to think about it. Every touch comes from the guide who ran the conversation. The day-4 text is the existing home-visit text, sent only if the call is not answered.' }
+  @{ key='visit'; name='After an Ask Anything 1:1'; sort=7; goal='Book the in-home visit for someone who wants to think about it. Every touch comes from the host who ran the conversation. The day-4 text is the existing home-visit text, sent only if the call is not answered.' }
   @{ key='nurture_new'; name='Monthly nurture, not yet at a Live Q&A'; sort=8; goal='One email a month. The cycle is no ask, no ask, then a soft ask, and then it repeats. A hard ask goes out about every third month.' }
   @{ key='nurture_qa'; name='Monthly nurture, after a Live Q&A'; sort=9; goal='One email a month for someone who registered or attended. The cycle is no ask, soft ask, hard ask, and then it repeats.' }
   @{ key='nurture_visit'; name='Monthly nurture, after an Ask Anything 1:1'; sort=10; goal='One email a month. The cycle is a soft ask, then a hard ask for the visit, and then it repeats. These homeowners do not go inactive on their own.' }

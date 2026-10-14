@@ -5,10 +5,22 @@
     one_to_one: 'https://goaipa.com/ask-anything/',
     library: 'https://goaipa.com/library/'
   };
+  function guideLink(slug, token){
+    var id = String(slug || '').trim();
+    if (!id) return PAGES.library;
+    var url = 'https://goaipa.com/library/sent/?slug=' + encodeURIComponent(id);
+    var key = String(token || '').trim();
+    if (key) url += '&t=' + encodeURIComponent(key);
+    return url;
+  }
   var DEFAULTS = {
     sms_opt_in: {
       subject: 'Confirm your mobile number',
       body: 'Hello {{first_name}},\n\nIf we may text you about your home, open this link. It shows the name and email we have, and asks you to confirm your mobile number.\n\n{{sms_opt_in}}\n\nThe link stops working after you submit it.\n\nAging in Place Alliance\n833-AIPA-HUB'
+    },
+    invite_qa_guest: {
+      subject: '{{inviter_name}} invited you to a Live Q&A',
+      body: 'Hi {{first_name}},\n\n{{inviter_name}} invited you to a Live Q&A.\n\nIt\'s about 45 minutes. You can join from a phone or a computer. You can keep your camera off and stay anonymous on the call if you wish.\n\nWe\'ll cover:\n\nWhat to change first, and what can wait\nTypical costs, and ways to pay\nRaising it with a parent who doesn\'t want to talk about it\n\n[Day, Date] at [Time]\nJoin here: {{zoom}}\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB'
     },
     invite_qa: {
       subject: 'Thank you for joining us today',
@@ -24,11 +36,11 @@
     },
     invite_visit_sms: {
       subject: '',
-      body: 'Hi {{first_name}}, it\'s [Guide name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+      body: 'Hi {{first_name}}, it\'s [Host name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
     },
     guide_followup: {
       subject: 'A guide: {{guide}}',
-      body: '{{note}}\n\nPrint this guide:\n{{guide_pdf}}\n\nBook an Ask Anything 1:1:\n{{one_to_one}}\nOr call 833-AIPA-HUB.'
+      body: '{{note}}\n\nRead this guide:\n{{library}}\n\nPrint this guide:\n{{guide_pdf}}\n\nOr call 833-AIPA-HUB.'
     },
     guide_followup_plain: {
       subject: 'Following up on our conversation',
@@ -110,16 +122,17 @@
   }
 
   window.AIPA_MESSAGES = {
-    pages: function(){
+    pages: function(slug){
       return {
         live_qa: PAGES.live_qa,
         one_to_one: PAGES.one_to_one,
-        library: PAGES.library,
+        library: guideLink(slug),
         zoom: standingZoom,
         sms_opt_in: '',
         first_name: ''
       };
     },
+    guideLink: guideLink,
     fill: fill,
     get: get,
     compose: compose,

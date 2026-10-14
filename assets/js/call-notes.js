@@ -125,29 +125,44 @@
     var flag = kind === 'sms' ? profile.opt_in_call : profile.opt_in_email;
     return String(flag || '').trim().toLowerCase();
   }
+  function guideUrl(slug){
+    var token = row && row.guide_token ? row.guide_token : '';
+    var id = String(slug || '').trim();
+    if (window.AIPA_MESSAGES && AIPA_MESSAGES.guideLink) return AIPA_MESSAGES.guideLink(id, token);
+    if (!id) return 'https://goaipa.com/library/';
+    var url = 'https://goaipa.com/library/sent/?slug=' + encodeURIComponent(id);
+    if (token) url += '&t=' + encodeURIComponent(token);
+    return url;
+  }
   function guideMail(note, pdf){
     var guide = chosenGuide();
-    var tokens = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages() : {
+    var slug = guide.slug || '';
+    var link = guideUrl(slug);
+    var tokens = window.AIPA_MESSAGES ? AIPA_MESSAGES.pages(slug) : {
       live_qa: 'https://goaipa.com/live-qa/',
       one_to_one: 'https://goaipa.com/ask-anything/',
-      library: 'https://goaipa.com/library/',
+      library: link,
       sms_opt_in: '',
       first_name: ''
     };
+    tokens.library = link;
     tokens.note = note || '';
     tokens.guide = guide.title || '';
-    tokens.guide_pdf = pdf || '';
+    tokens.guide_pdf = slug ? link : (pdf || '');
     if (window.AIPA_MESSAGES) {
       if (!guide.title) return AIPA_MESSAGES.compose('guide_followup_plain', tokens);
       var mail = AIPA_MESSAGES.compose('guide_followup', tokens);
       if (!pdf) mail.body = note || '';
       else if (note && note.indexOf(pdf) !== -1) mail.body = note;
+      else if (slug && mail.body.indexOf('/library/sent/') === -1) {
+        mail.body += '\n\nRead this guide:\n' + link;
+      }
       return mail;
     }
     if (!guide.title) return {subject: 'Following up on our conversation', body: note || ''};
     if (!pdf) return {subject: 'A guide: ' + guide.title, body: note || ''};
     if (note && note.indexOf(pdf) !== -1) return {subject: 'A guide: ' + guide.title, body: note};
-    var handout = 'Print this guide:\n' + pdf + '\n\nBook an Ask Anything 1:1:\nhttps://goaipa.com/ask-anything/\nOr call 833-AIPA-HUB.';
+    var handout = 'Read this guide:\n' + link + '\n\nPrint this guide:\n' + pdf + '\n\nOr call 833-AIPA-HUB.';
     return {subject: 'A guide: ' + guide.title, body: note ? note + '\n\n' + handout : handout};
   }
   function defaultSubject(){
@@ -212,7 +227,11 @@
     }).join('');
   }
   function applyGuideToken(text, title){
-    return String(text || '').replace(/\{\{guide\}\}/g, title || '');
+    var guide = chosenGuide();
+    var link = guideUrl(guide.slug);
+    return String(text || '')
+      .replace(/\{\{guide\}\}/g, title || '')
+      .replace(/\{\{library\}\}/g, link);
   }
   function ensureGuideToken(seedEmpty){
     var box = document.getElementById('follow');
@@ -408,7 +427,8 @@
       api('/office/meetings'),
       api('/office/articles').catch(function(){ return []; }),
       api('/office/households').catch(function(){ return {profiles:[]}; }),
-      (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve())
+      (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve()),
+      api('/office/guide-links').catch(function(){ return []; })
     ]).then(function(result){
       var family = rows(result[0]).filter(function(item){ return item.id === familyId; })[0];
       if (!family) {
@@ -416,6 +436,11 @@
         document.getElementById('notes-form').hidden = true;
         return;
       }
+      var guideToken = '';
+      rows(result[5]).forEach(function(link){
+        if (link.registration_id === family.id) guideToken = link.token || '';
+      });
+      family.guide_token = guideToken;
       var profiles = result[3] && Array.isArray(result[3].profiles) ? result[3].profiles : [];
       profile = profiles.filter(function(item){ return item.registration_id === family.id; })[0] || null;
       fill(family, rows(result[1]), rows(result[2]));
@@ -475,7 +500,7 @@
     }
     var guide = chosenGuide();
     if (document.getElementById('follow').value.indexOf(GUIDE_TOKEN) !== -1 && !guide.title) {
-      status.textContent = 'Pick a guide so {{guide}} has a name.';
+      status.textContent = 'Pick a guide so {{guide}} has a title.';
       return;
     }
     var subject = channel === 'email' ? document.getElementById('subject').value.trim() : '';
