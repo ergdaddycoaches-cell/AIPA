@@ -143,6 +143,7 @@
       });
       body += "</ul>";
     }
+    if (n) body += '<p class="tool-qa">Bring this to the next <a href="/live-qa/">Live Q&A</a>, <span data-qa-day>the next open session</span>.</p>';
     body += '<p class="no-print" style="margin-top:1.25rem"><button type="button" class="btn" id="safety-print">Print this summary</button></p>';
     document.getElementById("safety-summary").innerHTML = body;
     document.getElementById("safety-print").addEventListener("click", function () {

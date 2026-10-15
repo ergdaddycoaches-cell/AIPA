@@ -27,17 +27,23 @@
       });
 
       vols.forEach(function(vol){
-        var heading = vol.querySelector('h3 a');
+        var heading = vol.querySelector('h3 a, h4 a');
         var list = vol.querySelector('ul');
         if (!heading || !list) return;
         var match = (heading.getAttribute('href') || '').match(/\/library\/([a-z0-9-]+)\/?$/);
         if (!match) return;
         var listed = by[match[1]] || [];
         if (!listed.length) return;
+        if (vol.closest('.library')) listed = listed.slice(0, 3);
         list.innerHTML = listed.map(function(article){
           return '<li><a href="' + esc(article.url) + '">' + esc(article.title) + '</a></li>';
         }).join('');
       });
+
+      if (!guides) {
+        var total = document.querySelector('.page-hero .facts .guide-count');
+        if (total) total.textContent = String(items.length);
+      }
 
       if (guides) {
         var scope = document.getElementById('results');
@@ -45,13 +51,18 @@
         if (!section) return;
         var rows = by[section] || [];
         if (!rows.length) return;
+        var wait = guides.parentElement && guides.parentElement.querySelector('.guides-wait');
+        if (wait) wait.hidden = true;
         guides.innerHTML = rows.map(function(article, index){
           return '<li><a href="' + esc(article.url) + '"><span class="no">' + (index + 1) + '</span><span>' +
             (index === 0 ? '<span class="start">Start here</span>' : '') +
             '<span class="t">' + esc(article.title) + '</span><span class="sm">' + esc(article.summary) + '</span></span></a></li>';
         }).join('');
-        var count = document.querySelector('.facts span b');
-        if (count) count.textContent = String(rows.length);
+        var count = document.querySelector('.facts .guide-count');
+        if (count) {
+          count.textContent = String(rows.length);
+          if (count.nextSibling) count.nextSibling.textContent = rows.length === 1 ? ' guide' : ' guides';
+        }
       }
     })
     .catch(function(){});

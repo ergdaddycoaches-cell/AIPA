@@ -27,12 +27,15 @@
         if (!groups[area]) { groups[area] = []; order.push(area); }
         groups[area].push(row);
       });
-      var html = order.map(function(area){
+      var head = table.querySelector('thead th');
+      if (head && order.length) head.textContent = order[0];
+      var html = order.map(function(area, index){
         var body = groups[area].map(function(row){
           var id = row.slug ? ' id="std-' + esc(row.slug) + '"' : '';
           return '<tr' + id + '><th scope="row">' + esc(row.label) + '</th><td class="num">' + esc(row.target) + '</td><td class="means">' + esc(row.means) + '</td><td class="src">' + esc(row.source) + '</td></tr>';
         }).join('');
-        return '<tbody class="std-group"><tr><th colspan="4" scope="colgroup">' + esc(area) + '</th></tr>' + body + '</tbody>';
+        var label = index === 0 ? '' : '<tr><th colspan="4" scope="colgroup">' + esc(area) + '</th></tr>';
+        return '<tbody class="std-group">' + label + body + '</tbody>';
       }).join('');
       Array.prototype.slice.call(table.querySelectorAll('tbody')).forEach(function(body){ body.remove(); });
       table.insertAdjacentHTML('beforeend', html);

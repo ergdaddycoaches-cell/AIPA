@@ -19,15 +19,16 @@
       }
       var meetings = data.meetings || [];
       if (meetings.length) {
+        html += '<p class="qa-later">If this one does not work, these are the other sessions.</p>';
         html += '<ul class="seminar-list">' + meetings.map(function(meeting){
-          var link = meeting.zoom_url
-            ? '<a href="' + esc(meeting.zoom_url) + '">' + esc(meeting.title) + '</a>'
-            : esc(meeting.title);
           var length = meeting.duration_minutes ? ' · ' + meeting.duration_minutes + ' minutes' : '';
           var typeName = window.AIPA_SEMINAR.typeLabel(meeting.meeting_type);
-          return '<li>' + (typeName ? '<span class="type">' + esc(typeName) + '</span>' : '') +
+          return '<li><a href="/live-qa/#slots">' +
+            (typeName ? '<span class="type">' + esc(typeName) + '</span>' : '') +
             '<span class="when">' + esc(window.AIPA_SEMINAR.format(meeting)) + length + '</span>' +
-            link + (meeting.summary ? '<span class="detail">' + esc(meeting.summary) + '</span>' : '') + '</li>';
+            '<span class="t">' + esc(meeting.title) + '</span>' +
+            (meeting.summary ? '<span class="detail">' + esc(meeting.summary) + '</span>' : '') +
+            '</a></li>';
         }).join('') + '</ul>';
       }
       box.innerHTML = html;

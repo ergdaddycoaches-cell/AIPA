@@ -156,6 +156,7 @@
       body += "</ul>";
     });
     if (notes.trim()) body += "<h3>Notes</h3><p>" + esc(notes) + "</p>";
+    body += '<p class="tool-qa">Bring this to the next <a href="/live-qa/">Live Q&A</a>, <span data-qa-day>the next open session</span>.</p>';
     body += '<p class="no-print" style="margin-top:1.25rem"><button type="button" class="btn" id="visit-print">Print this list</button></p>';
     document.getElementById("visit-summary").innerHTML = body;
     document.getElementById("visit-print").addEventListener("click", function () {
