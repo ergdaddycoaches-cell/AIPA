@@ -95,6 +95,10 @@
     el.setAttribute('content', content);
   }
   function publishGuide(slug, title, description){
+    if (window.AIPA_NO_SPIDER) {
+      robotsMeta('noindex, nofollow, noarchive, nosnippet');
+      return;
+    }
     robotsMeta('index, follow');
     var href = 'https://goaipa.com/library/article/?slug=' + encodeURIComponent(slug);
     var canon = document.querySelector('link[rel="canonical"]');
