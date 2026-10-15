@@ -114,7 +114,7 @@
 
   function paintCalendars() {
     if (!nextDayNum) return;
-    var nodes = document.querySelectorAll(".primary .nav-cta a, a.btn");
+    var nodes = document.querySelectorAll(".util a.util-cta, a.btn");
     var i;
     for (i = 0; i < nodes.length; i++) {
       if (nodes[i].querySelector(".cta-when")) paintCal(nodes[i]);
@@ -158,7 +158,7 @@
   }
 
   function nextLiveQa() {
-    var buttons = document.querySelectorAll(".primary .nav-cta a");
+    var buttons = document.querySelectorAll(".util a.util-cta");
     var cfg = window.AIPA_CONFIG || {};
     if ((!buttons.length && !document.querySelector("[data-qa-day], [data-qa-next], #qa-when")) || !cfg.apiBase) return;
     fetch(cfg.apiBase.replace(/\/$/, "") + "/live-qa", { headers: { Accept: "application/json" } })
