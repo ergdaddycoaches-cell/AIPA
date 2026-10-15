@@ -80,58 +80,13 @@
   }
   function missing(){
     document.title = 'Guide not in the library | Aging in Place Alliance';
-    robotsMeta('noindex');
+    robotsMeta('noindex, nofollow, noarchive, nosnippet');
     var canon = document.querySelector('link[rel="canonical"]');
     if (canon) canon.remove();
     root.innerHTML = '<h1>This guide is not in the library.</h1><p class="lede">It may be a draft, or it may have been retired. The rest of the library is still here.</p><p><a class="btn" href="/library/">Browse the library</a></p>';
   }
-  function metaProp(name, content){
-    var el = document.querySelector('meta[property="' + name + '"]');
-    if (!el) {
-      el = document.createElement('meta');
-      el.setAttribute('property', name);
-      document.head.appendChild(el);
-    }
-    el.setAttribute('content', content);
-  }
-  function publishGuide(slug, title, description){
-    if (window.AIPA_NO_SPIDER) {
-      robotsMeta('noindex, nofollow, noarchive, nosnippet');
-      return;
-    }
-    robotsMeta('index, follow');
-    var href = 'https://goaipa.com/library/article/?slug=' + encodeURIComponent(slug);
-    var canon = document.querySelector('link[rel="canonical"]');
-    if (!canon) {
-      canon = document.createElement('link');
-      canon.rel = 'canonical';
-      document.head.appendChild(canon);
-    }
-    canon.href = href;
-    var shareTitle = title + ' | Aging in Place Alliance library';
-    metaProp('og:type', 'article');
-    metaProp('og:title', shareTitle);
-    metaProp('og:description', description);
-    metaProp('og:url', href);
-    var ld = document.getElementById('guide-ld');
-    if (!ld) {
-      ld = document.createElement('script');
-      ld.type = 'application/ld+json';
-      ld.id = 'guide-ld';
-      document.head.appendChild(ld);
-    }
-    ld.textContent = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: title,
-      description: description,
-      url: href,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Aging in Place Alliance',
-        url: 'https://goaipa.com/'
-      }
-    });
+  function publishGuide(){
+    robotsMeta('noindex, nofollow, noarchive, nosnippet');
   }
 
   var slug = '';
@@ -167,7 +122,7 @@
       var desc = document.querySelector('meta[name="description"]');
       if (desc) desc.setAttribute('content', article.summary || article.title);
       if (sent) {
-        robotsMeta('noindex, nofollow');
+        robotsMeta('noindex, nofollow, noarchive, nosnippet');
         var href = 'https://goaipa.com/library/article/?slug=' + encodeURIComponent(slug);
         var canon = document.querySelector('link[rel="canonical"]');
         if (!canon) {
