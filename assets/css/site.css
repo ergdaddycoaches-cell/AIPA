@@ -657,7 +657,6 @@ body.guide-page{page:guideprint}
 .lead-page .page-hero{border-bottom:0;padding-bottom:0}
 .lead-page .page-hero h1{font-size:clamp(2.2rem,4.2vw,3.5rem);max-width:none}
 .lead-page .lead-line{margin:1.75rem 0 0;max-width:none;font-family:"Newsreader",Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(2.2rem,4.2vw,3.5rem);line-height:1.1;letter-spacing:-.015em;color:var(--ink)}
-.lead-page .lead-path{margin:1rem 0 0;max-width:none;font-size:1.35rem;line-height:1.4}
 .lead-page .wistia-fpo{aspect-ratio:16/9;width:100%;min-height:0;margin:1.5rem 0 0}
 .lead-page .roi{background:var(--sage-wash)}
 .roi .roi-title{max-width:none;margin:0 0 1.5rem;font-size:clamp(2rem,4.22cqw,3.375rem);line-height:1.15}
