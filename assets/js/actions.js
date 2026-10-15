@@ -838,6 +838,7 @@
         status.textContent = '';
         showLogin(false);
         load();
+        loadSpiders();
       })
       .catch(function(err){ status.textContent = err.message; });
   });
@@ -845,6 +846,27 @@
     event.preventDefault();
     sessionStorage.removeItem(KEY);
     showLogin(true);
+  });
+  function loadSpiders(){
+    var box = document.getElementById('no-spider');
+    if (!box) return;
+    api('/office/spiders').then(function(data){
+      box.checked = !!(data && (data.block_spiders === true || data.block_spiders === 1));
+    }).catch(function(err){
+      var status = document.getElementById('spider-status');
+      if (status) status.textContent = err.message;
+    });
+  }
+  document.getElementById('spider-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var status = document.getElementById('spider-status');
+    var on = document.getElementById('no-spider').checked;
+    status.textContent = 'Saving…';
+    api('/office/spiders', {method:'POST', body:{block_spiders:on}}).then(function(data){
+      var saved = !!(data && (data.block_spiders === true || data.block_spiders === 1));
+      document.getElementById('no-spider').checked = saved;
+      status.textContent = saved ? 'No spider is on for the public site.' : 'No spider is off.';
+    }).catch(function(err){ status.textContent = err.message; });
   });
   document.getElementById('password-form').addEventListener('submit', function(event){
     event.preventDefault();
@@ -920,6 +942,6 @@
       dayInput.value = found;
     }
   }, {passive:true});
-  if (token()) { showLogin(false); load(); }
+  if (token()) { showLogin(false); load(); loadSpiders(); }
   else showLogin(true);
 })();
