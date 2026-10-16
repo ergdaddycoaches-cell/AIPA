@@ -835,6 +835,9 @@ body.guide-page{page:guideprint}
 #nurture .nurture-book{margin:1.5rem 0 0;max-width:none;text-align:center}
 #nurture .nurture-invite{margin:0 auto 1rem;max-width:40rem;font-size:1.2rem;line-height:1.45;text-align:center}
 #nurture .nurture-book .voice-cta{margin:0 auto;max-width:36rem}
+#nurture [hidden]{display:none}
+#nurture .nurture-thanks h2{font-size:clamp(1.8rem,3vw,2.4rem);margin:0 0 .75rem}
+#nurture .nurture-thanks p{margin:0;max-width:40rem}
 #nurture-order{padding-left:1.2rem}
 #nurture-order li{margin:.4rem 0}
 #book-qr{display:block;margin-top:.5rem}
