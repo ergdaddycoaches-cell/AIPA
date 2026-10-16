@@ -24,9 +24,7 @@
   function show(data){
     var hello = data.name ? 'Hello ' + esc(data.name) + '.' : 'Hello.';
     var video = videoHtml(data.video_url);
-    var invite = data.name
-      ? esc(data.name) + ', when you are ready to talk about your house, book a 1:1 Meeting with Shep.'
-      : 'When you are ready to talk about your house, book a 1:1 Meeting with Shep.';
+    var invite = 'When you are ready to talk about your house, book a 1:1 Meeting with Shep.';
     var book = data.show_book
       ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a 1:1 Consult</a></p></div>'
       : '';
