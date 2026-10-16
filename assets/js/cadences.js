@@ -178,6 +178,28 @@
     }
     return '';
   }
+  var NURTURE_TOKENS = [
+    {token: '{{first_name}}', label: 'First name'},
+    {token: '{{page}}', label: 'Personal page'},
+    {token: '{{guide}}', label: 'Guide title'},
+    {token: '{{guide_link}}', label: 'Guide link'}
+  ];
+  function nurtureCopy(step){
+    if (!selectedSequence() || selectedSequence().key !== 'nurture_before') return '';
+    var email = messageByKey(step.message_key);
+    var sms = messageByKey(step.companion_key);
+    if (!email) return '';
+    return '<label for="copy-subject-' + step.id + '">Subject</label>' +
+      '<input id="copy-subject-' + step.id + '" maxlength="200" value="' + esc(email.subject || '') + '">' +
+      '<label for="copy-body-' + step.id + '">Email</label>' +
+      '<textarea id="copy-body-' + step.id + '" rows="10">' + esc(email.body || '') + '</textarea>' +
+      '<label for="copy-sms-' + step.id + '">Text</label>' +
+      '<textarea id="copy-sms-' + step.id + '" rows="4">' + esc(sms ? sms.body || '' : '') + '</textarea>' +
+      '<div class="token-row" id="tokens-' + step.id + '">' + NURTURE_TOKENS.map(function(item){
+        return '<button type="button" data-token="' + esc(item.token) + '">' + esc(item.label) + '</button>';
+      }).join('') + '</div>' +
+      '<p class="note">These are the words that go out. A merge field is replaced when the message is sent.</p>';
+  }
   function renderSteps(){
     var sequence = selectedSequence();
     document.getElementById('sequence-name').textContent = sequence ? sequence.name : 'Choose a cadence';
@@ -203,11 +225,12 @@
         '</select>' +
         '<label for="intent-' + step.id + '">Intent</label>' +
         '<textarea id="intent-' + step.id + '" rows="4">' + esc(step.intent) + '</textarea>' +
-        '<label for="message-' + step.id + '">' + (step.channel === 'call' ? 'Call script' : channelName(step.channel)) + '</label>' +
-        '<select id="message-' + step.id + '">' + optionsFor(step.channel, step.message_key) + '</select>' +
-        (primary ? '<p class="note"><a href="/admin/messages/?key=' + encodeURIComponent(step.message_key) + '">Edit ' + esc(primary.name) + ' in Messages</a></p>' : '') +
-        companionField(step) +
-        calendar +
+        (selectedSequence() && selectedSequence().key === 'nurture_before' ? nurtureCopy(step) :
+          '<label for="message-' + step.id + '">' + (step.channel === 'call' ? 'Call script' : channelName(step.channel)) + '</label>' +
+          '<select id="message-' + step.id + '">' + optionsFor(step.channel, step.message_key) + '</select>' +
+          (primary ? '<p class="note"><a href="/admin/messages/?key=' + encodeURIComponent(step.message_key) + '">Edit ' + esc(primary.name) + ' in Messages</a></p>' : '')) +
+        (selectedSequence() && selectedSequence().key === 'nurture_before' ? '' : companionField(step)) +
+        (selectedSequence() && selectedSequence().key === 'nurture_before' ? '' : calendar) +
         '<div class="actions"><button class="btn" type="submit">Save touchpoint</button></div>' +
         '<p class="status-line" id="status-' + step.id + '" role="status"></p>' +
       '</form>';
@@ -241,6 +264,7 @@
     var id = Number(form.getAttribute('data-step'));
     var step = steps.filter(function(row){ return row.id === id; })[0];
     if (!step) return null;
+    var messageSelect = document.getElementById('message-' + id);
     var companion = document.getElementById('companion-' + id);
     var calendar = document.getElementById('calendar-' + id);
     var body = {
@@ -252,11 +276,39 @@
       day_of_month: step.timing === 'calendar' ? Number(document.getElementById('day-' + id).value) : Number(step.day_of_month || 0),
       ask: document.getElementById('ask-' + id).value,
       intent: document.getElementById('intent-' + id).value,
-      message_key: document.getElementById('message-' + id).value,
+      message_key: messageSelect ? messageSelect.value : (step.message_key || ''),
       companion_key: companion ? companion.value : (step.companion_key || ''),
       calendar_invite: !!(calendar && calendar.checked)
     };
     return {step: step, body: body};
+  }
+
+  function saveNurtureCopy(step){
+    var subject = document.getElementById('copy-subject-' + step.id);
+    if (!subject) return Promise.resolve();
+    var email = messageByKey(step.message_key);
+    var sms = messageByKey(step.companion_key);
+    var body = document.getElementById('copy-body-' + step.id).value;
+    var smsBody = document.getElementById('copy-sms-' + step.id).value;
+    var saves = [];
+    if (email) {
+      saves.push(api('/office/message', {method:'POST', body:{key: email.key, subject: subject.value, body: body}}).then(function(){
+        email.subject = subject.value;
+        email.body = body;
+      }));
+    }
+    if (sms) {
+      saves.push(api('/office/message', {method:'POST', body:{key: sms.key, subject: '', body: smsBody}}).then(function(){
+        sms.body = smsBody;
+      }));
+    }
+    return Promise.all(saves);
+  }
+  var copyCaret = {id: '', start: 0, end: 0};
+  function rememberCopy(event){
+    var field = event.target;
+    if (!field || !field.id || field.id.indexOf('copy-') !== 0) return;
+    copyCaret = {id: field.id, start: field.selectionStart || 0, end: field.selectionEnd || 0};
   }
 
   document.getElementById('login-form').addEventListener('submit', function(event){
@@ -289,6 +341,24 @@
     var editor = document.getElementById('sequence-editor');
     if (editor && editor.scrollIntoView) editor.scrollIntoView({behavior:'smooth', block:'nearest'});
   });
+  document.getElementById('step-list').addEventListener('focusin', rememberCopy);
+  document.getElementById('step-list').addEventListener('keyup', rememberCopy);
+  document.getElementById('step-list').addEventListener('click', function(event){
+    var button = event.target.closest('[data-token]');
+    if (!button) return;
+    var form = button.closest('form');
+    var field = copyCaret.id ? document.getElementById(copyCaret.id) : null;
+    if (!field || !form || !form.contains(field)) field = form.querySelector('textarea');
+    if (!field) return;
+    var tokenText = button.getAttribute('data-token');
+    var start = field.id === copyCaret.id ? copyCaret.start : field.value.length;
+    var end = field.id === copyCaret.id ? copyCaret.end : field.value.length;
+    field.value = field.value.slice(0, start) + tokenText + field.value.slice(end);
+    var pos = start + tokenText.length;
+    copyCaret = {id: field.id, start: pos, end: pos};
+    field.focus();
+    field.setSelectionRange(pos, pos);
+  });
   document.getElementById('step-list').addEventListener('submit', function(event){
     var form = event.target.closest('form');
     if (!form) return;
@@ -308,6 +378,8 @@
       read.step.message_key = read.body.message_key;
       read.step.companion_key = read.body.companion_key;
       read.step.calendar_invite = read.body.calendar_invite;
+      return saveNurtureCopy(read.step);
+    }).then(function(){
       status.textContent = 'Saved.';
       renderList();
       renderSteps();
