@@ -25,15 +25,15 @@
     var hello = data.name ? 'Hello ' + esc(data.name) + '.' : 'Hello.';
     var video = videoHtml(data.video_url);
     var invite = data.name
-      ? esc(data.name) + ', when you are ready to talk about your house, book a private time with Shep.'
-      : 'When you are ready to talk about your house, book a private time with Shep.';
+      ? esc(data.name) + ', when you are ready to talk about your house, book a 1:1 Meeting with Shep.'
+      : 'When you are ready to talk about your house, book a 1:1 Meeting with Shep.';
     var book = data.show_book
       ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a time with Shep</a></p></div>'
       : '';
     var topics = data.topics || [];
     var form = '';
     if (!data.stopped && topics.length) {
-      form = '<form class="signup" id="nurture-form"><fieldset><legend>Which topic do you want to know about?</legend>' +
+      form = '<form class="signup" id="nurture-form"><fieldset><legend>Which topic would you like to explore next?</legend>' +
         topics.map(function(topic, index){
           return '<label class="check nurture-topic"><input type="radio" name="article_id" value="' + topic.id + '"' + (index === 0 ? ' required' : '') + '> <span><b class="nurture-title">' + esc(topic.title) + '</b>' +
             (topic.summary ? '<span class="nurture-summary">' + esc(topic.summary) + '</span>' : '') + '</span></label>';
