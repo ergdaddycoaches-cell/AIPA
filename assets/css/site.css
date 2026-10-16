@@ -343,6 +343,8 @@ mark{background:var(--amber-wash);color:inherit;padding:0 .1em;border-radius:2px
   .stage + .stage{border-left:0;padding-left:0;border-top:1px solid var(--rule)}
   .btn{width:100%}
   .wordmark b{font-size:1.5em;line-height:1.2}
+  .primary ul{gap:.05rem .7rem}
+  .primary a{min-height:36px}
 }
 
 /* ---------- Inner pages ---------- */
