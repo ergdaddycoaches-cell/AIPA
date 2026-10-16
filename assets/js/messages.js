@@ -31,6 +31,25 @@
     guide_followup_plain: [
       {token: '{{note}}', label: 'Note'}
     ],
+    nurture_thanks: [
+      {token: '{{page}}', label: 'Personal page'}
+    ],
+    nurture_thanks_sms: [
+      {token: '{{page}}', label: 'Personal page'}
+    ],
+    nurture_guide: [
+      {token: '{{guide}}', label: 'Guide title'},
+      {token: '{{guide_link}}', label: 'Guide link'}
+    ],
+    nurture_guide_sms: [
+      {token: '{{guide_link}}', label: 'Guide link'}
+    ],
+    nurture_return: [
+      {token: '{{page}}', label: 'Personal page'}
+    ],
+    nurture_return_sms: [
+      {token: '{{page}}', label: 'Personal page'}
+    ],
     calculator: [
       {token: '{{leads}}', label: 'Leads a month'},
       {token: '{{cost_per_lead}}', label: 'Cost per lead'},
