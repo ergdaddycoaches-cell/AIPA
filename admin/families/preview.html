@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Ask Anything 1:1 | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="stylesheet" href="/assets/css/families.css">
+<link rel="icon" href="/favicon.ico">
+<style>.preview-note{margin:0 0 1rem;color:var(--ink-2);max-width:62ch}</style>
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <div class="mast-actions">
+      <a class="btn quiet" href="/admin/">Back office</a>
+      <button class="btn quiet" type="button" id="signout" hidden>Sign out</button>
+    </div>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Ask Anything 1:1</h1>
+      <p class="lede">Who you have left too long. Sign in with the staff password.</p>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="clock wrap" id="dash" hidden>
+    <p class="preview-note">Sample only. Samir’s cell matched a voicemail, so he is flagged for a call back. Pat’s number is not on a record, so that voicemail is waiting to be attached.</p>
+    <div class="pulse" role="group" aria-label="Time since last touch">
+      <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
+      <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Quiet 7 days</span></button>
+      <button type="button" data-age="14" aria-pressed="false"><b id="count-14">0</b><span>Quiet 14 days</span></button>
+      <button type="button" data-age="30" aria-pressed="false"><b id="count-30">0</b><span>Quiet 30 days</span></button>
+      <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
+    </div>
+    <div class="board-tools">
+      <div class="tool-row">
+        <label class="contractor-filter">Contractor
+          <select id="contractor-filter"><option value="">All contractors</option></select>
+        </label>
+        <button type="button" id="family-open">Add a family</button>
+        <button type="button" id="contractors-open">Contractors</button>
+        <a id="contractor-board" href="/admin/contractors/">Contractor board</a>
+        <button type="button" id="stages-open">Edit stages</button>
+      </div>
+    </div>
+    <section id="job-ask" class="stage-editor" hidden>
+      <h2>Contract completed</h2>
+      <p>Enter the job total for <b id="job-who"></b>.</p>
+      <form id="job-form" class="price-form">
+        <label>Job total <input id="job-total" name="job_total" inputmode="decimal" autocomplete="off" required></label>
+        <div class="stage-actions">
+          <button class="btn" type="submit">Save the job total</button>
+          <button type="button" id="job-cancel">Cancel</button>
+        </div>
+      </form>
+      <p class="status-line" id="job-status" role="status"></p>
+    </section>
+    <section id="stage-editor" class="stage-editor" hidden>
+      <h2>Stages</h2>
+      <ol id="stage-list"></ol>
+      <div class="stage-actions">
+        <button type="button" id="stage-add">Add a stage</button>
+        <button class="btn" type="button" id="stage-save">Save stages</button>
+        <button type="button" id="stage-cancel">Close</button>
+      </div>
+      <p class="status-line" id="stage-status" role="status"></p>
+    </section>
+    <section id="contractor-editor" class="stage-editor" hidden>
+      <h2>Contractors</h2>
+      <ul id="contractor-list" class="id-list"></ul>
+      <form id="contractor-form" class="contractor-add">
+        <label>Name <input name="name" type="text" maxlength="80" required autocomplete="off"></label>
+        <button class="btn" type="submit">Add contractor</button>
+      </form>
+      <div class="stage-actions"><button type="button" id="contractor-close">Close</button></div>
+      <p class="status-line" id="contractor-status" role="status"></p>
+    </section>
+    <section id="family-editor" class="stage-editor" hidden>
+      <h2>Add a family</h2>
+      <form id="family-form">
+        <div class="family-grid">
+          <label>First name <input name="first_name" type="text" maxlength="80" autocomplete="off"></label>
+          <label>Last name <input name="last_name" type="text" maxlength="80" autocomplete="off"></label>
+          <label class="wide">Address 1 <input name="address_1" type="text" maxlength="120" autocomplete="off"></label>
+          <label class="wide">Address 2 <input name="address_2" type="text" maxlength="120" autocomplete="off"></label>
+          <label>City <input name="city" type="text" maxlength="80" autocomplete="off"></label>
+          <label>State <input name="state" type="text" maxlength="40" autocomplete="off"></label>
+          <label>ZIP <input name="zip" type="text" maxlength="20" autocomplete="off"></label>
+          <label>Email address <input name="email" type="email" maxlength="120" autocomplete="off"></label>
+          <label>Cell phone <input name="cell_phone" type="tel" maxlength="40" autocomplete="off"></label>
+          <label>Originating date <input name="originated_at" type="date"></label>
+          <label class="wide">Contractor <select name="contractor_id"><option value="0">No contractor</option></select></label>
+          <label class="check"><input name="opt_in_call" type="checkbox"> Opted in to calls</label>
+          <label class="check"><input name="opt_in_email" type="checkbox"> Opted in to email</label>
+          <label class="wide">Notes <textarea name="notes" rows="3" maxlength="4000"></textarea></label>
+        </div>
+        <div class="stage-actions">
+          <button class="btn" type="submit">Add to the first column</button>
+          <button type="button" id="family-cancel">Close</button>
+        </div>
+      </form>
+      <div class="csv-box">
+        <label class="file-pick">CSV file <input id="family-csv" type="file" accept=".csv,text/csv"></label>
+        <button type="button" id="family-upload">Upload</button>
+      </div>
+      <p class="status-line" id="family-status" role="status"></p>
+    </section>
+    <p class="status-line" id="dash-status" role="status"></p>
+    <div class="board">
+      <article class="detail" id="detail" aria-live="polite">
+        <p class="waiting">Choose someone.</p>
+      </article>
+      <div class="pipeline" id="pipeline" aria-label="Pipeline"></div>
+    </div>
+  </section>
+</main>
+<script src="/assets/js/seminar-format.js"></script>
+<script>
+if (!sessionStorage.getItem("aipa_office_token")) sessionStorage.setItem("aipa_office_token", "preview");
+var preview = {
+  families: [
+    {id:12, meeting_id:8, occurrence_at:"2026-09-19T09:30", name:"Samir Haddad", email:"samir.haddad@example.com", phone:"2065550155", guests:"[{\"name\":\"Leila Haddad\",\"phone\":\"2065550188\"}]", visit_readiness:"ready", engagement:"active", callback_requested:true, summary:"Samir and Leila want the bathroom shower done and they are ready for an estimator."},
+    {id:13, meeting_id:7, occurrence_at:"2026-09-29T14:00", name:"June Pell", email:"june.pell@example.com", phone:"5035550144", guests:"[]", visit_readiness:"not_ready", engagement:"active", callback_requested:false, summary:"Nora says the house is fine. June does not want to push."}
+  ],
+  touches: [
+    {id:7, registration_id:12, kind:"meeting", occurred_at:"2026-09-19T09:30", note:"They are ready for an estimator to see the shower.", direction:"", status:""},
+    {id:20, registration_id:12, kind:"voicemail", occurred_at:"2026-10-06T20:55", note:"Hi, this is Samir. Leila and I listened to the shower guide. Thursday still works, but please call me back before you book the estimator so we can both be on the line.", direction:"in", status:"received", from_address:"+12065550155"},
+    {id:10, registration_id:13, kind:"meeting", occurred_at:"2026-09-29T14:00", note:"Nora says the house is fine. June does not want to push.", direction:"", status:""}
+  ],
+  unmatched: [
+    {id:4, channel:"voicemail", direction:"in", from_address:"+15035550199", body:"This is Pat. I called the 833 number about my mom’s bathroom. Nobody’s name is on this phone. Please call me back at this number.", occurred_at:"2026-10-06T21:04"}
+  ]
+};
+window.fetch = function(url, options){
+  var u = String(url);
+  options = options || {};
+  function json(body){ return Promise.resolve(new Response(JSON.stringify(body), {status:200, headers:{"Content-Type":"application/json"}})); }
+  var body = {};
+  try { body = options.body ? JSON.parse(options.body) : {}; } catch (err) { body = {}; }
+  if (u.indexOf("/office/assign-message") !== -1) {
+    var waiting = preview.unmatched.filter(function(item){ return item.id === body.unmatched_id; })[0];
+    var family = preview.families.filter(function(item){ return item.id === body.registration_id; })[0];
+    if (waiting && family) {
+      preview.touches.push({id: Date.now(), registration_id: family.id, kind:"voicemail", occurred_at: waiting.occurred_at, note: waiting.body, direction:"in", status:"received", from_address: waiting.from_address});
+      if (waiting.channel === "voicemail") family.callback_requested = true;
+      preview.unmatched = preview.unmatched.filter(function(item){ return item.id !== waiting.id; });
+    }
+    return json({ok:true});
+  }
+  if (u.indexOf("/office/callback") !== -1) {
+    preview.families.forEach(function(family){
+      if (family.id === body.registration_id) family.callback_requested = !!body.requested;
+    });
+    return json({ok:true});
+  }
+  if (u.indexOf("/office/pipeline") !== -1) return json({
+    stages: [
+      {id:1, name:"After the 1:1", sort:1},
+      {id:2, name:"Call back", sort:2}
+    ],
+    places: [
+      {registration_id:13, stage_id:1},
+      {registration_id:12, stage_id:2}
+    ]
+  });
+  if (u.indexOf("/office/households") !== -1) return json({contractors:[], profiles:[]});
+  if (u.indexOf("/office/meetings") !== -1) return json([
+    {id:8, title:"Saturday family conversation", meeting_type:"family_1_1", timezone:"America/Los_Angeles"},
+    {id:7, title:"Tuesday family conversation", meeting_type:"family_1_1", timezone:"America/Los_Angeles"}
+  ]);
+  if (u.indexOf("/office/signups") !== -1) return json(preview.families);
+  if (u.indexOf("/office/touches") !== -1) return json(preview.touches);
+  if (u.indexOf("/office/unmatched") !== -1) return json(preview.unmatched);
+  if (u.indexOf("/office/cadences") !== -1) return json({
+    sequences: [{key:"visit", name:"After an Ask Anything 1:1", goal:"Book the in-home visit.", sort:1}],
+    steps: [{
+      id:1, sequence_key:"visit", sort:3, when_label:"Day 4", timing:"day", day_offset:0, hour_offset:0,
+      month:0, day_of_month:0, channel:"call", ask:"hard",
+      intent:"The same guide calls and offers two visit times.",
+      message_key:"cad_visit_call", companion_key:"invite_visit_sms", calendar_invite:false
+    }]
+  });
+  if (u.indexOf("/office/cadence-outcome") !== -1) {
+    preview.outcome = body.result;
+    return json({ok:true});
+  }
+  if (u.indexOf("/office/cadence-run") !== -1) {
+    if ((options.method || "GET") === "POST") {
+      preview.run = {
+        sequence_key: body.sequence_key,
+        started_at: body.started_at,
+        anchor_at: body.anchor_at || body.started_at,
+        status: body.status || "active"
+      };
+      return json({ok:true});
+    }
+    return json({
+      run: preview.run || null,
+      outcomes: preview.outcome ? [{step_id:1, result:preview.outcome, recorded_at:"2026-10-11T09:00"}] : []
+    });
+  }
+  return json({});
+};
+</script>
+<script src="/assets/js/families.js"></script>
+<script>
+setTimeout(function(){
+  var buttons = document.querySelectorAll(".family");
+  for (var i = 0; i < buttons.length; i++) {
+    if (buttons[i].textContent.indexOf("Samir") !== -1) buttons[i].click();
+  }
+}, 500);
+</script>
+</body>
+</html>

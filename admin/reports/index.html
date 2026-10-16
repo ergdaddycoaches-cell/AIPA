@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Form fills by UTM | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="/favicon.ico">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+      <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
+      <a class="btn quiet" href="/admin/prices/">Prices</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="btn quiet" href="/admin/reports/" aria-current="page">Reports</a>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Form fills by UTM</h1>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+  <section class="office wrap" id="desk" hidden>
+    <h1>Form fills by UTM</h1>
+    <p>Form fills are contractors who submitted the callback form. Dates are Pacific time.</p>
+    <form id="range" class="report-range">
+      <label>From <input id="from" type="date" required></label>
+      <label>To <input id="to" type="date" required></label>
+      <button class="btn" type="submit">Run report</button>
+    </form>
+    <p class="status-line" id="report-status" role="status"></p>
+    <div id="report"></div>
+  </section>
+</main>
+<script src="/assets/js/reports.js"></script>
+</body>
+</html>

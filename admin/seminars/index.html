@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Seminars | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="/favicon.ico">
+<script src="/assets/js/config.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+            <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/" aria-current="page">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/">Guides</a>
+      <a class="btn quiet" href="/admin/messages/">Messages</a>
+      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
+      <a class="btn quiet" href="/admin/prices/">Prices</a>
+      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
+      <a class="btn quiet" href="/admin/standards/">Standards</a>
+      <a class="btn quiet" href="/admin/reports/">Reports</a>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Seminars</h1>
+      <p class="lede">Schedule a session, see who signed up, and mark who came. Sign in with the staff password.</p>
+      <label for="password">Staff password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+
+  <section class="office wrap" id="desk" hidden>
+    <details class="zoom-stand">
+      <summary>Standing Zoom link<span id="zoom-summary" hidden></span></summary>
+      <form class="editor" id="zoom-form">
+        <label for="standing-zoom">Link anyone can use</label>
+        <input id="standing-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
+        <div class="actions"><button class="btn quiet" type="submit">Save Zoom link</button></div>
+        <p class="status-line" id="zoom-status" role="status"></p>
+      </form>
+    </details>
+    <details class="zoom-stand">
+      <summary>After a Live Q&amp;A</summary>
+      <form class="editor" id="nurture-form">
+        <label for="nurture-min">Guides requested before Book a 1:1 appears</label>
+        <input id="nurture-min" type="number" min="0" max="99" value="0">
+        <p class="note">0 shows Book a 1:1 on the first visit. A higher number waits until they have requested that many guides.</p>
+        <label for="nurture-video">Thank-you video address</label>
+        <input id="nurture-video" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
+        <p class="note">Shown only the first time they open their page.</p>
+        <label for="nurture-add">Playlist</label>
+        <select id="nurture-add"><option value="">Add a guide</option></select>
+        <ol id="nurture-order"></ol>
+        <div class="actions"><button class="btn quiet" type="submit">Save follow-up</button></div>
+        <p class="status-line" id="nurture-status" role="status"></p>
+      </form>
+    </details>
+    <div class="chips" role="group" aria-label="Filter seminars">
+      <button class="chip" type="button" data-seminar-filter="" aria-pressed="true">All</button>
+      <button class="chip" type="button" data-seminar-filter="draft" aria-pressed="false">Drafts</button>
+      <button class="chip" type="button" data-seminar-filter="published" aria-pressed="false">Live</button>
+      <button class="chip" type="button" data-seminar-filter="retired" aria-pressed="false">Retired</button>
+    </div>
+    <section class="signup-panel" aria-labelledby="signup-heading">
+      <h2 id="signup-heading">Signups</h2>
+      <label for="signup-session">Session</label>
+      <select id="signup-session">
+        <option value="">All sessions</option>
+      </select>
+      <p class="note" id="signup-empty">No one has signed up yet.</p>
+      <div class="tablewrap">
+        <table id="signup-table" hidden>
+          <caption class="sr">People signed up for sessions</caption>
+          <thead>
+            <tr>
+              <th>Notes</th>
+              <th>Session</th>
+              <th>When</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Cell</th>
+              <th>Guest</th>
+              <th>Their email</th>
+              <th>Their cell</th>
+            </tr>
+          </thead>
+          <tbody id="signup-rows"></tbody>
+        </table>
+      </div>
+      <section id="family-notes" class="family-notes" hidden aria-labelledby="family-notes-heading">
+        <h3 id="family-notes-heading">Notes</h3>
+        <p class="note" id="family-notes-who"></p>
+        <form id="family-notes-form">
+          <label class="check" for="notes-consent"><input id="notes-consent" type="checkbox"> They agreed to a transcript</label>
+          <label for="notes-transcript">Transcript</label>
+          <textarea id="notes-transcript" class="tall"></textarea>
+          <label for="notes-summary">Summary</label>
+          <textarea id="notes-summary" class="tall"></textarea>
+          <label for="notes-topics">Topics, one per line</label>
+          <textarea id="notes-topics"></textarea>
+          <div class="pair">
+            <div>
+              <label for="notes-readiness">Estimator visit</label>
+              <select id="notes-readiness">
+                <option value="">Not set</option>
+                <option value="not_ready">Not ready</option>
+                <option value="unsure">Unsure</option>
+                <option value="ready">Ready</option>
+              </select>
+            </div>
+            <div>
+              <label for="follow-up-status">Follow-up</label>
+              <select id="follow-up-status">
+                <option value="none">Not started</option>
+                <option value="draft">Draft</option>
+                <option value="sent">Sent</option>
+              </select>
+            </div>
+          </div>
+          <label for="notes-readiness-note">Why that readiness</label>
+          <textarea id="notes-readiness-note"></textarea>
+          <fieldset>
+            <legend>People on the call</legend>
+            <p class="note">Internal only. These reads are not sent out.</p>
+            <div id="attendee-reads"></div>
+            <button class="btn quiet" type="button" id="add-attendee">Add a person</button>
+          </fieldset>
+          <h4>Guide to send</h4>
+          <div class="pair">
+            <div>
+              <label for="suggested-id">Article id</label>
+              <input id="suggested-id" type="number" min="0" inputmode="numeric">
+            </div>
+            <div>
+              <label for="suggested-slug">Slug</label>
+              <input id="suggested-slug" autocomplete="off">
+            </div>
+          </div>
+          <label for="suggested-title">Title</label>
+          <input id="suggested-title" autocomplete="off">
+          <label for="suggested-reason">Why this guide</label>
+          <textarea id="suggested-reason"></textarea>
+          <fieldset>
+            <legend>Other guides</legend>
+            <div id="other-suggestions"></div>
+            <button class="btn quiet" type="button" id="add-suggestion">Add a guide</button>
+          </fieldset>
+          <label for="follow-up-note">Follow-up note</label>
+          <textarea id="follow-up-note" class="tall"></textarea>
+          <p class="note">Marking the follow-up sent records that you sent it. Email and text are not connected yet.</p>
+          <p class="note" id="notes-meta"></p>
+          <div class="actions">
+            <button class="btn" type="submit">Save notes</button>
+            <button class="btn quiet" type="button" id="notes-close">Close</button>
+          </div>
+          <p class="status-line" id="notes-msg" role="status"></p>
+        </form>
+      </section>
+    </section>
+
+    <div class="desk">
+      <div>
+        <button class="btn" type="button" id="new-meeting">New meeting</button>
+        <ul class="guide-list" id="meeting-list"></ul>
+      </div>
+      <div>
+      <section id="seminar-roster" class="signup-panel" hidden aria-labelledby="roster-heading">
+        <h2 id="roster-heading">Who signed up</h2>
+        <p class="note" id="roster-hint"></p>
+        <p class="note" id="roster-empty" hidden>No one has signed up yet.</p>
+        <ul class="roster" id="roster-list"></ul>
+      </section>
+      <form class="editor" id="meeting-editor">
+        <p class="badge draft" id="meeting-status">New draft</p>
+        <label for="meeting-type">Type</label>
+        <select id="meeting-type" required>
+          <option value="contractor_orientation">Contractor Orientation</option>
+          <option value="contractor_deep_dive">Contractor Deep Dive</option>
+          <option value="live_qa">Live Q&amp;A</option>
+          <option value="family_1_1">Ask Anything 1:1</option>
+          <option value="ad_hoc">Ad Hoc</option>
+        </select>
+        <label for="meeting-title">Title</label>
+        <input id="meeting-title" required>
+        <label for="meeting-summary">What they will hear</label>
+        <textarea id="meeting-summary" rows="3"></textarea>
+        <fieldset class="kind-set">
+          <legend>Schedule</legend>
+          <label class="check"><input type="radio" name="meeting-kind" value="one_time" checked> One-time meeting</label>
+          <label class="check"><input type="radio" name="meeting-kind" value="recurring"> Recurring meeting</label>
+        </fieldset>
+        <div id="frequency-wrap" hidden>
+          <label for="meeting-frequency">Repeats</label>
+          <select id="meeting-frequency">
+            <option value="weekly">Every week</option>
+            <option value="every_two_weeks">Every two weeks</option>
+            <option value="monthly">Every month</option>
+          </select>
+        </div>
+        <div class="pair">
+          <div>
+            <label for="meeting-starts" id="meeting-starts-label">Date and time</label>
+            <input id="meeting-starts" type="datetime-local">
+          </div>
+          <div>
+            <label for="meeting-zone">Timezone</label>
+            <select id="meeting-zone">
+              <option value="America/Honolulu">Hawaii</option>
+              <option value="America/Los_Angeles">Pacific</option>
+              <option value="America/Denver">Mountain</option>
+              <option value="America/Chicago">Central</option>
+              <option value="America/New_York">Eastern</option>
+            </select>
+          </div>
+        </div>
+        <label for="meeting-duration">Length in minutes</label>
+        <input id="meeting-duration" type="number" min="15" max="240" value="45">
+        <label for="meeting-zoom">Zoom link for this meeting</label>
+        <input id="meeting-zoom" type="url" inputmode="url" placeholder="Leave blank to use the standing link">
+        <fieldset class="kind-set">
+          <legend>Reminders</legend>
+          <label class="check"><input id="remind-email" type="checkbox"> Email</label>
+          <label class="check"><input id="remind-sms" type="checkbox"> Text message</label>
+        </fieldset>
+        <label for="remind-hours">Hours before the session</label>
+        <input id="remind-hours" type="number" min="1" max="168" value="24">
+        <p class="note">Email and text choices are saved with the meeting. Sending them through Twilio and email is not connected yet.</p>
+        <div class="actions">
+          <button class="btn quiet" type="button" id="meeting-draft">Save draft</button>
+          <button class="btn" type="button" id="meeting-publish">Publish</button>
+          <button class="btn danger" type="button" id="meeting-retire">Retire</button>
+        </div>
+        <p class="status-line" id="meeting-msg" role="status"></p>
+      </form>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="/assets/js/seminar-format.js"></script>
+<script src="/assets/js/message-copy.js"></script>
+<script src="/assets/js/seminars.js"></script>
+</body>
+</html>
