@@ -22,7 +22,8 @@
     return '<p><a class="btn" href="' + esc(raw) + '">Watch the note</a></p>';
   }
   function show(data){
-    var hello = data.name ? 'Hello ' + esc(data.name) + '.' : 'Hello.';
+    var heading = data.name ? 'Hello ' + esc(data.name) : 'Hello';
+    document.title = (data.name ? 'Hello ' + data.name : 'Hello') + ' | Aging in Place Alliance';
     var video = videoHtml(data.video_url);
     var invite = 'When you are ready to talk about your house, book a 1:1 Consult.';
     var book = data.show_book
@@ -44,7 +45,7 @@
     }
     var note = notice ? '<p role="status">' + esc(notice) + '</p>' : '';
     notice = '';
-    root.innerHTML = '<h1 id="pt">Your page</h1><p class="lede">' + hello + ' Thank you for coming to the Live Q&amp;A.</p>' + note + video + form + book;
+    root.innerHTML = '<h1 id="pt">' + heading + '</h1><p class="lede">Thank you for coming to the Live Q&amp;A.</p>' + note + video + form + book;
     var choose = document.getElementById('nurture-form');
     if (choose) choose.addEventListener('submit', submit);
     if (data.video_url) {
