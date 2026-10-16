@@ -80,7 +80,7 @@
   }
   function load(){
     if (!api || !token) {
-      root.innerHTML = '<h1 id="pt">Your page</h1><p>This link is missing its private code. Use the link from your email.</p>';
+      root.innerHTML = '<h1 id="pt">Hello</h1><p>This link is missing its private code. Use the link from your email.</p>';
       return;
     }
     fetch(api + '/nurture?t=' + encodeURIComponent(token), {headers:{'Accept':'application/json'}})
@@ -92,7 +92,7 @@
       })
       .then(show)
       .catch(function(err){
-        root.innerHTML = '<h1 id="pt">Your page</h1><p>' + esc(err.message) + '</p>';
+        root.innerHTML = '<h1 id="pt">Hello</h1><p>' + esc(err.message) + '</p>';
       });
   }
   load();
