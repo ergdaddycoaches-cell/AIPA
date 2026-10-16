@@ -185,7 +185,7 @@
     {token: '{{guide_link}}', label: 'Guide link'}
   ];
   function nurtureCopy(step){
-    if (!selectedSequence() || selectedSequence().key !== 'nurture_before') return '';
+    if (!selectedSequence() || selectedSequence().key !== 'attendee') return '';
     var email = messageByKey(step.message_key);
     var sms = messageByKey(step.companion_key);
     if (!email) return '';
@@ -225,12 +225,12 @@
         '</select>' +
         '<label for="intent-' + step.id + '">Intent</label>' +
         '<textarea id="intent-' + step.id + '" rows="4">' + esc(step.intent) + '</textarea>' +
-        (selectedSequence() && selectedSequence().key === 'nurture_before' ? nurtureCopy(step) :
+        (selectedSequence() && selectedSequence().key === 'attendee' ? nurtureCopy(step) :
           '<label for="message-' + step.id + '">' + (step.channel === 'call' ? 'Call script' : channelName(step.channel)) + '</label>' +
           '<select id="message-' + step.id + '">' + optionsFor(step.channel, step.message_key) + '</select>' +
           (primary ? '<p class="note"><a href="/admin/messages/?key=' + encodeURIComponent(step.message_key) + '">Edit ' + esc(primary.name) + ' in Messages</a></p>' : '')) +
-        (selectedSequence() && selectedSequence().key === 'nurture_before' ? '' : companionField(step)) +
-        (selectedSequence() && selectedSequence().key === 'nurture_before' ? '' : calendar) +
+        (selectedSequence() && selectedSequence().key === 'attendee' ? '' : companionField(step)) +
+        (selectedSequence() && selectedSequence().key === 'attendee' ? '' : calendar) +
         '<div class="actions"><button class="btn" type="submit">Save touchpoint</button></div>' +
         '<p class="status-line" id="status-' + step.id + '" role="status"></p>' +
       '</form>';
