@@ -28,7 +28,7 @@
       ? esc(data.name) + ', when you are ready to talk about your house, book a 1:1 Meeting with Shep.'
       : 'When you are ready to talk about your house, book a 1:1 Meeting with Shep.';
     var book = data.show_book
-      ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a time with Shep</a></p></div>'
+      ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a 1:1 Consult</a></p></div>'
       : '';
     var topics = data.topics || [];
     var form = '';
