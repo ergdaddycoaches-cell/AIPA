@@ -29,6 +29,19 @@
     var book = data.show_book
       ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a 1:1 Consult</a></p></div>'
       : '';
+    var concerns = [
+      {key: 'bathroom', label: 'The bathroom'},
+      {key: 'around', label: 'Getting around the house'},
+      {key: 'seeing', label: 'Seeing'},
+      {key: 'hands', label: 'Using your hands'}
+    ];
+    var priority = data.ask_concern
+      ? '<form class="signup" id="concern-form"><fieldset><legend>What is on your mind first?</legend>' +
+        concerns.map(function(item, index){
+          return '<label class="check nurture-topic"><input type="radio" name="concern" value="' + item.key + '"' + (index === 0 ? ' required' : '') + '> <span><b class="nurture-title">' + item.label + '</b></span></label>';
+        }).join('') +
+        '<div class="actions"><button class="btn" type="submit">Start with this</button><button class="btn quiet" type="button" id="concern-skip">Not sure</button></div><p class="status-line" id="concern-status" role="status"></p></fieldset></form>'
+      : '';
     var topics = data.topics || [];
     var form = '';
     if (!data.stopped && topics.length) {
@@ -45,7 +58,11 @@
     }
     var note = notice ? '<p role="status">' + esc(notice) + '</p>' : '';
     notice = '';
-    root.innerHTML = '<h1 id="pt">' + heading + '</h1><p class="lede">Thank you for coming to the Live Q&amp;A.</p>' + note + video + form + book;
+    root.innerHTML = '<h1 id="pt">' + heading + '</h1><p class="lede">Thank you for coming to the Live Q&amp;A.</p>' + note + video + priority + form + book;
+    var concernForm = document.getElementById('concern-form');
+    if (concernForm) concernForm.addEventListener('submit', saveConcern);
+    var skip = document.getElementById('concern-skip');
+    if (skip) skip.addEventListener('click', function(){ saveConcernKey('skip'); });
     var choose = document.getElementById('nurture-form');
     if (choose) choose.addEventListener('submit', submit);
     if (data.video_url) {
@@ -55,6 +72,31 @@
         body: JSON.stringify({t: token})
       }).catch(function(){});
     }
+  }
+  function saveConcern(event){
+    event.preventDefault();
+    var picked = root.querySelector('input[name="concern"]:checked');
+    var status = document.getElementById('concern-status');
+    if (!picked) { if (status) status.textContent = 'Choose one concern.'; return; }
+    saveConcernKey(picked.value);
+  }
+  function saveConcernKey(key){
+    var status = document.getElementById('concern-status');
+    if (status) status.textContent = 'Saving…';
+    fetch(api + '/nurture/concern', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Accept':'application/json'},
+      body: JSON.stringify({t: token, concern: key})
+    }).then(function(response){
+      return response.json().then(function(data){
+        if (!response.ok) throw new Error((data && data.message) || 'That choice was not saved.');
+        return data;
+      });
+    }).then(function(){
+      return load();
+    }).catch(function(err){
+      if (status) status.textContent = err.message;
+    });
   }
   function submit(event){
     event.preventDefault();
