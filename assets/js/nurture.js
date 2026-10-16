@@ -35,16 +35,15 @@
           return '<label class="check nurture-topic"><input type="radio" name="article_id" value="' + topic.id + '"' + (index === 0 ? ' required' : '') + '> <span><b class="nurture-title">' + esc(topic.title) + '</b>' +
             (topic.summary ? '<span class="nurture-summary">' + esc(topic.summary) + '</span>' : '') + '</span></label>';
         }).join('') +
-        book +
         '<div class="actions"><button class="btn" type="submit">Send me this guide</button></div><p class="status-line" id="nurture-status" role="status"></p></fieldset></form>';
     } else if (!data.stopped) {
-      form = '<p>There are no more topics on your page right now.</p>' + book;
+      form = '<p>There are no more topics on your page right now.</p>';
     } else {
       form = '<p>This page is finished. The library is still here if you want to keep reading.</p>';
     }
     var note = notice ? '<p role="status">' + esc(notice) + '</p>' : '';
     notice = '';
-    root.innerHTML = '<h1 id="pt">Your page</h1><p class="lede">' + hello + ' Thank you for coming to the Live Q&amp;A.</p>' + note + video + form;
+    root.innerHTML = '<h1 id="pt">Your page</h1><p class="lede">' + hello + ' Thank you for coming to the Live Q&amp;A.</p>' + note + video + form + book;
     var choose = document.getElementById('nurture-form');
     if (choose) choose.addEventListener('submit', submit);
     if (data.video_url) {
