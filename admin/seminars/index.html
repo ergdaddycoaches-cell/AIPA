@@ -57,6 +57,22 @@
         <p class="status-line" id="zoom-status" role="status"></p>
       </form>
     </details>
+    <details class="zoom-stand">
+      <summary>After a Live Q&amp;A</summary>
+      <form class="editor" id="nurture-form">
+        <label for="nurture-min">Guides requested before Book a 1:1 appears</label>
+        <input id="nurture-min" type="number" min="0" max="99" value="0">
+        <p class="note">0 shows Book a 1:1 on the first visit. A higher number waits until they have requested that many guides.</p>
+        <label for="nurture-video">Thank-you video address</label>
+        <input id="nurture-video" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
+        <p class="note">Shown only the first time they open their page.</p>
+        <label for="nurture-add">Playlist</label>
+        <select id="nurture-add"><option value="">Add a guide</option></select>
+        <ol id="nurture-order"></ol>
+        <div class="actions"><button class="btn quiet" type="submit">Save follow-up</button></div>
+        <p class="status-line" id="nurture-status" role="status"></p>
+      </form>
+    </details>
     <div class="chips" role="group" aria-label="Filter seminars">
       <button class="chip" type="button" data-seminar-filter="" aria-pressed="true">All</button>
       <button class="chip" type="button" data-seminar-filter="draft" aria-pressed="false">Drafts</button>

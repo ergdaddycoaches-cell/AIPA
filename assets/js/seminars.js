@@ -12,6 +12,9 @@
   var fillingSessions = false;
   var current = null;
   var notesId = 0;
+  var nurtureById = {};
+  var nurtureGuides = [];
+  var nurtureOrder = [];
   var ROLES = [['', 'Not set'], ['parent', 'Parent'], ['adult_child', 'Adult child'], ['spouse', 'Spouse'], ['sibling', 'Sibling'], ['other', 'Other']];
   var STYLES = [['', 'Not set'], ['protective', 'Protective'], ['minimizing', 'Minimizing'], ['detail', 'Wants the details'], ['action', 'Wants a next step'], ['urgent', 'Urgent'], ['unsure', 'Not enough to tell']];
   var msg = document.getElementById('meeting-msg');
@@ -406,6 +409,19 @@
       var on = attendedOn(row, kind);
       var bits = [whenLabel(row), row.email || 'No email', row.phone || 'No cell'].join(' · ');
       var note = rosterNote[row.id] ? '<p class="status-line" role="status">' + esc(rosterNote[row.id]) + '</p>' : '';
+      var nurtureLine = '';
+      if (kind !== '1_1') {
+        var person = nurtureById[row.id];
+        if (person) {
+          var where = person.stopped === 'booked' ? 'They booked a 1:1, so the notes have stopped.'
+            : person.stopped === 'done' ? 'The playlist is finished.'
+            : person.show_book ? 'Book a 1:1 is on their page.'
+            : 'Book a 1:1 is not on their page yet.';
+          nurtureLine = '<p class="note">Guides requested: ' + person.request_count + '. ' + where + '</p>';
+        } else if (on) {
+          nurtureLine = '<p class="note">No personal page. Their house ZIP does not have a contractor.</p>';
+        }
+      }
       var form = '';
       if (followId === row.id) {
         var profile = profiles[row.id] || {};
@@ -429,7 +445,7 @@
       return '<li><label class="roster-attend"><input type="checkbox" data-attend="' + row.id + '"' + (on ? ' checked' : '') + '> Attended</label>' +
         '<span class="roster-who"><b>' + esc(row.name || 'No name') + '</b><span class="meta">' + esc(bits) + '</span></span>' +
         '<button class="btn quiet" type="button" data-follow="' + row.id + '">' + (followId === row.id ? 'Close' : 'Follow up') + '</button>' +
-        note + form + '</li>';
+        note + nurtureLine + form + '</li>';
     }).join('');
   }
 
@@ -543,6 +559,37 @@
     });
   }
 
+  function renderNurture(){
+    var list = document.getElementById('nurture-order');
+    var add = document.getElementById('nurture-add');
+    if (!list || !add) return;
+    var titles = {};
+    nurtureGuides.forEach(function(guide){ titles[guide.id] = guide.title; });
+    list.innerHTML = nurtureOrder.length ? nurtureOrder.map(function(id, index){
+      return '<li><span>' + esc(titles[id] || 'Guide') + '</span> <button type="button" data-nurture-up="' + index + '">Up</button> <button type="button" data-nurture-down="' + index + '">Down</button> <button type="button" data-nurture-remove="' + index + '">Remove</button></li>';
+    }).join('') : '<li>No guides on the playlist yet.</li>';
+    var used = {};
+    nurtureOrder.forEach(function(id){ used[id] = true; });
+    add.innerHTML = '<option value="">Add a guide</option>' + nurtureGuides.filter(function(guide){
+      return !used[guide.id];
+    }).map(function(guide){
+      return '<option value="' + guide.id + '">' + esc(guide.title) + '</option>';
+    }).join('');
+  }
+
+  function paintNurture(data){
+    data = data || {};
+    var min = document.getElementById('nurture-min');
+    var video = document.getElementById('nurture-video');
+    if (min) min.value = data.nurture_min || 0;
+    if (video) video.value = data.nurture_video || '';
+    nurtureGuides = rows(data.guides);
+    nurtureOrder = rows(data.playlist).map(function(row){ return row.id; });
+    nurtureById = {};
+    rows(data.people).forEach(function(person){ nurtureById[person.registration_id] = person; });
+    renderNurture();
+  }
+
   function paintZoom(){
     var input = document.getElementById('standing-zoom');
     var summary = document.getElementById('zoom-summary');
@@ -559,6 +606,7 @@
       api('/office/meetings'),
       api('/office/signups').catch(function(){ return []; }),
       api('/office/households').catch(function(){ return {}; }),
+      api('/office/nurture').catch(function(){ return {}; }),
       (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve())
     ]).then(function(result){
       document.getElementById('standing-zoom').value = (result[0] && result[0].zoom_url) || '';
@@ -569,6 +617,7 @@
       rows((result[3] || {}).profiles).forEach(function(profile){
         profiles[profile.registration_id] = profile;
       });
+      paintNurture(result[4] || {});
       render();
       renderSignups();
     }).catch(function(err){
@@ -610,6 +659,44 @@
   });
 
   document.getElementById('standing-zoom').addEventListener('input', paintZoom);
+
+  document.getElementById('nurture-add').addEventListener('change', function(){
+    var id = Number(this.value);
+    if (!id) return;
+    nurtureOrder.push(id);
+    this.value = '';
+    renderNurture();
+  });
+  document.getElementById('nurture-order').addEventListener('click', function(event){
+    var button = event.target.closest('button');
+    if (!button) return;
+    var index = Number(button.getAttribute('data-nurture-up') || button.getAttribute('data-nurture-down') || button.getAttribute('data-nurture-remove'));
+    if (button.hasAttribute('data-nurture-up') && index > 0) {
+      var up = nurtureOrder[index - 1];
+      nurtureOrder[index - 1] = nurtureOrder[index];
+      nurtureOrder[index] = up;
+    }
+    if (button.hasAttribute('data-nurture-down') && index < nurtureOrder.length - 1) {
+      var down = nurtureOrder[index + 1];
+      nurtureOrder[index + 1] = nurtureOrder[index];
+      nurtureOrder[index] = down;
+    }
+    if (button.hasAttribute('data-nurture-remove')) nurtureOrder.splice(index, 1);
+    renderNurture();
+  });
+  document.getElementById('nurture-form').addEventListener('submit', function(event){
+    event.preventDefault();
+    var status = document.getElementById('nurture-status');
+    status.textContent = 'Saving…';
+    api('/office/nurture', {method:'POST', body:{
+      nurture_min: Number(document.getElementById('nurture-min').value) || 0,
+      nurture_video: document.getElementById('nurture-video').value.trim(),
+      article_ids: nurtureOrder.join(',')
+    }}).then(function(){
+      status.textContent = 'Follow-up saved.';
+      return load();
+    }).catch(function(err){ status.textContent = err.message; });
+  });
 
   document.getElementById('zoom-form').addEventListener('submit', function(e){
     e.preventDefault();
