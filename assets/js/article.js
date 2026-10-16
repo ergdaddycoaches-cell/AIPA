@@ -95,6 +95,7 @@
     var params = new URL(location.href).searchParams;
     slug = params.get('slug') || '';
     guideToken = params.get('t') || '';
+    var nurtureToken = params.get('n') || '';
   } catch (e) {}
   if (!slug || !CFG.apiBase) { missing(); return; }
 
@@ -102,6 +103,7 @@
   var api = CFG.apiBase.replace(/\/$/, '');
   function footerAsk(){
     if (!sent) return Promise.resolve(false);
+    if (nurtureToken) return Promise.resolve(true);
     if (!guideToken) return Promise.resolve(true);
     return fetch(api + '/library/guide-footer?t=' + encodeURIComponent(guideToken), {headers:{'Accept':'application/json'}})
       .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
@@ -143,6 +145,9 @@
           .replace('Live Q&amp;A', '<a class="link" href="/live-qa/">Live Q&amp;A</a>, <span data-qa-day>the next open session</span>')
           .replace('Ask Anything 1:1', '<a class="link" href="/ask-anything/">Ask Anything 1:1</a>');
         close = '<p class="guide-close">' + sentence + '</p>';
+        if (nurtureToken && ask) {
+          close += '<p class="voice-cta"><a class="btn" href="/ask-anything/">Book a 1:1</a></p><p><img id="book-qr" alt="QR code to book a 1:1" width="120" height="120"></p>';
+        }
       }
       var printMark = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6 9V2h12v7h2a2 2 0 0 1 2 2v6h-4v5H6v-5H2v-6a2 2 0 0 1 2-2h2zm2-5v3h8V4H8zm8 14v-4H8v4h8zM4 11v4h2v-2h12v2h2v-4H4z"/></svg>';
       var pdf = sent
@@ -158,6 +163,27 @@
         body +
         close +
         '<p><a class="link" href="/library/' + esc(article.section_slug) + '/">More ' + esc(article.section).toLowerCase() + ' guides</a></p>';
+      var bookQr = document.getElementById('book-qr');
+      if (bookQr && window.qrcode) {
+        var code = window.qrcode(0, 'M');
+        code.addData('https://goaipa.com/ask-anything/');
+        code.make();
+        var count = code.getModuleCount();
+        var scale = 4;
+        var canvas = document.createElement('canvas');
+        canvas.width = count * scale;
+        canvas.height = count * scale;
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#2A211C';
+        for (var row = 0; row < count; row++) {
+          for (var col = 0; col < count; col++) {
+            if (code.isDark(row, col)) ctx.fillRect(col * scale, row * scale, scale, scale);
+          }
+        }
+        bookQr.src = canvas.toDataURL('image/png');
+      }
       var printBtn = document.getElementById('print-sent');
       if (printBtn && window.AIPA_HANDOUT) {
         var guide = {
