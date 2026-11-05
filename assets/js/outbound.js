@@ -154,7 +154,8 @@
     lead.textContent = "";
     lead.appendChild(document.createTextNode("Next session: "));
     lead.appendChild(mark);
-    lead.appendChild(document.createTextNode(". " + length + ", with no camera. You can join from a phone or a computer, and someone else can join with you."));
+    var host = String(slot.host_name || "").trim();
+    lead.appendChild(document.createTextNode(". " + length + (host ? " with " + host : "") + ", with no camera. You can join from a phone or a computer, and someone else can join with you."));
   }
 
   function nextLiveQa() {

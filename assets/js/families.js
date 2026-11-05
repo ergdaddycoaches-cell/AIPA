@@ -36,6 +36,7 @@
   var REASONS = {visit_booked:'Visit booked', asked_to_stop:'Asked us to stop', no_response:'No response', not_a_fit:'Not a fit'};
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
+  function isGuide(){ return window.AIPA_OFFICE && window.AIPA_OFFICE.role() === 'guide'; }
   function esc(t){
     return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
@@ -812,12 +813,15 @@
   }
   function contractorField(family){
     var current = contractorIdOf(family);
+    var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
+    if (isGuide()) return '<p class="stage-pick">Contractor · ' + esc(name) + '</p>';
     return '<label class="stage-pick">Contractor <select id="contractor-select"><option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
       contractors.map(function(contractor){
         return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
       }).join('') + '</select></label>';
   }
   function holdLine(family){
+    if (isGuide()) return '';
     var lead = bills.filter(function(item){ return item.kind === 'lead' && Number(item.registration_id) === family.id; })[0];
     var job = bills.filter(function(item){ return item.kind === 'job' && Number(item.registration_id) === family.id; })[0];
     var stage = stages.filter(function(item){ return item.id === stageFor(family); })[0];
@@ -897,6 +901,7 @@
     });
   }
   function cadencePanel(family){
+    if (isGuide()) return '';
     ensureCadence(family.id);
     var bag = cadenceRuns[family.id];
     if (!bag || bag.loading) return '<section class="cadence-card"><h3>Cadence</h3><p>Loading the schedule…</p></section>';

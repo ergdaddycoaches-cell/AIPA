@@ -17,6 +17,7 @@
   var emailNote = {};
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
+  function isGuide(){ return window.AIPA_OFFICE && window.AIPA_OFFICE.role() === 'guide'; }
   function esc(t){
     return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
@@ -849,7 +850,7 @@
   });
   function loadSpiders(){
     var box = document.getElementById('no-spider');
-    if (!box) return;
+    if (!box || isGuide()) return;
     api('/office/spiders').then(function(data){
       box.checked = !!(data && (data.block_spiders === true || data.block_spiders === 1));
     }).catch(function(err){

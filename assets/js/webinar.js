@@ -27,6 +27,7 @@
             (typeName ? '<span class="type">' + esc(typeName) + '</span>' : '') +
             '<span class="when">' + esc(window.AIPA_SEMINAR.format(meeting)) + length + '</span>' +
             '<span class="t">' + esc(meeting.title) + '</span>' +
+            (meeting.host_name ? '<span class="host">With ' + esc(meeting.host_name) + '</span>' : '') +
             (meeting.summary ? '<span class="detail">' + esc(meeting.summary) + '</span>' : '') +
             '</a></li>';
         }).join('') + '</ul>';

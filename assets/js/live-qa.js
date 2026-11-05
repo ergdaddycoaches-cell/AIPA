@@ -54,10 +54,18 @@
     return phrase + ', at ' + clock(slot);
   }
 
+  function hostLine(slot){
+    var name = String(slot.host_name || '').trim();
+    return name ? '<p class="host">With ' + esc(name) + '</p>' : '';
+  }
+  function hostNote(slot){
+    var name = String(slot.host_name || '').trim();
+    return name ? ' · with ' + name : '';
+  }
   function formHtml(slot){
     return '<form class="signup" id="signup-form">' +
       '<h3>Join this session</h3>' +
-      '<p class="note">' + esc(slot.title) + ' · ' + esc(when(slot)) + '</p>' +
+      '<p class="note">' + esc(slot.title) + ' · ' + esc(when(slot)) + esc(hostNote(slot)) + '</p>' +
       '<p class="note ease">(You can keep your camera off and stay anonymous on the call if you wish)</p>' +
       '<label for="signup-name">Your name</label>' +
       '<input id="signup-name" name="name" autocomplete="name" required>' +
@@ -185,6 +193,7 @@
       var length = slot.duration_minutes ? ' · ' + slot.duration_minutes + ' minutes' : '';
       return '<li class="slot"><span class="when">' + esc(clock(slot) + length) + '</span>' +
         '<h3>' + esc(slot.title) + '</h3>' +
+        hostLine(slot) +
         (slot.summary ? '<p class="summary">' + esc(slot.summary) + '</p>' : '') +
         (selected ? formHtml(slot) : '<button class="btn" type="button" data-key="' + esc(key) + '">Join</button>') +
         '</li>';

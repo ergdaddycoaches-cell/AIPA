@@ -262,7 +262,8 @@ a.tool:hover h3,a.tool:hover .status{color:var(--clay)}
 .web .seminar-list .t{display:block;text-decoration:underline;text-decoration-color:var(--on-dark);text-decoration-thickness:2px;text-underline-offset:.2em}
 .web .seminar-list a:hover .t{color:#E07A2F}
 .web .seminar-list .type{display:block;font-size:.95rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.15rem}
-.web .seminar-list .when,.web .seminar-list .detail{display:block}
+.web .seminar-list .when,.web .seminar-list .detail,.web .seminar-list .host{display:block}
+.web .seminar-list .host,.slot .host{font-weight:700;margin:.15rem 0 0}
 .web .seminar-list .when{font-weight:700}
 .web .seminar-list .detail{font-weight:400;margin-top:.2rem}
 

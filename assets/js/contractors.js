@@ -23,6 +23,7 @@
   var territoryOpen = false;
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
+  function isGuide(){ return window.AIPA_OFFICE && window.AIPA_OFFICE.role() === 'guide'; }
   function esc(t){
     return String(t == null ? '' : t).replace(/[&<>"]/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
@@ -185,6 +186,11 @@
   function territoryBlock(row){
     var zips = zipsOf(row.id);
     var summary = zips.length ? zips.length + ' ZIP code' + (zips.length === 1 ? '' : 's') : 'ZIP codes';
+    var list = zips.length ? '<p class="contractor-meta">' + esc(zips.join(', ')) + '</p>' : '<p class="contractor-meta">No ZIP codes yet.</p>';
+    if (isGuide()) {
+      return '<details class="contractor-territory" id="territory-zips"' + (territoryOpen ? ' open' : '') + '>' +
+        '<summary>' + esc(summary) + '</summary>' + list + '</details>';
+    }
     return '<details class="contractor-territory" id="territory-zips"' + (territoryOpen ? ' open' : '') + '>' +
       '<summary>' + esc(summary) + '</summary>' +
       '<textarea id="territory" rows="4" spellcheck="false">' + esc(zips.join('\n')) + '</textarea>' +
@@ -280,6 +286,7 @@
     }).join('') + '</ul>';
   }
   function pricePanel(row){
+    if (isGuide()) return '';
     var contract = contractFor(row.id);
     if (!contract) return '<p class="contractor-meta">No contract yet. Deal Won locks the prices from the <a href="/admin/prices/">Prices</a> page onto this contractor.</p>';
     var link = 'https://goaipa.com/pay/?t=' + encodeURIComponent(contract.token);

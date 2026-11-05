@@ -51,7 +51,7 @@
     return 'If you have more questions about ' + topic(guide) + ', bring them to the next Live Q&A.';
   }
   function sentLine(guide){
-    return 'If you have more questions about ' + topic(guide) + ', book a free Ask Anything 1:1 with Shep.';
+    return 'If you have more questions about ' + topic(guide) + ', book a free Ask Anything 1:1.';
   }
   window.AIPA_CLOSE = { topic: topic, line: line, sentLine: sentLine };
 })();
