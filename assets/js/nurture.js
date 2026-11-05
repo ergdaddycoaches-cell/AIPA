@@ -31,12 +31,11 @@
     var book = data.show_book
       ? '<div class="nurture-book"><p class="nurture-invite">' + invite + '</p><p class="voice-cta"><a class="btn" href="/ask-anything/">Book a 1:1 Consult</a></p></div>'
       : '';
-    var concerns = [
-      {key: 'bathroom', label: 'The bathroom'},
-      {key: 'around', label: 'Getting around the house'},
-      {key: 'seeing', label: 'Seeing'},
-      {key: 'hands', label: 'Using your hands'}
-    ];
+    var concerns = (data.areas || []).filter(function(area){
+      return area && area.key && area.label;
+    });
+    if (asking && !concerns.length) asking = false;
+    var listing = !asking && !thanking;
     var legend = (parseInt(data.request_count, 10) || 0) > 0
       ? 'Would you like to explore a new topic?'
       : 'What is on your mind first?';
@@ -44,7 +43,7 @@
       (asking
         ? '<form class="signup" id="concern-form"><fieldset><legend>' + legend + '</legend>' +
           concerns.map(function(item, index){
-            return '<label class="check nurture-topic"><input type="radio" name="concern" value="' + item.key + '"' + (index === 0 ? ' required' : '') + '> <span><b class="nurture-title">' + item.label + '</b></span></label>';
+            return '<label class="check nurture-topic"><input type="radio" name="concern" value="' + esc(item.key) + '"' + (index === 0 ? ' required' : '') + '> <span><b class="nurture-title">' + esc(item.label) + '</b></span></label>';
           }).join('') +
           '<div class="actions"><button class="btn" type="submit">Start with this</button><button class="btn quiet" type="button" id="concern-skip">Not sure</button></div><p class="status-line" id="concern-status" role="status"></p></fieldset></form>'
         : '') +
