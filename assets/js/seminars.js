@@ -609,7 +609,11 @@
       api('/office/nurture').catch(function(){ return {}; }),
       (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve())
     ]).then(function(result){
-      document.getElementById('standing-zoom').value = (result[0] && result[0].zoom_url) || '';
+      var zoom = result[0] || {};
+      document.getElementById('standing-zoom').value = zoom.zoom_url || '';
+      var zoomTitle = zoom.role === 'guide' ? 'Your Zoom link' : 'Standing Zoom link';
+      document.getElementById('zoom-heading').innerHTML = zoomTitle + '<span id="zoom-summary" hidden></span>';
+      document.getElementById('zoom-label').textContent = zoom.role === 'guide' ? 'Used for your Live Q&A and 1:1s' : 'Link anyone can use';
       paintZoom();
       meetings = rows(result[1]);
       signups = rows(result[2]);
@@ -644,11 +648,13 @@
     };
     msg.textContent = 'Saving…';
     return api('/office/meeting', {method:'POST', body:payload}).then(function(saved){
-      return load().then(function(){
-        current = meetings.filter(function(meeting){ return meeting.id === saved.id; })[0] || saved;
-        fill();
-        render();
-        msg.textContent = status === 'published' ? 'This meeting is live.' : status === 'retired' ? 'This meeting is retired and off the site.' : 'Draft saved. It is not on the site.';
+      return api('/office/meeting-host', {method:'POST', body:{id: saved.id}}).then(function(){
+        return load().then(function(){
+          current = meetings.filter(function(meeting){ return meeting.id === saved.id; })[0] || saved;
+          fill();
+          render();
+          msg.textContent = status === 'published' ? 'This meeting is live.' : status === 'retired' ? 'This meeting is retired and off the site.' : 'Draft saved. It is not on the site.';
+        });
       });
     }).catch(function(err){ msg.textContent = err.message; });
   }
@@ -706,7 +712,10 @@
       .then(function(data){
         document.getElementById('standing-zoom').value = data.zoom_url || '';
         paintZoom();
-        status.textContent = data.zoom_url ? 'Standing Zoom link saved.' : 'Standing Zoom link cleared.';
+        var mine = window.AIPA_OFFICE && window.AIPA_OFFICE.role() === 'guide';
+        status.textContent = data.zoom_url
+          ? (mine ? 'Your Zoom link is saved.' : 'Standing Zoom link saved.')
+          : (mine ? 'Your Zoom link is cleared.' : 'Standing Zoom link cleared.');
       })
       .catch(function(err){ status.textContent = err.message; });
   });

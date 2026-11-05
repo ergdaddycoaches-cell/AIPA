@@ -57,18 +57,33 @@
         <h1>Office people</h1>
         <ul class="guide-list" id="staff-list"></ul>
       </div>
-      <form class="editor" id="staff-form">
-        <h2>Add a Guide</h2>
-        <label for="staff-name">Name</label>
-        <input id="staff-name" name="name" required autocomplete="off">
-        <label for="staff-email">Email</label>
-        <input id="staff-email" name="email" type="email" required autocomplete="off">
-        <label for="staff-password">Password</label>
-        <input id="staff-password" name="password" type="password" minlength="10" required autocomplete="new-password">
-        <p class="hint">At least 10 characters. They sign in at /admin/ with this email.</p>
-        <div class="actions"><button class="btn" type="submit">Add Guide</button></div>
-        <p class="status-line" id="staff-status" role="status"></p>
-      </form>
+      <div>
+        <form class="editor" id="staff-form">
+          <h2>Add a Guide</h2>
+          <label for="staff-name">Name</label>
+          <input id="staff-name" name="name" required autocomplete="off">
+          <label for="staff-email">Email</label>
+          <input id="staff-email" name="email" type="email" required autocomplete="off">
+          <label for="staff-password">Password</label>
+          <input id="staff-password" name="password" type="password" minlength="10" required autocomplete="new-password">
+          <p class="hint">At least 10 characters. They sign in at /admin/ with this email.</p>
+          <div class="actions"><button class="btn" type="submit">Add Guide</button></div>
+          <p class="status-line" id="staff-status" role="status"></p>
+        </form>
+        <form class="editor" id="assign-form" hidden>
+          <h2 id="assign-title">Guide roster</h2>
+          <input id="assign-user-id" type="hidden">
+          <label for="assign-zoom">Zoom link</label>
+          <input id="assign-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
+          <p class="hint">Used for this Guide’s Live Q&amp;A and 1:1s.</p>
+          <fieldset>
+            <legend>Contractors</legend>
+            <div id="assign-contractors"></div>
+          </fieldset>
+          <div class="actions"><button class="btn" type="submit">Save roster</button></div>
+          <p class="status-line" id="assign-status" role="status"></p>
+        </form>
+      </div>
     </div>
   </section>
 </main>

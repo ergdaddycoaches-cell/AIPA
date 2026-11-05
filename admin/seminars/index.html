@@ -53,15 +53,15 @@
 
   <section class="office wrap" id="desk" hidden>
     <details class="zoom-stand">
-      <summary>Standing Zoom link<span id="zoom-summary" hidden></span></summary>
+      <summary id="zoom-heading">Standing Zoom link<span id="zoom-summary" hidden></span></summary>
       <form class="editor" id="zoom-form">
-        <label for="standing-zoom">Link anyone can use</label>
+        <label for="standing-zoom" id="zoom-label">Link anyone can use</label>
         <input id="standing-zoom" type="url" inputmode="url" placeholder="https://zoom.us/j/..." autocomplete="off">
         <div class="actions"><button class="btn quiet" type="submit">Save Zoom link</button></div>
         <p class="status-line" id="zoom-status" role="status"></p>
       </form>
     </details>
-    <details class="zoom-stand">
+    <details class="zoom-stand" data-office-admin>
       <summary>After a Live Q&amp;A</summary>
       <form class="editor" id="nurture-form">
         <label for="nurture-min">Guides requested before Book a 1:1 appears</label>
