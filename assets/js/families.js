@@ -978,7 +978,6 @@
       away +
       '<div class="detail-head">' +
       '<h2>' + esc(family.row.name) + zipBesideName(family) + '</h2>' +
-      '<p class="session">' + esc(family.title) + ' · ' + esc(family.when) + '</p>' +
       (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
