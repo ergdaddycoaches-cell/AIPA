@@ -12,7 +12,7 @@
     return new Blob([bytes], {type:'audio/mpeg'});
   }
   function showLogin(){
-    sessionStorage.removeItem(KEY);
+    window.AIPA_OFFICE.clear();
     var login = document.getElementById('login-view');
     var desk = document.getElementById('desk');
     var signout = document.getElementById('signout');

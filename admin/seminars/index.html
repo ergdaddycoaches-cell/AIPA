@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="/assets/css/admin.css">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/office-session.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -24,13 +25,14 @@
       <a class="btn quiet" href="/admin/families/">Families</a>
       <a class="btn quiet" href="/admin/contractors/">Contractors</a>
       <a class="btn quiet" href="/admin/seminars/" aria-current="page">Seminars</a>
-      <a class="btn quiet" href="/admin/guides/">Guides</a>
-      <a class="btn quiet" href="/admin/messages/">Messages</a>
-      <a class="btn quiet" href="/admin/cadences/">Cadences</a>
-      <a class="btn quiet" href="/admin/prices/">Prices</a>
-      <a class="btn quiet" href="/admin/glossary/">Glossary</a>
-      <a class="btn quiet" href="/admin/standards/">Standards</a>
-      <a class="btn quiet" href="/admin/reports/">Reports</a>
+      <a class="btn quiet" href="/admin/guides/" data-office-admin>Guides</a>
+      <a class="btn quiet" href="/admin/messages/" data-office-admin>Messages</a>
+      <a class="btn quiet" href="/admin/cadences/" data-office-admin>Cadences</a>
+      <a class="btn quiet" href="/admin/prices/" data-office-admin>Prices</a>
+      <a class="btn quiet" href="/admin/glossary/" data-office-admin>Glossary</a>
+      <a class="btn quiet" href="/admin/standards/" data-office-admin>Standards</a>
+      <a class="btn quiet" href="/admin/reports/" data-office-admin>Reports</a>
+      <a class="btn quiet" href="/admin/staff/" data-office-admin>Staff</a>
       <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
     </nav>
   </div>
@@ -40,7 +42,9 @@
     <form class="login-card" id="login-form">
       <h1>Seminars</h1>
       <p class="lede">Schedule a session, see who signed up, and mark who came. Sign in with the staff password.</p>
-      <label for="password">Staff password</label>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
       <input id="password" type="password" autocomplete="current-password" required>
       <div class="actions"><button class="btn" type="submit">Sign in</button></div>
       <p class="status-line" id="login-status" role="status"></p>

@@ -39,7 +39,7 @@
       body: options.body ? JSON.stringify(options.body) : undefined
     }).then(function(r){
       return r.json().catch(function(){ return {}; }).then(function(data){
-        if (r.status === 401) { sessionStorage.removeItem(KEY); showLogin(true); }
+        if (r.status === 401) { window.AIPA_OFFICE.clear(); showLogin(true); }
         if (!r.ok) {
           var error = new Error(data.message || data.error || 'Something went wrong.');
           error.status = r.status;
@@ -59,9 +59,9 @@
     e.preventDefault();
     var status = document.getElementById('login-status');
     status.textContent = 'Signing in…';
-    api('/auth/login', {method:'POST', auth:false, body:{password:document.getElementById('password').value}})
+    api('/auth/login', {method:'POST', auth:false, body:window.AIPA_OFFICE.creds()})
       .then(function(data){
-        sessionStorage.setItem(KEY, data.authToken);
+        window.AIPA_OFFICE.save(data);
         document.getElementById('password').value = '';
         status.textContent = '';
         openDesk();
@@ -71,7 +71,7 @@
 
   signout.addEventListener('click', function(event){
     event.preventDefault();
-    sessionStorage.removeItem(KEY);
+    window.AIPA_OFFICE.clear();
     showLogin(true);
   });
 

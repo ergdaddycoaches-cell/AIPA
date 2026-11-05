@@ -14,6 +14,7 @@
 <link rel="icon" href="/favicon.ico">
 <style>.preview-note{margin:0 0 1rem;color:var(--ink-2);max-width:62ch}</style>
 <script src="/assets/js/config.js"></script>
+<script src="/assets/js/office-session.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -31,7 +32,9 @@
     <form class="login-card" id="login-form">
       <h1>Ask Anything 1:1</h1>
       <p class="lede">Who you have left too long. Sign in with the staff password.</p>
-      <label for="password">Staff password</label>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
       <input id="password" type="password" autocomplete="current-password" required>
       <div class="actions"><button class="btn" type="submit">Sign in</button></div>
       <p class="status-line" id="login-status" role="status"></p>

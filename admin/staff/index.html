@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<title>Staff | Aging in Place Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script src="/assets/js/outbound.js" defer></script>
+<link rel="stylesheet" href="/assets/css/admin.css">
+<link rel="icon" href="/favicon.ico">
+<script src="/assets/js/config.js"></script>
+<script src="/assets/js/office-session.js"></script>
+<script src="/assets/js/staff.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="mast">
+  <div class="wrap">
+    <a class="wordmark" href="/admin/"><span class="seal" aria-hidden="true">AIPA</span><span><b>Aging in Place Alliance</b></span></a>
+    <nav class="mast-actions" aria-label="Office">
+      <a class="btn quiet" href="/admin/">Actions</a>
+      <a class="btn quiet" href="/admin/families/">Families</a>
+      <a class="btn quiet" href="/admin/contractors/">Contractors</a>
+      <a class="btn quiet" href="/admin/seminars/">Seminars</a>
+      <a class="btn quiet" href="/admin/guides/" data-office-admin>Guides</a>
+      <a class="btn quiet" href="/admin/messages/" data-office-admin>Messages</a>
+      <a class="btn quiet" href="/admin/cadences/" data-office-admin>Cadences</a>
+      <a class="btn quiet" href="/admin/prices/" data-office-admin>Prices</a>
+      <a class="btn quiet" href="/admin/glossary/" data-office-admin>Glossary</a>
+      <a class="btn quiet" href="/admin/standards/" data-office-admin>Standards</a>
+      <a class="btn quiet" href="/admin/reports/" data-office-admin>Reports</a>
+      <a class="btn quiet" href="/admin/staff/" data-office-admin aria-current="page">Staff</a>
+      <a class="signout" id="signout" href="#signout" hidden>Sign out</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+  <section class="office wrap" id="login-view">
+    <form class="login-card" id="login-form">
+      <h1>Staff</h1>
+      <p class="lede">Add a Guide login. Sign in with your office email and password.</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="actions"><button class="btn" type="submit">Sign in</button></div>
+      <p class="status-line" id="login-status" role="status"></p>
+    </form>
+  </section>
+  <section class="office wrap" id="desk" hidden>
+    <div class="desk">
+      <div>
+        <h1>Office people</h1>
+        <ul class="guide-list" id="staff-list"></ul>
+      </div>
+      <form class="editor" id="staff-form">
+        <h2>Add a Guide</h2>
+        <label for="staff-name">Name</label>
+        <input id="staff-name" name="name" required autocomplete="off">
+        <label for="staff-email">Email</label>
+        <input id="staff-email" name="email" type="email" required autocomplete="off">
+        <label for="staff-password">Password</label>
+        <input id="staff-password" name="password" type="password" minlength="10" required autocomplete="new-password">
+        <p class="hint">At least 10 characters. They sign in at /admin/ with this email.</p>
+        <div class="actions"><button class="btn" type="submit">Add Guide</button></div>
+        <p class="status-line" id="staff-status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+</body>
+</html>
