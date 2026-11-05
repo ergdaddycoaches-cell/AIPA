@@ -152,7 +152,7 @@
   padding:.4rem .7rem .45rem}
 .detail-head{min-width:0}
 .detail-assign{
-  display:grid;grid-template-columns:minmax(6.5rem,.7fr) minmax(0,1.2fr) minmax(0,1.2fr);
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:.45rem .75rem;margin-top:.55rem;align-items:end}
 .detail .stage-pick{
   display:flex;flex-direction:column;gap:.15rem;margin:0;min-width:0;
@@ -167,7 +167,10 @@
   display:flex;flex-wrap:wrap;gap:.4rem .7rem;align-items:center;
   margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--rule)}
 .detail .hold-line{margin:.45rem 0 0;font-size:.9rem}
-.detail .split-note{margin:.2rem 0 0;font-size:.82rem;max-width:62ch}
+.detail .split-note{margin:.2rem 0 0;font-size:.9rem;max-width:62ch}
+.detail .split-note b{
+  display:inline-block;margin-right:.25rem;
+  font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 .band-tabs{display:flex;flex-wrap:wrap;gap:.1rem;margin-top:.35rem}
 .band-tabs button{
   appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;
@@ -196,7 +199,8 @@
 .detail .timeline .more-label,.detail .timeline .less-label{font-size:1rem}
 .detail .waiting{color:var(--ink-2);margin:.15rem 0;font-size:.9rem}
 .detail .kicker{margin-bottom:0;font-size:.68rem;letter-spacing:.1em}
-.detail h2{font-size:1.2rem;line-height:1.15;max-width:none}
+.detail h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;font-size:1.2rem;line-height:1.15;max-width:none}
+.detail h2 .zip{font-size:.95rem;font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
 .detail .session{margin-top:0;font-size:.82rem}
 .detail .retired-banner{margin:.15rem 0 0;font-size:.72rem}
 .detail .callback-banner{

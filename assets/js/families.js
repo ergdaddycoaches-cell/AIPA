@@ -811,9 +811,10 @@
     }
     return '';
   }
-  function zipLine(family){
+  function zipBesideName(family){
     var zip = family.profile && String(family.profile.zip || '').trim();
-    return '<p class="stage-pick"><span>ZIP</span><b>' + esc(zip || 'None on file') + '</b></p>';
+    if (!zip) return '';
+    return '<span class="zip">' + esc(zip) + '</span>';
   }
   function contractorField(family){
     var current = contractorIdOf(family);
@@ -976,14 +977,13 @@
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
-      '<h2>' + esc(family.row.name) + '</h2>' +
+      '<h2>' + esc(family.row.name) + zipBesideName(family) + '</h2>' +
       '<p class="session">' + esc(family.title) + ' · ' + esc(family.when) + '</p>' +
-      (family.row.readiness_note ? '<p class="split-note">' + esc(family.row.readiness_note) + '</p>' : '') +
+      (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
       '</div>' +
       '<div class="detail-assign">' +
-      zipLine(family) +
       contractorField(family) +
       stageField(family) +
       '</div>' +
