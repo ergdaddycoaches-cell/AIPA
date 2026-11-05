@@ -1214,6 +1214,8 @@
     var status = document.getElementById('reach-status');
     if (!picked) { if (status) status.textContent = 'Choose who to reach.'; return; }
     if (!body || !body.value.trim()) { if (status) status.textContent = 'Write the message first.'; return; }
+    var hostProblem = window.AIPA_MESSAGES && AIPA_MESSAGES.hostBlock(body.value);
+    if (hostProblem) { if (status) status.textContent = hostProblem; return; }
     if (body.value.indexOf('{{guide}}') !== -1 && !String(family.row.suggested_title || '').trim()) {
       if (status) status.textContent = 'Pick a guide so {{guide}} has a title.';
       return;

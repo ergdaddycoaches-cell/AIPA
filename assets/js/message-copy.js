@@ -60,6 +60,9 @@
     if (value && Array.isArray(value.items)) return value.items;
     return [];
   }
+  function hostName(){
+    return String(sessionStorage.getItem('aipa_office_name') || '').trim();
+  }
   function fill(text, tokens){
     var out = String(text == null ? '' : text);
     var bag = tokens || {};
@@ -68,10 +71,20 @@
       out = out.split('Hello {{first_name}},').join('Hello,');
       out = out.split('Hi {{first_name}},').join('Hi,');
     }
+    var host = String(bag.host_name || '').trim() || hostName();
+    if (host) {
+      out = out.split('[Host name]').join(host);
+      out = out.split('{{host_name}}').join(host);
+    }
     Object.keys(bag).forEach(function(key){
       out = out.split('{{' + key + '}}').join(bag[key] == null ? '' : String(bag[key]));
     });
     return out;
+  }
+  function hostBlock(text){
+    var value = String(text || '');
+    if (value.indexOf('[Host name]') === -1 && value.indexOf('{{host_name}}') === -1) return '';
+    return 'Add your name on Staff before sending. This still says [Host name].';
   }
   function get(key){
     var fallback = DEFAULTS[key] || {subject: '', body: ''};
@@ -129,11 +142,13 @@
         library: guideLink(slug),
         zoom: standingZoom,
         sms_opt_in: '',
-        first_name: ''
+        first_name: '',
+        host_name: hostName()
       };
     },
     guideLink: guideLink,
     fill: fill,
+    hostBlock: hostBlock,
     get: get,
     compose: compose,
     load: load

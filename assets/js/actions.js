@@ -623,6 +623,12 @@
       render();
       return;
     }
+    var hostProblem = window.AIPA_MESSAGES && AIPA_MESSAGES.hostBlock((item.subject || '') + '\n' + (item.body || ''));
+    if (hostProblem) {
+      emailNote[id] = hostProblem;
+      render();
+      return;
+    }
     if (!item.email) {
       emailNote[id] = 'There is no email on file.';
       render();

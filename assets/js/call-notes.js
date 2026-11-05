@@ -512,6 +512,8 @@
     }).then(function(pdf){
       var body = messageBody(channel, pdf);
       if (!body) { status.textContent = 'Write the message first.'; return null; }
+      var hostProblem = window.AIPA_MESSAGES && AIPA_MESSAGES.hostBlock(body);
+      if (hostProblem) { status.textContent = hostProblem; return null; }
       status.textContent = channel === 'sms' ? 'Sending the text…' : 'Sending the email…';
       return api('/office/send', {method:'POST', body:{
         registration_id: row.id,

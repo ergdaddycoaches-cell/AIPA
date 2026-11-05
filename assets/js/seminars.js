@@ -467,6 +467,11 @@
       if (status) status.textContent = channel === 'sms' ? 'There is no cell on this signup.' : 'There is no email on this signup.';
       return;
     }
+    var hostProblem = window.AIPA_MESSAGES && AIPA_MESSAGES.hostBlock((body.value || '') + (subject ? subject.value : ''));
+    if (hostProblem) {
+      if (status) status.textContent = hostProblem;
+      return;
+    }
     if (status) status.textContent = channel === 'sms' ? 'Sending the text…' : 'Sending the email…';
     api('/office/send', {method:'POST', body:{
       registration_id: id,
