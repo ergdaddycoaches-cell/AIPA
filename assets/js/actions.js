@@ -15,6 +15,7 @@
   var day = '';
   var editing = null;
   var emailNote = {};
+  var summary = {households: 0, sessions: 0, callbacks: 0};
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function isGuide(){ return window.AIPA_OFFICE && window.AIPA_OFFICE.role() === 'guide'; }
@@ -233,6 +234,22 @@
     });
     return dates;
   }
+  function phrase(n, one, many){
+    return n + ' ' + (n === 1 ? one : many);
+  }
+  function renderSummary(){
+    var el = document.getElementById('desk-summary');
+    if (!el) return;
+    if (!isGuide()) {
+      el.hidden = true;
+      el.textContent = '';
+      return;
+    }
+    el.hidden = false;
+    el.textContent = phrase(summary.households, 'household', 'households') +
+      ' · ' + phrase(summary.sessions, 'upcoming session', 'upcoming sessions') +
+      ' · ' + phrase(summary.callbacks, 'open callback', 'open callbacks');
+  }
   function countButton(span, count, label){
     var word = count === 1 ? '1 item' : count + ' items';
     return '<button type="button" class="' + (span === 'past' && count ? 'is-past' : '') + '" data-span="' + span + '" aria-label="' + word + ' ' + label.toLowerCase() + '"><b>' + count + '</b><span>' + label + '</span></button>';
@@ -356,6 +373,7 @@
       countButton('past', past, 'Past') +
       countButton('today', due, 'Today') +
       countButton('future', future, 'Future');
+    renderSummary();
     var openBox = document.getElementById('undated');
     openBox.hidden = !open.length;
     document.getElementById('undated-list').innerHTML = listHtml(open);
@@ -494,12 +512,14 @@
       api('/office/signups'),
       api('/office/meetings'),
       api('/office/contractor-pipeline'),
-      api('/office/inbox').catch(function(){ return {parked:[], open:[]}; })
+      api('/office/inbox').catch(function(){ return {parked:[], open:[]}; }),
+      api('/office/households').catch(function(){ return {profiles:[]}; })
     ]).then(function(result){
       var signups = rows(result[0]);
       var meetings = rows(result[1]);
       var contractors = rows((result[2] || {}).contractors);
       var inbox = result[3] || {};
+      var householdRows = rows((result[4] || {}).profiles);
       directory.families = signups;
       directory.contractors = contractors;
       parked = rows(inbox.parked);
@@ -549,6 +569,9 @@
         });
       });
       sessionItems(meetings, signups).forEach(function(item){ calls.push(item); });
+      summary.households = householdRows.length;
+      summary.sessions = calls.filter(function(item){ return item.group === 'session'; }).length;
+      summary.callbacks = calls.filter(function(item){ return item.group === 'call'; }).length;
       rows(inbox.open).forEach(function(item){
         var family = item.side !== 'contractor';
         calls.push({
