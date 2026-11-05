@@ -813,12 +813,12 @@
   }
   function zipLine(family){
     var zip = family.profile && String(family.profile.zip || '').trim();
-    return '<p class="stage-pick">ZIP · ' + esc(zip || 'none on file') + '</p>';
+    return '<p class="stage-pick"><span>ZIP</span><b>' + esc(zip || 'None on file') + '</b></p>';
   }
   function contractorField(family){
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
-    if (isGuide()) return '<p class="stage-pick">Contractor · ' + esc(name) + '</p>';
+    if (isGuide()) return '<p class="stage-pick"><span>Contractor</span><b>' + esc(name) + '</b></p>';
     return '<label class="stage-pick">Contractor <select id="contractor-select"><option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
       contractors.map(function(contractor){
         return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
@@ -975,28 +975,29 @@
     var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back' + (callbackWhen ? ' · ' + esc(callbackWhen) : '') + ' <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
     document.getElementById('detail').innerHTML =
       away +
-      '<div class="detail-top">' +
-      '<div class="detail-id">' +
+      '<div class="detail-head">' +
       '<h2>' + esc(family.row.name) + '</h2>' +
       '<p class="session">' + esc(family.title) + ' · ' + esc(family.when) + '</p>' +
       (family.row.readiness_note ? '<p class="split-note">' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
       '</div>' +
-      '<div class="detail-actions">' +
+      '<div class="detail-assign">' +
       zipLine(family) +
       contractorField(family) +
       stageField(family) +
+      '</div>' +
       holdLine(family) +
+      '<div class="detail-tools">' +
       attendHtml(family) +
-      '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<div class="reach" role="group" aria-label="Reach this person">' +
+      '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
       '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
-      '</div></div></div>' +
+      '</div></div>' +
       cadencePanel(family) +
       reachPanel(family) +
       band(family);
