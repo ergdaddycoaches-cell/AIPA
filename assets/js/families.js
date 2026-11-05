@@ -811,6 +811,10 @@
     }
     return '';
   }
+  function zipLine(family){
+    var zip = family.profile && String(family.profile.zip || '').trim();
+    return '<p class="stage-pick">ZIP · ' + esc(zip || 'none on file') + '</p>';
+  }
   function contractorField(family){
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
@@ -980,6 +984,7 @@
       callbackBanner +
       '</div>' +
       '<div class="detail-actions">' +
+      zipLine(family) +
       contractorField(family) +
       stageField(family) +
       holdLine(family) +
