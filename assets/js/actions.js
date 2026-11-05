@@ -69,6 +69,10 @@
   function wants(row){
     return !!(row && (row.callback_requested === true || row.callback_requested === 1));
   }
+  function isOwned(row){
+    if (!isGuide()) return true;
+    return !!(row && (row.owned === true || row.owned === 1));
+  }
   function due(row){
     var match = /^(\d{4}-\d{2}-\d{2})/.exec(String(row && row.callback_requested_at || ''));
     return match ? match[1] : '';
@@ -287,7 +291,7 @@
     var box = document.getElementById('needs-person');
     var list = document.getElementById('needs-list');
     if (!box || !list) return;
-    if (!parked.length) {
+    if (isGuide() || !parked.length) {
       box.hidden = true;
       list.innerHTML = '';
       return;
@@ -500,7 +504,7 @@
       directory.contractors = contractors;
       parked = rows(inbox.parked);
       calls = [];
-      signups.filter(function(row){ return wants(row) && isFamily(row, meetings); }).forEach(function(row){
+      signups.filter(function(row){ return wants(row) && isFamily(row, meetings) && isOwned(row); }).forEach(function(row){
         calls.push({
           group: 'call',
           kind: 'Family',
@@ -513,7 +517,7 @@
           date: due(row)
         });
       });
-      signups.filter(function(row){ return wantsEmail(row) && isFamily(row, meetings); }).forEach(function(row){
+      signups.filter(function(row){ return wantsEmail(row) && isFamily(row, meetings) && isOwned(row); }).forEach(function(row){
         calls.push({
           group: 'email',
           kind: 'Delayed email',
