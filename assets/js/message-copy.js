@@ -20,15 +20,15 @@
     },
     invite_qa_guest: {
       subject: '{{inviter_name}} invited you to a Live Q&A',
-      body: 'Hi {{first_name}},\n\n{{inviter_name}} invited you to a Live Q&A.\n\nIt\'s about 45 minutes. You can join from a phone or a computer. You can keep your camera off and stay anonymous on the call if you wish.\n\nWe\'ll cover:\n\nWhat to change first, and what can wait\nTypical costs, and ways to pay\nRaising it with a parent who doesn\'t want to talk about it\n\n[Day, Date] at [Time]\nJoin here: {{zoom}}\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB'
+      body: 'Hi {{first_name}},\n\n{{inviter_name}} invited you to a Live Q&A.\n\nIt\'s about 45 minutes. You can join from a phone or a computer. You can keep your camera off and stay anonymous on the call if you wish.\n\nWe\'ll cover:\n\nWhat to change first, and what can wait\nTypical costs, and ways to pay\nRaising it with a parent who doesn\'t want to talk about it\n\n[Day, Date] at [Time]\nJoin here: {{zoom}}\n\n{{host_name}}\n\nAging in Place Alliance\n833-AIPA-HUB'
     },
     invite_qa: {
       subject: 'Thank you for joining us today',
-      body: 'Hi {{first_name}},\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: {{one_to_one}}\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB'
+      body: 'Hi {{first_name}},\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: {{one_to_one}}\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n{{host_name}}\n\nAging in Place Alliance\n833-AIPA-HUB'
     },
     invite_qa_sms: {
       subject: '',
-      body: 'Hi {{first_name}}, it\'s [Host name]. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: {{one_to_one}} Reply STOP to opt out.'
+      body: 'Hi {{first_name}}, it\'s {{host_name}}. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: {{one_to_one}} Reply STOP to opt out.'
     },
     invite_visit: {
       subject: 'A home visit',
@@ -36,7 +36,7 @@
     },
     invite_visit_sms: {
       subject: '',
-      body: 'Hi {{first_name}}, it\'s [Host name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+      body: 'Hi {{first_name}}, it\'s {{host_name}}. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
     },
     guide_followup: {
       subject: 'A guide: {{guide}}',
@@ -72,8 +72,9 @@
       out = out.split('Hi {{first_name}},').join('Hi,');
     }
     var host = String(bag.host_name || '').trim() || hostName();
+    var bracket = '[' + 'Host name' + ']';
     if (host) {
-      out = out.split('[Host name]').join(host);
+      out = out.split(bracket).join(host);
       out = out.split('{{host_name}}').join(host);
     }
     Object.keys(bag).forEach(function(key){
@@ -83,8 +84,9 @@
   }
   function hostBlock(text){
     var value = String(text || '');
-    if (value.indexOf('[Host name]') === -1 && value.indexOf('{{host_name}}') === -1) return '';
-    return 'Add your name on Staff before sending. This still says [Host name].';
+    var bracket = '[' + 'Host name' + ']';
+    if (value.indexOf(bracket) === -1 && value.indexOf('{{host_name}}') === -1) return '';
+    return 'Add your name on Staff before sending. This still says ' + bracket + '.';
   }
   function get(key){
     var fallback = DEFAULTS[key] || {subject: '', body: ''};

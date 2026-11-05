@@ -17,6 +17,7 @@
     {token: '{{library}}', label: 'Guide we send'},
     {token: '{{zoom}}', label: 'Standing Zoom link'},
     {token: '{{first_name}}', label: 'First name'},
+    {token: '{{host_name}}', label: 'Your name'},
     {token: '{{contractor}}', label: 'Contractor'}
   ];
   var EXTRA_TOKENS = {

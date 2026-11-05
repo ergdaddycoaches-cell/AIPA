@@ -354,14 +354,14 @@
         next: 'a home visit',
         subject: 'A home visit',
         body: hello + '\n\nThank you for the Ask Anything 1:1.\n\nThe next step is a home visit, if you want a contractor to look at the house.\n\nReply to this email or call 833-AIPA-HUB.\n\nAging in Place Alliance',
-        sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Host name]. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
+        sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s {{host_name}}. I enjoyed our talk. Any questions since? When you\'re ready, you can book a measuring visit here: [Book a visit] Reply STOP to opt out.'
       };
     }
     return {
       next: 'an Ask Anything 1:1',
       subject: 'Thank you for joining us today',
-      body: (who ? 'Hi ' + who + ',' : 'Hi,') + '\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: https://goaipa.com/ask-anything/\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n[Host name]\n\nAging in Place Alliance\n833-AIPA-HUB',
-      sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s [Host name]. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: https://goaipa.com/ask-anything/ Reply STOP to opt out.'
+      body: (who ? 'Hi ' + who + ',' : 'Hi,') + '\n\nThank you for coming to today\'s Live Q&A.\n\n[If they asked a question: You asked about [topic]. The short answer is [one or two sentences].]\n\nMany people find a private conversation is the easiest next step. An Ask Anything 1:1 is about 30 minutes, about your home and your plans, with no cost and no obligation.\n\nBook my 1:1: https://goaipa.com/ask-anything/\n\nWhenever you\'re ready, or not at all. Either is fine.\n\n{{host_name}}\n\nAging in Place Alliance\n833-AIPA-HUB',
+      sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s {{host_name}}. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: https://goaipa.com/ask-anything/ Reply STOP to opt out.'
     };
   }
 
