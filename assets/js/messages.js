@@ -6,7 +6,10 @@
   var desk = document.getElementById('desk');
   var signout = document.getElementById('signout');
   var messages = [];
+  var sequences = [];
+  var steps = [];
   var currentKey = '';
+  var filterKey = '';
   var requested = '';
   try { requested = new URLSearchParams(location.search).get('key') || ''; } catch (err) { requested = ''; }
   var caret = {id: 'message-body', start: 0, end: 0};
@@ -98,6 +101,42 @@
       });
     });
   }
+  function groupsFor(key){
+    var found = [];
+    steps.forEach(function(step){
+      if (step.message_key !== key && step.companion_key !== key) return;
+      if (found.indexOf(step.sequence_key) === -1) found.push(step.sequence_key);
+    });
+    return found;
+  }
+  function inFilter(row){
+    if (!filterKey) return true;
+    var groups = groupsFor(row.key);
+    if (filterKey === 'office') return !groups.length;
+    return groups.indexOf(filterKey) !== -1;
+  }
+  function visibleMessages(){
+    return messages.filter(inFilter);
+  }
+  function drawFilters(){
+    var box = document.getElementById('message-filters');
+    if (!box) return;
+    var used = {};
+    messages.forEach(function(row){
+      var groups = groupsFor(row.key);
+      if (!groups.length) used.office = true;
+      groups.forEach(function(key){ used[key] = true; });
+    });
+    var chips = [{key:'', name:'All'}];
+    sequences.forEach(function(row){
+      if (used[row.key]) chips.push({key: row.key, name: row.name});
+    });
+    if (used.office) chips.push({key:'office', name:'Office'});
+    if (!chips.some(function(chip){ return chip.key === filterKey; })) filterKey = '';
+    box.innerHTML = chips.map(function(chip){
+      return '<button class="chip" type="button" data-filter="' + esc(chip.key) + '" aria-pressed="' + (filterKey === chip.key) + '">' + esc(chip.name) + '</button>';
+    }).join('');
+  }
   function selected(){
     return messages.filter(function(row){ return row.key === currentKey; })[0] || null;
   }
@@ -129,17 +168,33 @@
     caret = {id: 'message-body', start: document.getElementById('message-body').value.length, end: document.getElementById('message-body').value.length};
   }
   function renderList(){
-    document.getElementById('message-list').innerHTML = messages.map(function(row){
+    drawFilters();
+    var list = visibleMessages();
+    if (list.length && !list.some(function(row){ return row.key === currentKey; })) {
+      currentKey = list[0].key;
+      fillForm();
+    }
+    document.getElementById('message-list').innerHTML = list.map(function(row){
       var kind = row.channel === 'sms' ? 'Text' : (row.channel === 'call' ? 'Call' : 'Email');
       return '<li><button type="button" data-key="' + esc(row.key) + '" aria-current="' + (row.key === currentKey) + '">' +
         '<span class="t">' + esc(row.name) + '</span>' +
         '<span class="meta">' + kind + '</span></button></li>';
-    }).join('') || '<li><p class="note">No messages yet.</p></li>';
+    }).join('') || '<li><p class="note">No messages in this group.</p></li>';
   }
   function load(){
-    return api('/office/messages').then(function(data){
-      messages = rows(data).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
-      if (requested && messages.some(function(row){ return row.key === requested; })) currentKey = requested;
+    return Promise.all([
+      api('/office/messages'),
+      api('/office/cadences')
+    ]).then(function(result){
+      messages = rows(result[0]).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+      var cadences = result[1] || {};
+      sequences = rows(cadences.sequences).slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+      steps = rows(cadences.steps);
+      if (requested && messages.some(function(row){ return row.key === requested; })) {
+        currentKey = requested;
+        var groups = groupsFor(requested);
+        filterKey = groups[0] || 'office';
+      }
       if (!messages.some(function(row){ return row.key === currentKey; })) {
         currentKey = messages.length ? messages[0].key : '';
       }
@@ -172,6 +227,12 @@
     event.preventDefault();
     window.AIPA_OFFICE.clear();
     showLogin(true);
+  });
+  document.getElementById('message-filters').addEventListener('click', function(event){
+    var button = event.target.closest('[data-filter]');
+    if (!button) return;
+    filterKey = button.getAttribute('data-filter');
+    renderList();
   });
   document.getElementById('message-list').addEventListener('click', function(event){
     var button = event.target.closest('[data-key]');
