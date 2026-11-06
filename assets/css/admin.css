@@ -28,18 +28,25 @@ html:has(.mast .mast-actions){scroll-padding-top:calc(env(safe-area-inset-top,0p
 .cadence-path:not([open]) > :not(summary){display:none}
 .cadence-path ol,.cadence-path .path-outs{list-style:none;margin:0;padding:0}
 .cadence-path ol{margin-top:1.25rem}
-.path-row{display:grid;grid-template-columns:minmax(12rem,18rem) minmax(0,1fr);gap:.65rem 1.25rem;align-items:start;padding:.9rem 0;border-top:1px solid var(--rule)}
+.path-row{
+  display:grid;grid-template-columns:minmax(0,16rem) minmax(0,1fr);
+  gap:.75rem 1.5rem;align-items:start;padding:1rem 0;border-top:1px solid var(--rule)}
 .path-node,.path-next{
-  font:inherit;font-family:"Newsreader",Georgia,serif;font-size:1.2rem;line-height:1.25;text-align:left;
+  display:block;box-sizing:border-box;width:100%;
+  font:inherit;font-family:"Newsreader",Georgia,serif;font-size:1.05rem;line-height:1.3;text-align:left;
   color:var(--ink);background:var(--card);border:1.5px solid var(--ink);border-radius:3px;
-  padding:.7rem .9rem;min-height:56px;max-width:100%;white-space:normal;cursor:pointer}
-.path-node{width:100%}
+  padding:.55rem .75rem;min-height:0;height:auto;white-space:normal;overflow-wrap:anywhere;cursor:pointer}
 .path-side .path-node{width:auto;max-width:22rem}
 .path-node[aria-current="true"],.path-next[aria-current="true"]{background:var(--amber-wash)}
-.path-outs{display:grid;gap:.45rem;min-width:0}
-.path-outs li{display:grid;grid-template-columns:minmax(9rem,14rem) minmax(0,1fr);gap:.45rem .7rem;align-items:center;padding:0;border:0;min-width:0}
-.path-event{font-weight:700}
-.path-stop{font-weight:600}
+.path-outs{display:grid;gap:.85rem;min-width:0}
+.path-outs li{
+  display:flex;flex-direction:column;align-items:stretch;gap:.3rem;
+  min-width:0;padding:0;border:0}
+.path-event{font-weight:700;font-size:.92rem;line-height:1.35;overflow-wrap:anywhere}
+.path-stop{font-weight:600;line-height:1.35}
+@media (max-width:760px){
+  .path-row{grid-template-columns:1fr}
+}
 .path-side{margin-top:1rem;padding:1rem 1.1rem;background:var(--card);border:1px solid var(--rule)}
 .path-side p{margin:.65rem 0 0}
 .path-exits{margin:1rem 0 0;padding-left:1.2rem}
