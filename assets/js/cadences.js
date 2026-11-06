@@ -191,6 +191,8 @@
   function renderPath(){
     var map = document.getElementById('path-map');
     if (!map) return;
+    var heading = document.getElementById('path-heading');
+    if (heading) heading.textContent = currentKey ? 'Cadence map · ' + sequenceName(currentKey) : 'Cadence map';
     var model = chartModel();
     var boxW = 180;
     var boxH = 72;

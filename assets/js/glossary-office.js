@@ -10,6 +10,7 @@
   var terms = [];
   var guides = [];
   var currentId = 0;
+  var editing = false;
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(t){
@@ -69,10 +70,13 @@
     document.getElementById('see-title').value = row && row.see_title ? row.see_title : '';
     document.getElementById('term-remove').hidden = !row;
     document.getElementById('term-status').textContent = '';
+    document.getElementById('see-title-wrap').hidden = !(row && row.see_slug);
+    document.getElementById('term-form').hidden = !editing;
+    document.getElementById('term-empty').hidden = editing;
   }
   function renderList(){
     listEl.innerHTML = terms.map(function(row){
-      var meta = row.see_title ? row.see_title : 'No related guide';
+      var meta = row.see_title ? row.see_title : 'No related article';
       return '<li><button type="button" data-id="' + row.id + '" aria-current="' + (row.id === currentId) + '">' +
         '<span class="t">' + esc(row.term) + '</span>' +
         '<span class="meta">' + esc(meta) + '</span></button></li>';
@@ -116,6 +120,7 @@
   });
   document.getElementById('term-new').addEventListener('click', function(){
     currentId = 0;
+    editing = true;
     renderList();
     fillForm();
     document.getElementById('term').focus();
@@ -124,12 +129,14 @@
     var button = event.target.closest('button');
     if (!button) return;
     currentId = Number(button.dataset.id) || 0;
+    editing = true;
     renderList();
     fillForm();
   });
   document.getElementById('see-slug').addEventListener('change', function(){
     var slug = this.value;
     var title = document.getElementById('see-title');
+    document.getElementById('see-title-wrap').hidden = !slug;
     if (!slug) { title.value = ''; return; }
     var guide = guides.filter(function(row){ return row.slug === slug; })[0];
     if (guide) title.value = guide.title;

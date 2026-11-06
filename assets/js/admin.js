@@ -114,6 +114,9 @@
     var badge = document.getElementById('editor-status');
     badge.className = 'badge ' + (article.status || 'draft');
     badge.textContent = article.id ? label(article.status) : 'New draft';
+    document.getElementById('editor').hidden = false;
+    document.getElementById('editor-empty').hidden = true;
+    document.getElementById('retire').hidden = !article.id;
     var link = document.getElementById('live-link');
     link.innerHTML = article.status === 'published' && article.slug
       ? '<a class="link" href="/library/article/?slug=' + encodeURIComponent(article.slug) + '">View on the site</a>'
@@ -126,6 +129,13 @@
     fillForm();
     renderList();
     document.getElementById('title').focus();
+  }
+  function idle(){
+    current = null;
+    document.getElementById('editor').hidden = true;
+    document.getElementById('editor-empty').hidden = false;
+    document.getElementById('retire').hidden = true;
+    renderList();
   }
   document.getElementById('new-guide').addEventListener('click', blank);
 
@@ -372,7 +382,7 @@
   function openDesk(){
     showLogin(false);
     loadSections().then(loadArticles).then(function(){
-      blank();
+      idle();
     }).catch(function(err){
       showLogin(true);
       document.getElementById('login-status').textContent = err.message;

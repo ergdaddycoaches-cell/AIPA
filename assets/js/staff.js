@@ -68,11 +68,17 @@
   function fillAssign(){
     var person = selected();
     var form = document.getElementById('assign-form');
+    var empty = document.getElementById('assign-empty');
     if (!person || person.role !== 'guide') {
       form.hidden = true;
+      empty.hidden = false;
+      empty.textContent = person
+        ? 'Admins do not have a Zoom link or contractors.'
+        : 'Choose a person to set their Zoom link and contractors.';
       return;
     }
     form.hidden = false;
+    empty.hidden = true;
     document.getElementById('assign-title').textContent = person.name;
     document.getElementById('assign-user-id').value = person.id;
     document.getElementById('assign-zoom').value = person.zoom_url || '';

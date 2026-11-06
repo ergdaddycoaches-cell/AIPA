@@ -59,17 +59,19 @@
     </div>
     <div class="desk">
       <div>
+        <p class="pick-note">Choose one to edit it.</p>
         <button class="btn" type="button" id="new-guide">New article</button>
         <ul class="guide-list" id="guide-list"></ul>
       </div>
-      <form class="editor" id="editor">
+      <p class="empty-edit" id="editor-empty">Nothing selected. Choose an article, or start a new one.</p>
+      <form class="editor" id="editor" hidden>
         <p class="badge draft" id="editor-status">New draft</p>
         <label for="title">Title</label>
         <input id="title" name="title" required>
         <label for="section">Section</label>
         <select id="section" name="section_slug" required></select>
-        <label for="slug">Web address</label>
-        <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank">
+        <label for="slug">Public link</label>
+        <input id="slug" name="slug" placeholder="Filled in from the title if you leave it blank. This is the address on the site.">
         <label for="summary">Summary</label>
         <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
         <div class="guide-build">
@@ -87,7 +89,7 @@
         <label for="tags">Words people might search</label>
         <input id="tags" name="tags" placeholder="walk-in, mom, how much">
         <details class="markup">
-          <summary>Start from markup</summary>
+          <summary>Import from a text file</summary>
           <p class="note">Paste a text file, or choose one. Fill this article replaces the draft on screen. To bring in several articles, separate them with a line that says [article], then save them all as drafts. A photo block is left empty so you can crop the picture after.</p>
           <textarea id="markup" rows="8" spellcheck="false" placeholder="[title]&#10;Where grab bars go&#10;&#10;[section]&#10;Bathrooms&#10;&#10;[summary]&#10;One or two sentences.&#10;&#10;[paragraph]&#10;The first paragraph.&#10;^ An optional footnote&#10;&#10;[paragraph_image_left 3:2]&#10;The words beside the photo.&#10;&#10;[bullets]&#10;- First point&#10;- Second point ^ A footnote for this point"></textarea>
           <div class="actions">
@@ -101,7 +103,7 @@
           <button class="btn quiet" type="button" id="preview-handout">Preview the handout</button>
           <button class="btn quiet" type="button" id="save-draft">Save draft</button>
           <button class="btn" type="button" id="publish">Publish</button>
-          <button class="btn danger" type="button" id="retire">Retire</button>
+          <button class="btn danger" type="button" id="retire" hidden>Retire</button>
         </div>
         <p class="status-line" id="editor-msg" role="status"></p>
         <p class="note" id="live-link"></p>

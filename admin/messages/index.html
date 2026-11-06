@@ -51,20 +51,24 @@
     </form>
   </section>
   <section class="office wrap" id="desk" hidden>
+    <h1>Messages</h1>
     <div class="chips" id="message-filters" role="group" aria-label="Filter messages"></div>
     <div class="desk">
       <div>
+        <p class="pick-note">Choose one to edit it.</p>
         <ul class="guide-list" id="message-list"></ul>
       </div>
       <form class="editor" id="message-form">
-        <h2 id="message-name">Choose a message</h2>
-        <p class="note" id="message-hint"></p>
+        <h2 id="message-name">Nothing selected</h2>
+        <p class="note" id="message-hint">Choose a message in the list.</p>
+        <div id="message-fields" hidden>
         <div class="token-row" id="token-row" aria-label="Insert a link or a name"></div>
         <label for="message-subject" id="subject-label">Subject</label>
         <input id="message-subject" maxlength="200" autocomplete="off">
         <label for="message-body" id="body-label">Message</label>
         <textarea id="message-body" rows="14" required></textarea>
         <div class="actions"><button class="btn" type="submit">Save</button></div>
+        </div>
         <p class="status-line" id="message-status" role="status"></p>
       </form>
     </div>

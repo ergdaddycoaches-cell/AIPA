@@ -9,6 +9,7 @@
   var form = document.getElementById('row-form');
   var rows = [];
   var currentId = 0;
+  var editing = false;
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(t){
@@ -76,6 +77,8 @@
     document.getElementById('sort').value = row ? row.sort : nextSort();
     document.getElementById('row-remove').hidden = !row;
     document.getElementById('row-status').textContent = '';
+    document.getElementById('row-form').hidden = !editing;
+    document.getElementById('row-empty').hidden = editing;
   }
   function renderList(){
     listEl.innerHTML = rows.map(function(row){
@@ -114,6 +117,7 @@
   });
   document.getElementById('row-new').addEventListener('click', function(){
     currentId = 0;
+    editing = true;
     renderList();
     fillForm();
     document.getElementById('area').focus();
@@ -122,6 +126,7 @@
     var button = event.target.closest('button');
     if (!button) return;
     currentId = Number(button.dataset.id) || 0;
+    editing = true;
     renderList();
     fillForm();
   });

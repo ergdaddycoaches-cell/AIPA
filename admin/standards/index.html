@@ -53,10 +53,12 @@
   <section class="office wrap" id="desk" hidden>
     <div class="desk">
       <div>
+        <p class="pick-note">Choose one to edit it.</p>
         <button class="btn" type="button" id="row-new">New measurement</button>
         <ul class="guide-list" id="row-list"></ul>
       </div>
-      <form class="editor standards-editor" id="row-form">
+      <p class="empty-edit" id="row-empty">Nothing selected. Choose a measurement, or start a new one.</p>
+      <form class="editor standards-editor" id="row-form" hidden>
         <label for="area">Area</label>
         <input id="area" name="area" maxlength="60" required autocomplete="off" list="area-list">
         <datalist id="area-list"></datalist>
@@ -68,7 +70,7 @@
         <textarea id="means" name="means" rows="4" required></textarea>
         <label for="source">Source</label>
         <input id="source" name="source" maxlength="80" required autocomplete="off">
-        <label for="sort">Order</label>
+        <label for="sort">Where it sits in the list</label>
         <input id="sort" name="sort" type="number" min="0" step="1" inputmode="numeric">
         <p class="note">Lower numbers appear first. Measurements in the same area stay together.</p>
         <div class="actions">

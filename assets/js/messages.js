@@ -156,8 +156,9 @@
     var row = selected();
     var subject = document.getElementById('message-subject');
     var subjectLabel = document.getElementById('subject-label');
-    document.getElementById('message-name').textContent = row ? row.name : 'Choose a message';
-    document.getElementById('message-hint').textContent = row ? (row.hint || '') : '';
+    document.getElementById('message-name').textContent = row ? row.name : 'Nothing selected';
+    document.getElementById('message-hint').textContent = row ? (row.hint || '') : 'Choose a message in the list.';
+    document.getElementById('message-fields').hidden = !row;
     subject.hidden = !row || row.channel !== 'email';
     subjectLabel.hidden = subject.hidden;
     subject.value = row ? (row.subject || '') : '';
@@ -170,8 +171,8 @@
   function renderList(){
     drawFilters();
     var list = visibleMessages();
-    if (list.length && !list.some(function(row){ return row.key === currentKey; })) {
-      currentKey = list[0].key;
+    if (currentKey && !list.some(function(row){ return row.key === currentKey; })) {
+      currentKey = '';
       fillForm();
     }
     document.getElementById('message-list').innerHTML = list.map(function(row){
@@ -195,9 +196,7 @@
         var groups = groupsFor(requested);
         filterKey = groups[0] || 'office';
       }
-      if (!messages.some(function(row){ return row.key === currentKey; })) {
-        currentKey = messages.length ? messages[0].key : '';
-      }
+      if (currentKey && !messages.some(function(row){ return row.key === currentKey; })) currentKey = '';
       renderList();
       fillForm();
     });

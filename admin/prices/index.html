@@ -54,16 +54,19 @@
     <details id="price-sets-panel" class="price-sets-panel" open>
       <summary id="price-sets-title">Price sets · 0</summary>
       <ul id="price-sets" class="price-sets"></ul>
-      <form id="move-form" class="move-set" hidden>
-        <h3>Move a contractor to another price set</h3>
+      <p class="note">Each row is a price set already in use. The form under the list moves a contractor onto one of them.</p>
+    </details>
+    <form id="move-form" class="move-set" hidden>
+        <h2>Move a contractor</h2>
         <p class="hint" id="move-hint"></p>
         <label>Contractor <select name="contractor" id="move-contractor" required></select></label>
         <label>Price set <select name="set" id="move-set" required></select></label>
         <button class="btn" type="submit">Move to this price set</button>
         <p class="status-line" id="move-status" role="status"></p>
       </form>
-    </details>
     <form id="price-form" class="price-form">
+      <h2>Prices for a new contract</h2>
+      <p class="note">This is the set a new contractor starts on. It does not change the sets already in the list above.</p>
       <label>First lead <input name="first_lead" inputmode="decimal" autocomplete="off" required></label>
       <label>Each later lead <input name="later_lead" inputmode="decimal" autocomplete="off" required></label>
       <label>Percent of the job above the threshold <input name="percent" inputmode="decimal" autocomplete="off" required></label>

@@ -53,20 +53,24 @@
   <section class="office wrap" id="desk" hidden>
     <div class="desk">
       <div>
+        <p class="pick-note">Choose one to edit it.</p>
         <button class="btn" type="button" id="term-new">New term</button>
         <ul class="guide-list" id="term-list"></ul>
       </div>
-      <form class="editor glossary-editor" id="term-form">
+      <p class="empty-edit" id="term-empty">Nothing selected. Choose a term, or start a new one.</p>
+      <form class="editor glossary-editor" id="term-form" hidden>
         <label for="term">Term</label>
         <input id="term" name="term" maxlength="80" required autocomplete="off">
         <label for="definition">Definition</label>
         <textarea id="definition" name="definition" rows="6" required></textarea>
-        <label for="see-slug">Related guide</label>
+        <label for="see-slug">Related article</label>
         <select id="see-slug" name="see_slug">
           <option value="">None</option>
         </select>
-        <label for="see-title">Link text</label>
-        <input id="see-title" name="see_title" autocomplete="off">
+        <div id="see-title-wrap" hidden>
+          <label for="see-title">Link text</label>
+          <input id="see-title" name="see_title" autocomplete="off">
+        </div>
         <div class="actions">
           <button class="btn" type="submit">Save</button>
           <button class="btn danger" type="button" id="term-remove" hidden>Remove</button>

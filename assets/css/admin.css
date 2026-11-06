@@ -116,10 +116,14 @@ html:has(.mast .mast-actions){scroll-padding-top:calc(env(safe-area-inset-top,0p
 #crop-ratio{width:100%;font:inherit;font-size:1.15rem;color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:3px;padding:.7rem .9rem;min-height:56px}
 #crop-canvas{display:block;width:auto;max-width:100%;height:auto;max-height:22rem;margin:1rem 0;background:#E7DCC7;cursor:grab;touch-action:none}
 #crop-zoom{width:100%}
-.token-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:.4rem 0 .2rem}
+.pick-note{margin:.25rem 0 .65rem;color:var(--ink-2)}
+.empty-edit{background:var(--card);border:1px solid var(--rule);padding:1.5rem;color:var(--ink-2)}
+.token-row{display:flex;flex-wrap:wrap;gap:.15rem .7rem;align-items:baseline;margin:.4rem 0 .2rem}
+.token-row::before{content:"Insert";font-weight:700;font-size:.85rem;margin-right:.2rem}
 .token-row button{
-  min-height:40px;padding:.35rem .75rem;font:inherit;font-weight:700;cursor:pointer;
-  background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:3px}
+  min-height:0;padding:0;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;
+  background:transparent;color:var(--ink);border:0;text-decoration:underline;text-underline-offset:.15em}
+.move-set h2{font-size:1.45rem;margin:1.25rem 0 .25rem}
 #message-subject[hidden],#subject-label[hidden]{display:none}
 .actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem}
 .actions .btn{min-height:56px}
