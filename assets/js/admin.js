@@ -92,7 +92,7 @@
         '<span class="t">' + esc(article.title) + '</span>' +
         '<span class="meta"><span class="badge ' + esc(article.status) + '">' + esc(label(article.status)) + '</span> · ' + esc(article.section) + '</span>' +
         '</button></li>';
-    }).join('') || '<li><p class="note">No guides in this list.</p></li>';
+    }).join('') || '<li><p class="note">No articles in this list.</p></li>';
     listEl.querySelectorAll('button').forEach(function(button){
       button.addEventListener('click', function(){
         var id = Number(button.dataset.id);
@@ -147,7 +147,7 @@
     var reader = new FileReader();
     reader.onload = function(){
       document.getElementById('markup').value = String(reader.result || '');
-      msg.textContent = 'File loaded. Fill this guide when the markup looks right.';
+      msg.textContent = 'File loaded. Fill this article when the markup looks right.';
     };
     reader.onerror = function(){ msg.textContent = 'That file could not be read.'; };
     reader.readAsText(file);
@@ -156,7 +156,7 @@
     if (!window.AIPA_MARKUP) { msg.textContent = 'The markup tool did not load.'; return; }
     var parsed = window.AIPA_MARKUP.parse(document.getElementById('markup').value);
     if (!parsed.title && !parsed.blocks.length) {
-      msg.textContent = parsed.errors[0] || 'That markup has no title and no guide blocks.';
+      msg.textContent = parsed.errors[0] || 'That markup has no title and no article blocks.';
       return;
     }
     var occupied = document.getElementById('title').value.trim() || (window.AIPA_GUIDE && window.AIPA_GUIDE.read().some(function(block){
@@ -178,7 +178,7 @@
     document.getElementById('live-link').innerHTML = '';
     renderList();
     var photos = parsed.blocks.filter(function(block){ return block.type === 'photo-left' || block.type === 'photo-right'; }).length;
-    var note = 'Filled from the markup. Save the draft to keep the guide and the handout.';
+    var note = 'Filled from the markup. Save the draft to keep the article and the handout.';
     if (photos) note += ' Upload a photo for ' + (photos === 1 ? 'the picture block.' : 'each picture block.');
     if (parsed.errors.length) note += ' ' + parsed.errors.join(' ');
     msg.textContent = note;
@@ -309,7 +309,7 @@
     var payload = guidePayload(status);
     var handoutNote = payload.handoutNote;
     delete payload.handoutNote;
-    msg.textContent = payload.handout ? 'Saving the guide and the handout…' : 'Saving…';
+    msg.textContent = payload.handout ? 'Saving the article and the handout…' : 'Saving…';
     return api('/office/article', {method:'POST', body:payload}).then(function(saved){
       var record = saved && saved.id ? saved : (saved && saved.items ? saved.items[0] : saved);
       current = record;
@@ -317,7 +317,7 @@
         current = articles.filter(function(article){ return article.id === record.id; })[0] || record;
         fillForm();
         renderList();
-        var savedNote = status === 'published' ? 'This guide is live.' : status === 'retired' ? 'This guide is retired and off the library.' : 'Draft saved. It is not on the site.';
+        var savedNote = status === 'published' ? 'This article is live.' : status === 'retired' ? 'This article is retired and off the library.' : 'Draft saved. It is not on the site.';
         msg.textContent = handoutNote ? savedNote + ' The handout was not updated. ' + handoutNote : savedNote;
       });
     }).catch(function(err){
@@ -340,15 +340,15 @@
       for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
       var url = URL.createObjectURL(new Blob([bytes], {type:'application/pdf'}));
       window.open(url, '_blank');
-      msg.textContent = 'The handout preview is open. Save the guide to keep it.';
+      msg.textContent = 'The handout preview is open. Save the article to keep it.';
     } catch (err) { msg.textContent = err.message; }
     }).catch(function(err){ msg.textContent = err.message; });
   });
   document.getElementById('save-draft').addEventListener('click', function(){ save('draft'); });
   document.getElementById('publish').addEventListener('click', function(){ save('published'); });
   document.getElementById('retire').addEventListener('click', function(){
-    if (!current || !current.id) { msg.textContent = 'Save the guide before retiring it.'; return; }
-    if (!window.confirm('Retire this guide? It will leave the library and search.')) return;
+    if (!current || !current.id) { msg.textContent = 'Save the article before retiring it.'; return; }
+    if (!window.confirm('Retire this article? It will leave the library and search.')) return;
     save('retired');
   });
 

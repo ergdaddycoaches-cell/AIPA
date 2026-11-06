@@ -59,7 +59,7 @@
     </div>
     <div class="desk">
       <div>
-        <button class="btn" type="button" id="new-guide">New guide</button>
+        <button class="btn" type="button" id="new-guide">New article</button>
         <ul class="guide-list" id="guide-list"></ul>
       </div>
       <form class="editor" id="editor">
@@ -73,10 +73,10 @@
         <label for="summary">Summary</label>
         <textarea id="summary" name="summary" rows="3" placeholder="One or two sentences for the library list."></textarea>
         <div class="guide-build">
-          <h2>Guide</h2>
+          <h2>Article</h2>
           <p class="note">The title, the phone number, and the booking code are added to the handout for you. A footnote on a paragraph or a bullet is collected at the bottom. What the photo shows is read aloud and is not printed.</p>
           <div id="blocks"></div>
-          <div class="block-add" role="group" aria-label="Add to the guide">
+          <div class="block-add" role="group" aria-label="Add to the article">
             <button class="btn quiet" type="button" data-add="headline">Headline</button>
             <button class="btn quiet" type="button" data-add="paragraph">Paragraph</button>
             <button class="btn quiet" type="button" data-add="photo-left">Photo on the left</button>
@@ -88,12 +88,12 @@
         <input id="tags" name="tags" placeholder="walk-in, mom, how much">
         <details class="markup">
           <summary>Start from markup</summary>
-          <p class="note">Paste a text file, or choose one. Fill this guide replaces the draft on screen. To bring in several guides, separate them with a line that says [article], then save them all as drafts. A photo block is left empty so you can crop the picture after.</p>
+          <p class="note">Paste a text file, or choose one. Fill this article replaces the draft on screen. To bring in several articles, separate them with a line that says [article], then save them all as drafts. A photo block is left empty so you can crop the picture after.</p>
           <textarea id="markup" rows="8" spellcheck="false" placeholder="[title]&#10;Where grab bars go&#10;&#10;[section]&#10;Bathrooms&#10;&#10;[summary]&#10;One or two sentences.&#10;&#10;[paragraph]&#10;The first paragraph.&#10;^ An optional footnote&#10;&#10;[paragraph_image_left 3:2]&#10;The words beside the photo.&#10;&#10;[bullets]&#10;- First point&#10;- Second point ^ A footnote for this point"></textarea>
           <div class="actions">
             <label class="btn quiet" for="markup-file">Choose a text file</label>
             <input id="markup-file" type="file" accept=".txt,text/plain">
-            <button class="btn quiet" type="button" id="markup-fill">Fill this guide</button>
+            <button class="btn quiet" type="button" id="markup-fill">Fill this article</button>
             <button class="btn quiet" type="button" id="markup-import">Save all as drafts</button>
           </div>
         </details>
