@@ -51,11 +51,11 @@
     </form>
   </section>
   <section class="office wrap" id="desk" hidden>
-    <section class="cadence-path" id="cadence-path" aria-labelledby="path-heading">
-      <h2 id="path-heading">How they connect</h2>
+    <details class="cadence-path" id="cadence-path">
+      <summary id="path-heading">How they connect</summary>
       <p class="note">Start and stop a cadence on the family card. This path shows which one comes next. Seasonal emails can run alongside the cadence that is running.</p>
       <div id="path-map"></div>
-    </section>
+    </details>
     <div class="desk">
       <div>
         <ul class="guide-list" id="sequence-list"></ul>
@@ -63,7 +63,6 @@
       <div class="editor" id="sequence-editor">
         <h2 id="sequence-name">Choose a cadence</h2>
         <p class="note" id="sequence-goal"></p>
-        <p class="note">Each email and text on this page is one message in Messages. A call keeps its script there, and the text for a missed call is a second message. Email and text are scheduled on the family. They wait until mail and text are connected.</p>
         <div id="step-list"></div>
       </div>
     </div>
