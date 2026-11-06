@@ -41,6 +41,26 @@
       {event:'Finished without a visit', to:'nurture_visit'}
     ]}
   ];
+  var PATH_STORE = 'aipa_cadence_path_v1';
+  var ORIGINAL_PATH = JSON.parse(JSON.stringify(PATH));
+  try {
+    var storedPath = JSON.parse(localStorage.getItem(PATH_STORE) || 'null');
+    if (Array.isArray(storedPath) && storedPath.length) PATH = storedPath;
+  } catch (err) {}
+  var flowKey = 'reactivation';
+  var SPOT = {
+    reactivation: [0, 1],
+    attendance: [1, 0],
+    nurture_new: [1, 2],
+    no_show: [2, 0],
+    attendee: [2, 2],
+    nurture_qa: [3, 3],
+    one_to_one: [3, 1],
+    one_to_one_miss: [4, 0],
+    visit: [4, 2],
+    nurture_visit: [5, 3],
+    seasonal: [5, 0]
+  };
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(t){
@@ -110,32 +130,153 @@
     var row = sequences.filter(function(item){ return item.key === key; })[0];
     return row ? row.name : key;
   }
-  function pathButton(key){
-    var current = key === currentKey ? ' aria-current="true"' : '';
-    return '<button type="button" class="path-next" data-key="' + esc(key) + '"' + current + '>' + esc(sequenceName(key)) + '</button>';
+  function savePath(){
+    localStorage.setItem(PATH_STORE, JSON.stringify(PATH));
+  }
+  function pathRow(key, create){
+    var row = PATH.filter(function(item){ return item.key === key; })[0];
+    if (!row && create) {
+      row = {key: key, outs: []};
+      PATH.push(row);
+    }
+    return row || {key: key, outs: []};
+  }
+  function delayCaption(key){
+    var list = steps.filter(function(step){ return step.sequence_key === key; })
+      .slice().sort(function(a, b){ return (a.sort || 0) - (b.sort || 0); });
+    if (!list.length) return '';
+    var first = list[0].when_label || '';
+    var last = list[list.length - 1].when_label || '';
+    if (!first) return '';
+    return list.length === 1 || first === last ? first : first + ' → ' + last;
+  }
+  function chartModel(){
+    var nodes = [];
+    var seen = {};
+    function addNode(id, label, key){
+      if (seen[id]) return;
+      seen[id] = true;
+      nodes.push({id: id, label: label, key: key || ''});
+    }
+    PATH.forEach(function(row){
+      addNode(row.key, sequenceName(row.key), row.key);
+      row.outs.forEach(function(out){
+        if (out.to) addNode(out.to, sequenceName(out.to), out.to);
+        else if (out.stop) addNode('stop:' + out.stop, out.stop, '');
+      });
+    });
+    addNode('seasonal', sequenceName('seasonal'), 'seasonal');
+    var extraCol = 6;
+    var extraRow = 0;
+    var pos = {};
+    nodes.forEach(function(node){
+      var spot = SPOT[node.id];
+      if (!spot && node.id.indexOf('stop:') === 0) spot = [6, 2];
+      if (!spot) {
+        spot = [extraCol, extraRow];
+        extraRow += 1;
+      }
+      pos[node.id] = {x: spot[0], y: spot[1]};
+    });
+    var edges = [];
+    PATH.forEach(function(row){
+      row.outs.forEach(function(out, index){
+        var to = out.to || ('stop:' + (out.stop || ''));
+        if (!pos[row.key] || !pos[to]) return;
+        edges.push({from: row.key, to: to, index: index, event: out.event || '', back: pos[to].x <= pos[row.key].x});
+      });
+    });
+    return {nodes: nodes, pos: pos, edges: edges};
   }
   function renderPath(){
     var map = document.getElementById('path-map');
     if (!map) return;
-    var rowsHtml = PATH.map(function(row){
-      var current = row.key === currentKey ? ' aria-current="true"' : '';
-      var outs = row.outs.map(function(out){
-        var dest = out.to ? pathButton(out.to) : '<span class="path-stop">' + esc(out.stop) + '</span>';
-        return '<li><span class="path-event">' + esc(out.event) + '</span>' + dest + '</li>';
-      }).join('');
-      return '<li class="path-row"><button type="button" class="path-node" data-key="' + esc(row.key) + '"' + current + '>' +
-        esc(sequenceName(row.key)) + '</button><ul class="path-outs">' + outs + '</ul></li>';
+    var model = chartModel();
+    var boxW = 180;
+    var boxH = 72;
+    var gapX = 92;
+    var gapY = 36;
+    var maxX = 0;
+    var maxY = 0;
+    Object.keys(model.pos).forEach(function(id){
+      maxX = Math.max(maxX, model.pos[id].x);
+      maxY = Math.max(maxY, model.pos[id].y);
+    });
+    var width = (maxX + 1) * (boxW + gapX) - gapX + 8;
+    var height = (maxY + 1) * (boxH + gapY) - gapY + 8;
+    function origin(id){
+      var spot = model.pos[id];
+      return {x: spot.x * (boxW + gapX), y: spot.y * (boxH + gapY)};
+    }
+    var arrows = model.edges.map(function(edge){
+      var a = origin(edge.from);
+      var b = origin(edge.to);
+      var x1 = a.x + boxW;
+      var y1 = a.y + boxH / 2;
+      var x2 = b.x;
+      var y2 = b.y + boxH / 2;
+      var bend = edge.back ? 78 : 0;
+      var midX = (x1 + x2) / 2;
+      var midY = (y1 + y2) / 2 + bend;
+      var path = edge.back
+        ? 'M ' + (a.x + boxW / 2) + ' ' + (a.y + boxH) + ' Q ' + midX + ' ' + (Math.max(y1, y2) + 90) + ' ' + (b.x + boxW / 2) + ' ' + (b.y + boxH)
+        : 'M ' + x1 + ' ' + y1 + ' C ' + (x1 + gapX * 0.6) + ' ' + y1 + ', ' + (x2 - gapX * 0.6) + ' ' + y2 + ', ' + x2 + ' ' + y2;
+      return '<path d="' + path + '"></path>';
     }).join('');
-    var seasonalCurrent = currentKey === 'seasonal' ? ' aria-current="true"' : '';
-    map.innerHTML = '<ol>' + rowsHtml + '</ol>' +
-      '<div class="path-side"><button type="button" class="path-node" data-key="seasonal"' + seasonalCurrent + '>' +
-      esc(sequenceName('seasonal')) + '</button>' +
-      '<p class="note">These can run while another cadence is running. They stop for someone who has booked a visit, is closed, or is inactive.</p></div>' +
-      '<ul class="path-exits">' +
-      '<li>A real reply pauses the cadence until you answer and resume it, or move them by hand.</li>' +
-      '<li>An unsubscribe or a clear no closes them.</li>' +
-      '<li>A booked visit stops every cadence and hands the lead to the contractor.</li>' +
-      '</ul>';
+    var labels = model.edges.map(function(edge){
+      var a = origin(edge.from);
+      var b = origin(edge.to);
+      var left;
+      var top;
+      if (edge.back) {
+        left = (a.x + b.x) / 2 + boxW / 2 - 70;
+        top = Math.max(a.y, b.y) + boxH + 28;
+      } else {
+        left = a.x + boxW + 6;
+        top = (a.y + b.y) / 2 + boxH / 2 - 28;
+      }
+      return '<button type="button" class="flow-label" data-from="' + esc(edge.from) + '" style="left:' + left + 'px;top:' + top + 'px">' + esc(edge.event) + '</button>';
+    }).join('');
+    var boxes = model.nodes.map(function(node){
+      var spot = origin(node.id);
+      var delay = node.key ? delayCaption(node.key) : '';
+      var current = node.key && node.key === currentKey ? ' aria-current="true"' : '';
+      var editing = node.key && node.key === flowKey ? ' data-editing="true"' : '';
+      if (!node.key) {
+        return '<div class="flow-node flow-stop" style="left:' + spot.x + 'px;top:' + spot.y + 'px;width:' + boxW + 'px;min-height:' + boxH + 'px">' +
+          '<b>' + esc(node.label) + '</b></div>';
+      }
+      return '<button type="button" class="flow-node" data-key="' + esc(node.key) + '"' + current + editing +
+        ' style="left:' + spot.x + 'px;top:' + spot.y + 'px;width:' + boxW + 'px;min-height:' + boxH + 'px">' +
+        '<b>' + esc(node.label) + '</b>' +
+        (delay ? '<span>' + esc(delay) + '</span>' : '') +
+        '</button>';
+    }).join('');
+    var row = pathRow(flowKey, false);
+    var choices = '<option value="">Hand the lead to the contractor</option>' + sequences.map(function(item){
+      return '<option value="' + esc(item.key) + '">' + esc(item.name) + '</option>';
+    }).join('');
+    var branches = row.outs.map(function(out, index){
+      var selected = out.to || '';
+      var options = choices.replace('value="' + selected + '"', 'value="' + selected + '" selected');
+      return '<div class="flow-branch">' +
+        '<label>Event<input data-branch="' + index + '" data-field="event" value="' + esc(out.event || '') + '"></label>' +
+        '<label>Then<select data-branch="' + index + '" data-field="to">' + options + '</select></label>' +
+        '<button type="button" class="btn quiet" data-remove="' + index + '">Remove</button>' +
+        '</div>';
+    }).join('') || '<p class="note">No branches yet. Add one to show what happens next.</p>';
+    map.innerHTML =
+      '<div class="flow-scroll"><div class="flow-board" style="width:' + width + 'px;height:' + Math.max(height, 120) + 'px">' +
+      '<svg class="flow-arrows" width="' + width + '" height="' + Math.max(height, 120) + '" viewBox="0 0 ' + width + ' ' + Math.max(height, 120) + '" aria-hidden="true">' +
+      '<defs><marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"></path></marker></defs>' +
+      arrows + '</svg>' + boxes + labels + '</div></div>' +
+      '<div class="flow-edit">' +
+      '<h3>Branches from ' + esc(sequenceName(flowKey)) + '</h3>' +
+      branches +
+      '<div class="actions"><button type="button" class="btn" id="flow-add">Add a branch</button>' +
+      '<button type="button" class="btn quiet" id="flow-reset">Use the original path</button></div>' +
+      '<p class="note">The line under a cadence is the wait inside it, from its first touchpoint to its last. Seasonal emails can run beside another cadence until a visit is booked or the family is closed or inactive.</p>' +
+      '</div>';
   }
   function openSequence(key){
     if (!sequences.some(function(row){ return row.key === key; })) return;
@@ -301,11 +442,53 @@
     openSequence(button.getAttribute('data-key'));
   });
   document.getElementById('cadence-path').addEventListener('click', function(event){
+    if (event.target.closest('#flow-add')) {
+      pathRow(flowKey, true).outs.push({event: 'New event', to: 'attendance'});
+      savePath();
+      renderPath();
+      return;
+    }
+    if (event.target.closest('#flow-reset')) {
+      PATH = JSON.parse(JSON.stringify(ORIGINAL_PATH));
+      localStorage.removeItem(PATH_STORE);
+      renderPath();
+      return;
+    }
+    var remove = event.target.closest('[data-remove]');
+    if (remove) {
+      pathRow(flowKey, true).outs.splice(Number(remove.getAttribute('data-remove')), 1);
+      savePath();
+      renderPath();
+      return;
+    }
+    var from = event.target.closest('[data-from]');
+    if (from) {
+      flowKey = from.getAttribute('data-from');
+      renderPath();
+      return;
+    }
     var button = event.target.closest('[data-key]');
     if (!button) return;
-    openSequence(button.getAttribute('data-key'));
-    var editor = document.getElementById('sequence-editor');
-    if (editor && editor.scrollIntoView) editor.scrollIntoView({behavior:'smooth', block:'nearest'});
+    flowKey = button.getAttribute('data-key');
+    openSequence(flowKey);
+  });
+  document.getElementById('cadence-path').addEventListener('change', function(event){
+    var field = event.target.closest('[data-field]');
+    if (!field) return;
+    var out = pathRow(flowKey, true).outs[Number(field.getAttribute('data-branch'))];
+    if (!out) return;
+    if (field.getAttribute('data-field') === 'event') out.event = field.value;
+    if (field.getAttribute('data-field') === 'to') {
+      if (field.value) {
+        out.to = field.value;
+        delete out.stop;
+      } else {
+        delete out.to;
+        out.stop = 'Hand the lead to the contractor';
+      }
+    }
+    savePath();
+    renderPath();
   });
   document.getElementById('step-list').addEventListener('click', function(event){
     var button = event.target.closest('[data-open]');
