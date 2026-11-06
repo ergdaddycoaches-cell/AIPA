@@ -125,6 +125,7 @@ html:has(.mast .mast-actions){scroll-padding-top:calc(env(safe-area-inset-top,0p
 .zoom-stand:not([open]) > form{display:none}
 .zoom-stand .editor{background:transparent;border:0;padding:0}
 #standing-zoom,#nurture-video{max-width:32rem}
+#nurture-min{max-width:8rem}
 .roster{list-style:none;margin:.4rem 0 0;padding:0}
 .roster li{padding:.9rem 0;border-top:1px solid var(--rule)}
 .signup-panel .roster-attend{display:flex;align-items:center;gap:.55rem;font-weight:700;margin:0}
