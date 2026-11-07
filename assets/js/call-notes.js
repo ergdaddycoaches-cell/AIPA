@@ -345,37 +345,45 @@
     box.focus();
     if (box.setSelectionRange) box.setSelectionRange(caret, caret);
   }
-  function guideMenu(articles, currentId, currentTitle){
-    var groups = {};
-    articles.forEach(function(article){
-      var slug = article.section_slug || '';
-      if (!groups[slug]) groups[slug] = {name: article.section || 'Other', items: []};
-      if (article.section) groups[slug].name = article.section;
-      groups[slug].items.push(article);
-    });
-    var slugs = Object.keys(groups).sort(function(a, b){
+  function guideMenu(articles, suggestedId){
+    var suggested = String(suggestedId || '');
+    function option(article){
+      var mark = String(article.id) === suggested ? 'Suggested · ' : '';
+      return '<option value="' + article.id + '">' + mark + esc(article.title) + '</option>';
+    }
+    function groupOf(list){
+      var groups = {};
+      list.forEach(function(article){
+        var slug = article.section_slug || '';
+        if (!groups[slug]) groups[slug] = {name: article.section || 'Other', items: []};
+        if (article.section) groups[slug].name = article.section;
+        groups[slug].items.push(article);
+      });
+      return groups;
+    }
+    var picked = articles.filter(function(article){ return String(article.id) === suggested; });
+    var rest = articles.filter(function(article){ return String(article.id) !== suggested; });
+    var html = '<option value="">No article</option>';
+    if (picked.length) {
+      html += '<optgroup label="Suggested">';
+      picked.forEach(function(article){ html += option(article); });
+      html += '</optgroup>';
+    }
+    var groups = groupOf(rest);
+    Object.keys(groups).sort(function(a, b){
       var ia = AREAS.indexOf(a);
       var ib = AREAS.indexOf(b);
       if (ia < 0) ia = 99;
       if (ib < 0) ib = 99;
       if (ia !== ib) return ia - ib;
       return String(groups[a].name).localeCompare(String(groups[b].name));
-    });
-    var html = '<option value="">No article</option>';
-    var placed = false;
-    slugs.forEach(function(slug){
+    }).forEach(function(slug){
       var group = groups[slug];
       group.items.sort(function(a, b){ return String(a.title).localeCompare(String(b.title)); });
       html += '<optgroup label="' + esc(group.name) + '">';
-      group.items.forEach(function(article){
-        if (String(article.id) === currentId) placed = true;
-        html += '<option value="' + article.id + '">' + esc(article.title) + '</option>';
-      });
+      group.items.forEach(function(article){ html += option(article); });
       html += '</optgroup>';
     });
-    if (currentTitle && currentId && !placed) {
-      html += '<option value="current">' + esc(currentTitle) + '</option>';
-    }
     return html;
   }
   function addPerson(person){
@@ -408,17 +416,20 @@
     paintDial('', false);
     document.getElementById('summary').value = family.summary || '';
     document.getElementById('follow').value = family.follow_up_note || '';
+    var sent = family.follow_up_status === 'sent';
     var listed = articles.filter(function(article){
-      return article && article.slug && article.title && (article.status !== 'retired' || String(article.id) === String(family.suggested_article_id || ''));
+      if (!article || !article.title || article.status !== 'published') return false;
+      if (!sent) return true;
+      if (family.suggested_article_id && String(article.id) === String(family.suggested_article_id)) return false;
+      if (family.suggested_slug && article.slug && article.slug === family.suggested_slug) return false;
+      return true;
     });
     guides = listed;
     var currentId = family.suggested_article_id ? String(family.suggested_article_id) : '';
-    var currentTitle = family.suggested_title || family.suggested_slug || '';
     var select = document.getElementById('guide');
-    select.innerHTML = guideMenu(listed, currentId, currentTitle);
+    select.innerHTML = guideMenu(listed, sent ? '' : currentId);
     var known = listed.some(function(article){ return String(article.id) === currentId; });
-    if (!known && currentTitle && currentId) currentId = 'current';
-    select.value = known || currentId === 'current' ? currentId : '';
+    select.value = !sent && known ? currentId : '';
     peopleBox.innerHTML = '';
     var people = parseList(family.attendee_reads);
     if (!people.length) people = [{name: family.name || '', style:'', note:''}];
