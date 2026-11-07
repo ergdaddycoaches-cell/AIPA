@@ -17,7 +17,7 @@
 <script src="/assets/js/seminar-format.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/recording.js" defer></script>
-<script src="/assets/js/actions.js" defer></script>
+<script src="/assets/js/actions.js?v=cal" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -58,15 +58,18 @@
 
   <section class="office wrap" id="desk" hidden>
     <div class="action-stick" id="action-stick">
-      <div class="action-bar">
-        <button class="btn quiet" type="button" id="day-prev">Previous day</button>
-        <label for="day">Day</label>
-        <input id="day" type="date">
-        <button class="btn quiet" type="button" id="day-today">Today</button>
-        <button class="btn quiet" type="button" id="day-next">Next day</button>
-      </div>
       <div class="action-counts" id="day-count" role="status"></div>
       <p class="action-summary" id="desk-summary" hidden></p>
+    </div>
+    <div class="action-cal">
+      <div class="action-cal-nav">
+        <button class="btn quiet" type="button" id="month-prev">Previous month</button>
+        <h2 id="month-label"></h2>
+        <button class="btn quiet" type="button" id="month-next">Next month</button>
+        <button class="btn quiet" type="button" id="day-today">Today</button>
+      </div>
+      <div class="action-cal-week" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+      <div class="action-cal-grid" id="cal-grid"></div>
     </div>
     <section class="needs-person" id="needs-person" hidden data-office-admin>
       <h2>Needs association</h2>

@@ -6,13 +6,13 @@
   var loginView = document.getElementById('login-view');
   var desk = document.getElementById('desk');
   var signout = document.getElementById('signout');
-  var dayInput = document.getElementById('day');
   var calls = [];
   var parked = [];
   var directory = {families: [], contractors: []};
   var needsQuery = {};
   var needsNote = {};
   var day = '';
+  var viewMonth = '';
   var editing = null;
   var emailNote = {};
   var summary = {households: 0, sessions: 0, callbacks: 0};
@@ -227,13 +227,6 @@
   function listHtml(items){
     return items.slice().sort(byName).map(itemHtml).join('');
   }
-  function sectionDays(){
-    var dates = [];
-    document.querySelectorAll('#day-groups .action-day').forEach(function(section){
-      dates.push(section.getAttribute('data-day'));
-    });
-    return dates;
-  }
   function phrase(n, one, many){
     return n + ' ' + (n === 1 ? one : many);
   }
@@ -326,9 +319,42 @@
       }
     }
   }
+  function monthTitle(ym){
+    var parts = String(ym || '').split('-');
+    var date = new Date(Date.UTC(+parts[0], +parts[1] - 1, 1));
+    return date.toLocaleDateString('en-US', {month:'long', year:'numeric', timeZone:'UTC'});
+  }
+  function shiftMonth(ym, dir){
+    var parts = String(ym || '').split('-');
+    var date = new Date(Date.UTC(+parts[0], +parts[1] - 1 + dir, 1));
+    return date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1);
+  }
+  function calendarHtml(now, counts){
+    var parts = String(viewMonth || '').split('-');
+    var year = +parts[0];
+    var month = +parts[1];
+    var first = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+    var total = new Date(Date.UTC(year, month, 0)).getUTCDate();
+    var cells = [];
+    var i;
+    for (i = 0; i < first; i++) cells.push('<span class="cal-blank"></span>');
+    for (i = 1; i <= total; i++) {
+      var iso = year + '-' + pad(month) + '-' + pad(i);
+      var count = counts[iso] || 0;
+      var kind = iso < now ? ' is-past' : (iso === now ? ' is-today' : '');
+      if (count) kind += ' has-items';
+      cells.push('<button type="button" data-cal="' + iso + '" aria-pressed="' + (iso === day) + '" class="' + kind.trim() + '">' +
+        '<b>' + i + '</b>' +
+        (count ? '<span>' + count + '</span>' : '') +
+        '</button>');
+    }
+    return cells.join('');
+  }
   function render(){
     var y = window.scrollY;
     var now = today();
+    if (!day) day = now;
+    if (!viewMonth) viewMonth = day.slice(0, 7);
     var groups = {};
     var open = [];
     calls.forEach(function(item){
@@ -338,34 +364,18 @@
         groups[item.date].push(item);
       }
     });
-    if (pinned && !groups[pinned]) groups[pinned] = [];
-    if (!groups[now]) groups[now] = [];
-    var keys = Object.keys(groups).sort();
-    if (keys.length > 1) {
-      var cursor = keys[0];
-      var end = keys[keys.length - 1];
-      var added = [];
-      var guard = 0;
-      while (cursor < end && guard <= 62) {
-        if (!groups[cursor]) {
-          groups[cursor] = [];
-          added.push(cursor);
-        }
-        cursor = shift(cursor, 1);
-        guard += 1;
-      }
-      if (cursor < end) added.forEach(function(iso){ delete groups[iso]; });
-    }
-    var dates = Object.keys(groups).sort();
-    document.getElementById('day-groups').innerHTML = dates.map(function(iso){
-      var items = groups[iso];
-      var kind = iso < now ? ' is-past' : (iso === now ? ' is-today' : '');
-      var title = (iso === now ? 'Today · ' : '') + heading(iso);
-      var body = items.length
-        ? '<ul class="action-list">' + listHtml(items) + '</ul>'
-        : '<p class="action-empty">Nothing on this day.</p>';
-      return '<section class="action-day' + kind + '" id="day-' + iso + '" data-day="' + iso + '"><h2>' + esc(title) + '</h2>' + body + '</section>';
-    }).join('');
+    var counts = {};
+    Object.keys(groups).forEach(function(iso){ counts[iso] = groups[iso].length; });
+    document.getElementById('month-label').textContent = monthTitle(viewMonth);
+    document.getElementById('cal-grid').innerHTML = calendarHtml(now, counts);
+    var items = groups[day] || [];
+    var kind = day < now ? ' is-past' : (day === now ? ' is-today' : '');
+    var title = (day === now ? 'Today · ' : '') + heading(day);
+    var body = items.length
+      ? '<ul class="action-list">' + listHtml(items) + '</ul>'
+      : '<p class="action-empty">Nothing on this day.</p>';
+    document.getElementById('day-groups').innerHTML =
+      '<section class="action-day' + kind + '" id="day-' + day + '" data-day="' + day + '"><h2>' + esc(title) + '</h2>' + body + '</section>';
     var past = calls.filter(function(item){ return item.date && item.date < now; }).length;
     var due = calls.filter(function(item){ return item.date === now; }).length;
     var future = calls.filter(function(item){ return item.date && item.date > now; }).length;
@@ -385,34 +395,22 @@
       if (box) box.focus();
     }
   }
-  var spyLock = false;
-  function reveal(iso, smooth){
-    var section = document.getElementById('day-' + iso);
-    if (!section) return;
-    var stick = document.getElementById('action-stick');
-    var cover = stick ? stick.getBoundingClientRect().bottom : 0;
-    var top = section.getBoundingClientRect().top + window.scrollY - cover - 12;
-    spyLock = true;
+  function selectDay(iso){
+    if (!iso) return;
     day = iso;
-    dayInput.value = iso;
-    window.scrollTo({top: Math.max(0, top), behavior: smooth ? 'smooth' : 'auto'});
-    window.setTimeout(function(){ spyLock = false; }, smooth ? 700 : 40);
+    viewMonth = iso.slice(0, 7);
+    render();
   }
   function jumpSpan(span){
     var now = today();
-    var dates = sectionDays();
+    var dates = [];
+    calls.forEach(function(item){ if (item.date && dates.indexOf(item.date) === -1) dates.push(item.date); });
+    dates.sort();
     var target = '';
-    if (span === 'today') target = dates.indexOf(now) === -1 ? '' : now;
+    if (span === 'today') target = now;
     else if (span === 'past') dates.forEach(function(iso){ if (!target && iso < now) target = iso; });
     else dates.forEach(function(iso){ if (!target && iso > now) target = iso; });
-    if (target) reveal(target, true);
-  }
-  var pinned = '';
-  function stepDay(dir){
-    var next = shift(dayInput.value || today(), dir);
-    pinned = next;
-    render();
-    reveal(next, true);
+    if (target) selectDay(target);
   }
   function isFamily(row, meetings){
     var meeting = meetings.filter(function(item){ return item.id === row.meeting_id; })[0];
@@ -923,15 +921,18 @@
       render();
     });
   });
-  document.getElementById('day-prev').addEventListener('click', function(){ stepDay(-1); });
-  document.getElementById('day-next').addEventListener('click', function(){ stepDay(1); });
-  document.getElementById('day-today').addEventListener('click', function(){ reveal(today(), true); });
-  dayInput.addEventListener('change', function(){
-    var picked = dayInput.value;
-    if (!picked) return;
-    pinned = picked;
+  document.getElementById('month-prev').addEventListener('click', function(){
+    viewMonth = shiftMonth(viewMonth || today().slice(0, 7), -1);
     render();
-    reveal(picked, true);
+  });
+  document.getElementById('month-next').addEventListener('click', function(){
+    viewMonth = shiftMonth(viewMonth || today().slice(0, 7), 1);
+    render();
+  });
+  document.getElementById('day-today').addEventListener('click', function(){ selectDay(today()); });
+  document.getElementById('cal-grid').addEventListener('click', function(event){
+    var button = event.target.closest('[data-cal]');
+    if (button) selectDay(button.getAttribute('data-cal'));
   });
   document.getElementById('day-count').addEventListener('click', function(event){
     var button = event.target.closest('[data-span]');
@@ -951,19 +952,6 @@
     if (mastEl) watcher.observe(mastEl);
     if (stickEl) watcher.observe(stickEl);
   }
-  window.addEventListener('scroll', function(){
-    if (spyLock || desk.hidden) return;
-    var stick = document.getElementById('action-stick');
-    var edge = stick ? stick.getBoundingClientRect().bottom + 8 : 0;
-    var found = '';
-    document.querySelectorAll('#day-groups .action-day').forEach(function(section){
-      if (section.getBoundingClientRect().top <= edge) found = section.getAttribute('data-day');
-    });
-    if (found && found !== dayInput.value) {
-      day = found;
-      dayInput.value = found;
-    }
-  }, {passive:true});
   if (token()) { showLogin(false); load(); loadSpiders(); }
   else showLogin(true);
 })();
