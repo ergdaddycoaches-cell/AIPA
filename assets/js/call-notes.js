@@ -661,7 +661,15 @@
     if (!subjectTouched) document.getElementById('subject').value = defaultSubject();
   });
   document.getElementById('insert-guide').addEventListener('click', insertGuideToken);
-  document.getElementById('send-message').addEventListener('click', sendCurrent);
+  document.getElementById('send-message').addEventListener('click', function(){
+    var sendPanel = document.getElementById('panel-send');
+    if (sendPanel && sendPanel.hidden) {
+      showPanel('panel-send');
+      document.getElementById('send-status').textContent = '';
+      return;
+    }
+    sendCurrent();
+  });
   document.getElementById('notes-form').addEventListener('submit', function(event){
     event.preventDefault();
     if (!row) return;
