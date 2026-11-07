@@ -838,14 +838,14 @@
     }
     return '';
   }
-  function contractorField(family){
+  function contractorBesideName(family){
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
-    if (isGuide()) return '<p class="stage-pick"><span>Contractor</span><b>' + esc(name) + '</b></p>';
-    return '<label class="stage-pick">Contractor <select id="contractor-select"><option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
+    if (isGuide()) return '<span class="with-contractor">' + esc(name) + '</span>';
+    return '<select id="contractor-select" class="with-contractor" aria-label="Contractor"><option value="0"' + (current ? '' : ' selected') + '>No contractor</option>' +
       contractors.map(function(contractor){
         return '<option value="' + contractor.id + '"' + (contractor.id === current ? ' selected' : '') + '>' + esc(contractor.name) + '</option>';
-      }).join('') + '</select></label>';
+      }).join('') + '</select>';
   }
   function holdLine(family){
     if (isGuide()) return '';
@@ -999,13 +999,12 @@
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
-      '<h2>' + esc(family.row.name) + '</h2>' +
+      '<h2>' + esc(family.row.name) + '<span class="name-pipe" aria-hidden="true">|</span>' + contractorBesideName(family) + '</h2>' +
       (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
       '</div>' +
       '<div class="detail-assign">' +
-      contractorField(family) +
       stageField(family) +
       '<div class="reach" role="group" aria-label="Reach this person">' +
       inviteButton(family) +
