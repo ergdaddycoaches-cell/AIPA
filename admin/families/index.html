@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="stylesheet" href="/assets/css/families.css?v=tabs">
+<link rel="stylesheet" href="/assets/css/families.css?v=tokens">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -188,8 +188,7 @@
           <select id="guide" name="guide"><option value="">No guide</option></select>
           <label for="follow">Message</label>
           <textarea id="follow" name="follow_up_note" rows="5" maxlength="20000"></textarea>
-          <p class="send-note" id="guide-token-note">{{guide}} is the guide title. {{library}} is the link to the guide we send.</p>
-          <button type="button" id="insert-guide">Insert {{guide}}</button>
+          <p class="send-note" id="guide-token-note"><button type="button" id="insert-guide">{{guide}}</button> is the guide title. <button type="button" id="insert-library">{{library}}</button> is the link to the guide we send.</p>
           <div class="send-channels" role="group" aria-label="How to send">
             <button type="button" id="channel-email" aria-pressed="true">Email</button>
             <button type="button" id="channel-text" aria-pressed="false">Text</button>
@@ -246,6 +245,6 @@
 <script src="/assets/js/recording.js"></script>
 <script src="/assets/js/message-copy.js"></script>
 <script src="/assets/js/families.js?v=phones"></script>
-<script src="/assets/js/call-notes.js?v=sendtab"></script>
+<script src="/assets/js/call-notes.js?v=tokens"></script>
 </body>
 </html>

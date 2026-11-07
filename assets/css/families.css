@@ -366,6 +366,7 @@ section.call-sheet.wrap{max-width:none}
 .call-person .remove,
 #add-person,
 #insert-guide,
+#insert-library,
 .send-channels button{
   appearance:none;background:var(--card);color:var(--ink);
   border:1.5px solid var(--ink);border-radius:3px;
@@ -375,6 +376,7 @@ section.call-sheet.wrap{max-width:none}
 .call-person .remove:hover,
 #add-person:hover,
 #insert-guide:hover,
+#insert-library:hover,
 .send-channels button:hover{background:var(--amber-wash)}
 .send-channels{display:flex;flex-wrap:wrap;gap:.45rem;margin:.9rem 0 .15rem}
 .send-channels button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
@@ -383,7 +385,8 @@ section.call-sheet.wrap{max-width:none}
 .call-actions{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:1rem}
 .call-actions .btn{width:auto}
 #add-person{margin-top:.55rem}
-#insert-guide{margin-top:.45rem}
+#insert-guide,
+#insert-library{margin-top:.45rem}
 .call-window[hidden]{display:none}
 .call-window-card{
   position:fixed;z-index:40;top:auto;right:1rem;bottom:1rem;padding:0;
@@ -425,6 +428,7 @@ section.call-sheet.wrap{max-width:none}
 .call-window .call-person .remove,
 .call-window #add-person,
 .call-window #insert-guide,
+.call-window #insert-library,
 .call-window .send-channels button{font-size:.78rem;min-height:32px;padding:.2rem .6rem}
 .call-window .send-note{font-size:.75rem}
 .call-window .call-actions .btn{font-size:.85rem;min-height:38px;padding:.4rem .85rem}

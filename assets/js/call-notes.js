@@ -333,15 +333,15 @@
     if (!text) box.value = sentence;
     else box.value = text + (/[.!?]$/.test(text) ? ' ' : '. ') + sentence;
   }
-  function insertGuideToken(){
+  function insertToken(token){
     var box = document.getElementById('follow');
     var start = box.selectionStart == null ? box.value.length : box.selectionStart;
     var end = box.selectionEnd == null ? box.value.length : box.selectionEnd;
     var before = box.value.slice(0, start);
     var after = box.value.slice(end);
     var pad = before && !/\s$/.test(before) ? ' ' : '';
-    box.value = before + pad + GUIDE_TOKEN + after;
-    var caret = before.length + pad.length + GUIDE_TOKEN.length;
+    box.value = before + pad + token + after;
+    var caret = before.length + pad.length + token.length;
     box.focus();
     if (box.setSelectionRange) box.setSelectionRange(caret, caret);
   }
@@ -660,7 +660,8 @@
     if (guide.title) ensureGuideToken(true);
     if (!subjectTouched) document.getElementById('subject').value = defaultSubject();
   });
-  document.getElementById('insert-guide').addEventListener('click', insertGuideToken);
+  document.getElementById('insert-guide').addEventListener('click', function(){ insertToken(GUIDE_TOKEN); });
+  document.getElementById('insert-library').addEventListener('click', function(){ insertToken('{{library}}'); });
   document.getElementById('send-message').addEventListener('click', function(){
     var sendPanel = document.getElementById('panel-send');
     if (sendPanel && sendPanel.hidden) {
