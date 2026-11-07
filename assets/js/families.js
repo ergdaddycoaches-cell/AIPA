@@ -838,11 +838,6 @@
     }
     return '';
   }
-  function zipBesideName(family){
-    var zip = family.profile && String(family.profile.zip || '').trim();
-    if (!zip) return '';
-    return '<span class="zip">' + esc(zip) + '</span>';
-  }
   function contractorField(family){
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
@@ -1004,7 +999,7 @@
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
-      '<h2>' + esc(family.row.name) + zipBesideName(family) + '</h2>' +
+      '<h2>' + esc(family.row.name) + '</h2>' +
       (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +

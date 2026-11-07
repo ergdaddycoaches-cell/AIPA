@@ -200,8 +200,7 @@
 .detail .timeline .more-label,.detail .timeline .less-label{font-size:1rem}
 .detail .waiting{color:var(--ink-2);margin:.15rem 0;font-size:.9rem}
 .detail .kicker{margin-bottom:0;font-size:.68rem;letter-spacing:.1em}
-.detail h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;font-size:1.2rem;line-height:1.15;max-width:none}
-.detail h2 .zip{font-size:.95rem;font-weight:600;letter-spacing:.02em;color:var(--ink-2)}
+.detail h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;font-size:calc(1.2rem + 2px);line-height:1.15;max-width:none}
 .detail .session{margin-top:0;font-size:.82rem}
 .detail .retired-banner{margin:.15rem 0 0;font-size:.72rem}
 .detail .callback-banner{
