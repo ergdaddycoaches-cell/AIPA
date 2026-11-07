@@ -156,7 +156,7 @@
       editor = '<div class="delay-editor"><label for="email-date">New date</label><input id="email-date" data-delay-date="' + item.id + '" type="date" value="' + esc(item.date) + '"></div>';
     }
     var note = emailNote[item.id] ? '<p class="status-line" role="status">' + esc(emailNote[item.id]) + '</p>' : '';
-    return '<li><span class="action-kind">Delayed email</span>' +
+    return '<li><span class="action-kind">Send personal email</span>' +
       '<a class="name" href="' + esc(item.href) + '">' + esc(item.name) + '</a>' +
       (item.subject ? '<span class="meta">' + esc(item.subject) + '</span>' : '') +
       (item.guide ? '<span class="meta">Guide: ' + esc(item.guide) + '</span>' : '') +
@@ -207,7 +207,7 @@
         else if (callLive()) button = '<button class="btn quiet call-btn" type="button" disabled>On another call</button>';
         else button = '<button class="btn call-btn" type="button" data-call="' + item.id + '">Call</button>';
       }
-      return '<li><span class="action-kind">Contractor</span>' +
+      return '<li><span class="action-kind">Callback</span>' +
         '<a class="name" href="' + esc(item.href) + '">' + esc(item.person) + '</a>' +
         '<a class="company" href="' + esc(item.href) + '">' + esc(item.company) + '</a>' +
         (when ? '<span class="meta">Form filled ' + esc(when) + '</span>' : '') +
@@ -220,7 +220,7 @@
     if (item.phone) familyBits.push(esc(item.phone));
     if (item.email) familyBits.push(esc(item.email));
     if (item.note) familyBits.push(esc(item.note));
-    return '<li><span class="action-kind">' + esc(item.kind) + '</span>' +
+    return '<li><span class="action-kind">Callback</span>' +
       '<a class="name" href="' + esc(item.href) + '">' + esc(item.name) + '</a>' +
       (familyBits.length ? '<span class="meta">' + familyBits.join(' · ') + '</span>' : '') +
       '</li>';
@@ -330,9 +330,15 @@
     var date = new Date(Date.UTC(+parts[0], +parts[1] - 1 + dir, 1));
     return date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1);
   }
+  function taskKind(item){
+    if (item.group === 'call') return 'Callback';
+    if (item.group === 'email') return 'Send personal email';
+    return item.kind || 'Task';
+  }
   function peekNames(items){
     return items.slice().sort(byName).slice(0, 3).map(function(item){
-      return '<li>' + esc(item.name || item.person || item.kind || 'Task') + '</li>';
+      var name = item.name || item.person || '';
+      return '<li>' + esc(taskKind(item)) + (name ? ' · ' + esc(name) : '') + '</li>';
     }).join('');
   }
   function calendarHtml(now){
