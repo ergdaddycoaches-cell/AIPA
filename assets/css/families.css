@@ -349,8 +349,8 @@
 section.call-sheet.wrap{max-width:none}
 .call-sheet [hidden]{display:none}
 .who-line{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:.55rem 1.25rem}
-.who-line .dial-line{margin:0}
-.call-sheet h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;margin:0}
+.who-line .dial-line{margin:0;align-items:flex-end}
+.call-sheet .who-line h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1;margin:0;padding:0;border:0;text-decoration:none}
 .call-sheet h2{font-size:1.35rem;margin:1.5rem 0 .2rem}
 .call-sheet .dial-which{display:inline-flex;width:auto;margin:0;align-items:center}
 .call-sheet .dial-which select{width:auto;height:40px;min-height:40px;padding:0 1.7rem 0 .7rem}
