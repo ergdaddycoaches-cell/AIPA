@@ -13,6 +13,9 @@
 .pulse button[aria-pressed="true"]{background:#243028;box-shadow:inset 0 -4px 0 var(--clay)}
 .pulse button[aria-pressed="true"] b{color:#F3E2BC}
 .pulse button:hover{background:#314038}
+.clock:not(.contractor-board) .pulse button{padding:.38rem .7rem .42rem}
+.clock:not(.contractor-board) .pulse b{font-size:clamp(1.35rem,2vw,1.7rem);line-height:1}
+.clock:not(.contractor-board) .pulse span{margin-top:.12rem;font-size:.72rem;font-weight:600}
 
 .unmatched{margin:1.25rem 0 0;padding:1rem 1.15rem 1.15rem;background:var(--card);border:1px dashed var(--rule-strong)}
 .unmatched h2{font-size:1.45rem}
