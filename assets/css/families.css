@@ -17,8 +17,8 @@
 .clock:not(.contractor-board) .pulse-row .contractor-filter{margin:0;flex:0 0 auto}
 .clock:not(.contractor-board) .pulse-row .pulse{flex:1 1 auto;min-width:0}
 .clock:not(.contractor-board) .pulse button{padding:.22rem .35rem .26rem}
-.clock:not(.contractor-board) .pulse b{font-size:calc(1.15rem + 3px);line-height:1}
-.clock:not(.contractor-board) .pulse span{margin-top:.08rem;font-size:calc(.64rem + 2px);font-weight:600;white-space:nowrap}
+.clock:not(.contractor-board) .pulse b{font-size:calc(1.38rem + 2px);line-height:1}
+.clock:not(.contractor-board) .pulse span{margin-top:.08rem;font-size:calc(.77rem + 1px);font-weight:600;white-space:nowrap}
 
 .unmatched{margin:1.25rem 0 0;padding:1rem 1.15rem 1.15rem;background:var(--card);border:1px dashed var(--rule-strong)}
 .unmatched h2{font-size:1.45rem}
