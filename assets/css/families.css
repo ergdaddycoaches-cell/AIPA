@@ -33,6 +33,7 @@
 #stages-open,#family-open,#contractors-open,#contractor-open,#contractor-board{
   appearance:none;display:inline-flex;align-items:center;background:transparent;border:1px solid var(--ink);color:var(--ink);
   font:inherit;font-weight:700;min-height:36px;padding:.3rem .7rem;cursor:pointer;font-size:.85rem;text-decoration:none}
+#stages-open[hidden],#family-open[hidden],#contractors-open[hidden],#contractor-open[hidden],#contractor-board[hidden]{display:none}
 .family-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem .7rem;margin-top:.7rem}
 .family-grid label{display:block;font-weight:700;font-size:.75rem}
 .family-grid input,.family-grid select,.family-grid textarea{
