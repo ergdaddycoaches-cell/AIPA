@@ -902,18 +902,6 @@
       status.textContent = saved ? 'No spider is on for the public site.' : 'No spider is off.';
     }).catch(function(err){ status.textContent = err.message; });
   });
-  document.getElementById('password-form').addEventListener('submit', function(event){
-    event.preventDefault();
-    var status = document.getElementById('password-status');
-    status.textContent = 'Updating…';
-    api('/office/password', {method:'POST', body:{
-      current: document.getElementById('current-password').value,
-      next: document.getElementById('next-password').value
-    }}).then(function(){
-      document.getElementById('password-form').reset();
-      status.textContent = 'Password updated.';
-    }).catch(function(err){ status.textContent = err.message; });
-  });
   document.getElementById('desk').addEventListener('change', function(event){
     var input = event.target.closest('[data-delay-date]');
     if (!input) return;
