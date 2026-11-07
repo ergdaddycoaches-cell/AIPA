@@ -40,6 +40,19 @@
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];
     });
   }
+  function libraryArticles(){
+    var root = (CFG.apiBase || '').replace(/\/$/, '');
+    if (!root) return Promise.resolve([]);
+    return fetch(root + '/library/articles', {headers:{'Accept':'application/json'}})
+      .then(function(response){ return response.json(); })
+      .then(function(data){
+        return rows(data).map(function(article){
+          if (article && !article.status) article.status = 'published';
+          return article;
+        });
+      })
+      .catch(function(){ return []; });
+  }
   function rows(value){
     if (Array.isArray(value)) return value;
     if (value && Array.isArray(value.items)) return value.items;
@@ -515,7 +528,7 @@
     return Promise.all([
       api('/office/signups'),
       api('/office/meetings'),
-      api('/office/articles').catch(function(){ return []; }),
+      libraryArticles(),
       api('/office/households').catch(function(){ return {profiles:[]}; }),
       (window.AIPA_MESSAGES ? AIPA_MESSAGES.load() : Promise.resolve()),
       api('/office/guide-links').catch(function(){ return []; })
