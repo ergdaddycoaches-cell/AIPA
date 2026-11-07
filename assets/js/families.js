@@ -861,28 +861,36 @@
     }
     return '';
   }
-  function lastContactWhen(family){
-    var when = '';
-    var meeting = '';
+  function lastContact(family){
+    var best = {when:'', what:''};
+    var meeting = {when:'', what:''};
     (family.events || []).forEach(function(event){
       if (!countsAsTouch(event)) return;
-      if (event.kind === 'meeting') {
-        if (!meeting || event.occurred_at > meeting) meeting = event.occurred_at;
-        return;
+      var slot = event.kind === 'meeting' ? meeting : best;
+      if (!slot.when || event.occurred_at > slot.when) {
+        slot.when = event.occurred_at;
+        slot.what = eventLabel(event);
       }
-      if (!when || event.occurred_at > when) when = event.occurred_at;
     });
     var bag = cadenceRuns[family.id];
     if (bag && bag.outcomes) {
       bag.outcomes.forEach(function(item){
         var at = stamp(item.recorded_at);
-        if (at && (!when || at > when)) when = at;
+        if (!at || (best.when && at <= best.when)) return;
+        var step = cadenceSteps.filter(function(step){ return step.id === item.step_id; })[0];
+        var result = cadenceResult(item.result);
+        var what = step ? cadenceChannel(step.channel) : 'Cadence';
+        best.when = at;
+        best.what = result ? what + ' · ' + result : what;
       });
     }
-    return when || meeting;
+    var pick = best.when ? best : meeting;
+    return pick.when ? pick : null;
   }
-  function contactLabel(value){
-    return pretty(value) || dateLabel(value);
+  function contactLabel(touch){
+    if (!touch) return '';
+    var when = pretty(touch.when) || dateLabel(touch.when);
+    return touch.what ? touch.what + ' · ' + when : when;
   }
   function contractorBesideName(family){
     var current = contractorIdOf(family);
@@ -1043,8 +1051,8 @@
     var banner = retired ? '<p class="retired-banner">Retired' + (REASONS[family.row.retired_reason] ? ' · ' + esc(REASONS[family.row.retired_reason]) : '') + '</p>' : '';
     var callbackWhen = wantsCallback(family) ? callbackPhrase(family) : '';
     var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back' + (callbackWhen ? ' · ' + esc(callbackWhen) : '') + ' <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
-    var when = lastContactWhen(family);
-    var contact = when ? '<span class="name-pipe" aria-hidden="true">|</span><span class="with-contractor">' + esc(contactLabel(when)) + '</span>' : '';
+    var touch = lastContact(family);
+    var contact = touch ? '<span class="name-pipe" aria-hidden="true">|</span><span class="with-contractor">' + esc(contactLabel(touch)) + '</span>' : '';
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
