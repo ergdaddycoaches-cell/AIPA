@@ -866,6 +866,7 @@
     }
     return when;
   }
+  function contractorBesideName(family){
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
     if (isGuide()) return '<span class="with-contractor">' + esc(name) + '</span>';
