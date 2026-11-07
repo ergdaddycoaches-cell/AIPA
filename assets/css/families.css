@@ -227,8 +227,9 @@
 .reach button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .reach button:hover{background:var(--amber-wash)}
 .reach button[aria-pressed="true"]:hover{background:var(--ink);color:var(--paper)}
-.reach button.is-missing{color:var(--clay);border-color:var(--clay)}
-.reach button.is-missing[aria-pressed="true"]{background:var(--clay);color:var(--paper);border-color:var(--clay)}
+.reach button.is-missing{background:#f8d7df;color:var(--ink);border-color:#e7b4c0}
+.reach button.is-missing:hover{background:#f3c5d0}
+.reach button.is-missing[aria-pressed="true"]{background:#f3c5d0;color:var(--ink);border-color:#e7b4c0}
 .on-call{
   display:flex;flex-wrap:wrap;gap:.5rem .75rem;align-items:center;
   margin:-.2rem 0 1rem;padding:.75rem .85rem;background:var(--dark);color:var(--on-dark)}

@@ -1018,7 +1018,7 @@
       '<div class="reach" role="group" aria-label="Reach this person">' +
       inviteButton(family) +
       '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
-      '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
+      '<button type="button" data-act="call"' + (cellOf(family.row, family.profile) || landlineOf(family.profile) ? '' : ' class="is-missing"') + ' aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text"' + (cellOf(family.row, family.profile) ? '' : ' class="is-missing"') + ' aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
       '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
