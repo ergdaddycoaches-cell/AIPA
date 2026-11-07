@@ -377,7 +377,7 @@
     }
     var picked = articles.filter(function(article){ return suggested[String(article.id)]; });
     var rest = articles.filter(function(article){ return !suggested[String(article.id)]; });
-    var html = '<option value="">No article</option>';
+    var html = picked.length ? '' : '<option value="">No article</option>';
     if (picked.length) {
       html += '<optgroup label="Suggested">';
       picked.forEach(function(article){ html += option(article); });
