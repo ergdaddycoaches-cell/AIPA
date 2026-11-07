@@ -17,12 +17,12 @@
 .clock:not(.contractor-board) .pulse-row .board-tools{margin-top:0;flex:0 0 auto}
 .clock:not(.contractor-board) #dash-status{min-height:0;margin:0}
 .clock:not(.contractor-board) .board{margin-top:10px}
-.clock:not(.contractor-board) .pulse{color:#fff}
+.clock .pulse{color:#fff}
 .clock:not(.contractor-board) .pulse-row .contractor-filter{margin:0;flex:0 0 auto}
 .clock:not(.contractor-board) .pulse-row .pulse{flex:1 1 auto;min-width:0}
-.clock:not(.contractor-board) .pulse button{padding:.22rem .35rem .26rem}
-.clock:not(.contractor-board) .pulse b{font-size:calc(1.38rem + 2px);line-height:1}
-.clock:not(.contractor-board) .pulse span{margin-top:.08rem;font-size:calc(.92rem + 1px);font-weight:400;white-space:nowrap;opacity:1}
+.clock .pulse button{padding:.22rem .35rem .26rem}
+.clock .pulse b{font-size:calc(1.38rem + 2px);line-height:1}
+.clock .pulse span{margin-top:.08rem;font-size:calc(.92rem + 1px);font-weight:400;white-space:nowrap;opacity:1}
 
 .unmatched{margin:1.25rem 0 0;padding:1rem 1.15rem 1.15rem;background:var(--card);border:1px dashed var(--rule-strong)}
 .unmatched h2{font-size:1.45rem}
@@ -425,6 +425,7 @@
   .stage-editor li button[data-stage-remove]{grid-column:1 / -1}
   .pulse{grid-template-columns:1fr 1fr}
   .clock:not(.contractor-board) .pulse{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .contractor-board .pulse{grid-template-columns:repeat(4,minmax(0,1fr))}
   .pulse button:nth-child(odd){border-right:1px solid rgba(247,242,232,.16)}
   .pulse button:nth-child(5){grid-column:1 / -1;border-right:0;border-top:1px solid rgba(247,242,232,.16)}
   .clock:not(.contractor-board) .pulse button:nth-child(5){grid-column:auto;border-top:0}
