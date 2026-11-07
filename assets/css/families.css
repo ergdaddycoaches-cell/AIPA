@@ -183,6 +183,7 @@
   appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;
   color:var(--ink-2);font:inherit;font-weight:700;font-size:1rem;letter-spacing:.02em;
   min-height:36px;padding:.15rem .55rem;cursor:pointer}
+.band-tabs button:first-child{padding-left:0}
 .band-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--clay)}
 .band-tabs button[data-tab="summary"],.band-tabs button[data-tab="record"]{font-weight:400}
 .detail-body{
