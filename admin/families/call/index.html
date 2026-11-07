@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css?v=dial-short">
-<link rel="stylesheet" href="/assets/css/families.css">
+<link rel="stylesheet" href="/assets/css/families.css?v=sheet">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -52,7 +52,7 @@
   </section>
 
   <section class="call-sheet wrap" id="sheet" hidden>
-    <p><a class="call-back" href="/admin/families/">Pipeline</a></p>
+    <div class="who-line">
     <h1 id="who">Call notes</h1>
     <p class="dial-line">
       <button class="btn" type="button" id="dial-call">Call</button>
@@ -65,6 +65,7 @@
       <span id="dial-number"></span>
       <button class="btn quiet" type="button" id="dial-hangup" hidden>Hang up</button>
     </p>
+    </div>
     <p class="status-line" id="dial-status" role="status"></p>
     <nav class="call-jump" aria-label="Sections">
       <a href="#showed-up">Who showed up</a>

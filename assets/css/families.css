@@ -344,10 +344,16 @@
 .reads p{margin:.25rem 0 0}
 .empty-queue{
   background:var(--card);border:1px dashed var(--rule-strong);padding:1.5rem;color:var(--ink-2)}
-.call-sheet{max-width:42rem;padding:1.1rem 0 4rem}
+.call-sheet{padding:1.1rem 0 4rem;font-family:"Atkinson Hyperlegible","Segoe UI",Helvetica,Arial,sans-serif}
+.call-sheet *{font-family:"Atkinson Hyperlegible","Segoe UI",Helvetica,Arial,sans-serif}
+section.call-sheet.wrap{max-width:none}
 .call-sheet [hidden]{display:none}
-.call-sheet h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;margin:.4rem 0 0}
+.who-line{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:.55rem 1.25rem}
+.who-line .dial-line{margin:0}
+.call-sheet h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;margin:0}
 .call-sheet h2{font-size:1.35rem;margin:1.5rem 0 .2rem}
+.call-sheet .dial-which{display:inline-flex;width:auto}
+.call-sheet .dial-which select{width:auto}
 .call-back{font-weight:700}
 .call-sheet label{display:block;font-weight:700;font-size:.78rem;margin:.75rem 0 .2rem}
 .call-sheet textarea,.call-sheet input,.call-sheet select{
