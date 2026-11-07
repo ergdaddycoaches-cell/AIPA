@@ -852,7 +852,21 @@
     }
     return '';
   }
-  function contractorBesideName(family){
+  function lastContactWhen(family){
+    var when = '';
+    (family.events || []).forEach(function(event){
+      if (!countsAsTouch(event) || event.kind === 'meeting') return;
+      if (!when || event.occurred_at > when) when = event.occurred_at;
+    });
+    var bag = cadenceRuns[family.id];
+    if (bag && bag.outcomes) {
+      bag.outcomes.forEach(function(item){
+        var at = stamp(item.recorded_at);
+        if (at && (!when || at > when)) when = at;
+      });
+    }
+    return when;
+  }
     var current = contractorIdOf(family);
     var name = (contractors.filter(function(contractor){ return contractor.id === current; })[0] || {}).name || 'No contractor';
     if (isGuide()) return '<span class="with-contractor">' + esc(name) + '</span>';
@@ -1004,16 +1018,19 @@
       return;
     }
     var retired = isRetired(family);
+    ensureCadence(family.id);
     var away = callLive() && dial.registrationId !== family.id
       ? '<div class="on-call"><p>On a call with ' + esc(dial.name) + '</p><button type="button" data-act="return-call">Return</button><button type="button" class="hangup" data-act="hangup">Hang up</button></div>'
       : '';
     var banner = retired ? '<p class="retired-banner">Retired' + (REASONS[family.row.retired_reason] ? ' · ' + esc(REASONS[family.row.retired_reason]) : '') + '</p>' : '';
     var callbackWhen = wantsCallback(family) ? callbackPhrase(family) : '';
     var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back' + (callbackWhen ? ' · ' + esc(callbackWhen) : '') + ' <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
+    var when = lastContactWhen(family);
+    var contact = when ? '<span class="name-pipe" aria-hidden="true">|</span><span class="with-contractor">' + esc(pretty(when)) + '</span>' : '';
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
-      '<h2>' + esc(family.row.name) + '<span class="name-pipe" aria-hidden="true">|</span>' + contractorBesideName(family) + '</h2>' +
+      '<h2>' + esc(family.row.name) + '<span class="name-pipe" aria-hidden="true">|</span>' + contractorBesideName(family) + contact + '</h2>' +
       (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
