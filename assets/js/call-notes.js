@@ -346,8 +346,8 @@
     if (!text) box.value = sentence;
     else box.value = text + (/[.!?]$/.test(text) ? ' ' : '. ') + sentence;
   }
-  function insertToken(token){
-    var box = document.getElementById('follow');
+  function insertInto(box, token){
+    if (!box) return;
     var start = box.selectionStart == null ? box.value.length : box.selectionStart;
     var end = box.selectionEnd == null ? box.value.length : box.selectionEnd;
     var before = box.value.slice(0, start);
@@ -357,6 +357,9 @@
     var caret = before.length + pad.length + token.length;
     box.focus();
     if (box.setSelectionRange) box.setSelectionRange(caret, caret);
+  }
+  function insertToken(token){
+    insertInto(document.getElementById('follow'), token);
   }
   function guideMenu(articles, suggestedIds){
     var suggested = {};
@@ -484,11 +487,13 @@
       return document.getElementById(id);
     });
     var insert = document.getElementById('delay-insert');
+    var insertLibrary = document.getElementById('delay-insert-library');
     if (!yes || !no || fields.some(function(field){ return !field; })) return;
     yes.setAttribute('aria-pressed', on ? 'true' : 'false');
     no.setAttribute('aria-pressed', on ? 'false' : 'true');
     fields.forEach(function(field){ field.disabled = !on; });
     if (insert) insert.disabled = !on;
+    if (insertLibrary) insertLibrary.disabled = !on;
     if (!on) fields.forEach(function(field){ field.value = ''; });
     else {
       if (date != null) document.getElementById('delay-date').value = date;
@@ -657,16 +662,10 @@
   document.getElementById('delay-no').addEventListener('click', function(){ setDelay(false); });
   setDelay(false);
   document.getElementById('delay-insert').addEventListener('click', function(){
-    var box = document.getElementById('delay-body');
-    var start = box.selectionStart == null ? box.value.length : box.selectionStart;
-    var end = box.selectionEnd == null ? box.value.length : box.selectionEnd;
-    var before = box.value.slice(0, start);
-    var after = box.value.slice(end);
-    var pad = before && !/\s$/.test(before) ? ' ' : '';
-    box.value = before + pad + GUIDE_TOKEN + after;
-    var caret = before.length + pad.length + GUIDE_TOKEN.length;
-    box.focus();
-    if (box.setSelectionRange) box.setSelectionRange(caret, caret);
+    insertInto(document.getElementById('delay-body'), GUIDE_TOKEN);
+  });
+  document.getElementById('delay-insert-library').addEventListener('click', function(){
+    insertInto(document.getElementById('delay-body'), '{{library}}');
   });
   var jump = document.querySelector('.call-jump');
   function showPanel(id){

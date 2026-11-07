@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="stylesheet" href="/assets/css/families.css?v=tokens">
+<link rel="stylesheet" href="/assets/css/families.css?v=delaytokens">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -226,8 +226,7 @@
           <input id="delay-guide" type="text" maxlength="200">
           <label for="delay-body">Email</label>
           <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
-          <p class="send-note">{{guide}} is the article title. {{library}} is the link to the article we send, filled in when you approve this on Actions.</p>
-          <button type="button" id="delay-insert">Insert {{guide}}</button>
+          <p class="send-note" id="delay-token-note"><button type="button" id="delay-insert">{{guide}}</button> is the article title. <button type="button" id="delay-insert-library">{{library}}</button> is the link to the article we send, filled in when you approve this on Actions.</p>
           </div>
           <div class="call-actions">
             <button class="btn" type="submit">Save</button>
@@ -245,6 +244,6 @@
 <script src="/assets/js/recording.js"></script>
 <script src="/assets/js/message-copy.js"></script>
 <script src="/assets/js/families.js?v=phones"></script>
-<script src="/assets/js/call-notes.js?v=suggest2"></script>
+<script src="/assets/js/call-notes.js?v=delaytokens"></script>
 </body>
 </html>
