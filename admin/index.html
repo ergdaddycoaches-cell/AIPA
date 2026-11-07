@@ -17,7 +17,7 @@
 <script src="/assets/js/seminar-format.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/recording.js" defer></script>
-<script src="/assets/js/actions.js?v=cal" defer></script>
+<script src="/assets/js/actions.js?v=cal2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to main content</a>
@@ -69,7 +69,8 @@
         <button class="btn quiet" type="button" id="day-today">Today</button>
       </div>
       <div class="action-cal-week" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
-      <div class="action-cal-grid" id="cal-grid"></div>
+      <div class="action-cal-grid" id="cal-grid" role="grid" aria-label="Month"></div>
+      <div class="cal-pop" id="cal-pop" hidden></div>
     </div>
     <section class="needs-person" id="needs-person" hidden data-office-admin>
       <h2>Needs association</h2>

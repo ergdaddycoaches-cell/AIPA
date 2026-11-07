@@ -13,6 +13,7 @@
   var needsNote = {};
   var day = '';
   var viewMonth = '';
+  var dayGroups = {};
   var editing = null;
   var emailNote = {};
   var summary = {households: 0, sessions: 0, callbacks: 0};
@@ -329,7 +330,12 @@
     var date = new Date(Date.UTC(+parts[0], +parts[1] - 1 + dir, 1));
     return date.getUTCFullYear() + '-' + pad(date.getUTCMonth() + 1);
   }
-  function calendarHtml(now, counts){
+  function peekNames(items){
+    return items.slice().sort(byName).slice(0, 3).map(function(item){
+      return '<li>' + esc(item.name || item.person || item.kind || 'Task') + '</li>';
+    }).join('');
+  }
+  function calendarHtml(now){
     var parts = String(viewMonth || '').split('-');
     var year = +parts[0];
     var month = +parts[1];
@@ -340,15 +346,43 @@
     for (i = 0; i < first; i++) cells.push('<span class="cal-blank"></span>');
     for (i = 1; i <= total; i++) {
       var iso = year + '-' + pad(month) + '-' + pad(i);
-      var count = counts[iso] || 0;
+      var items = dayGroups[iso] || [];
       var kind = iso < now ? ' is-past' : (iso === now ? ' is-today' : '');
-      if (count) kind += ' has-items';
-      cells.push('<button type="button" data-cal="' + iso + '" aria-pressed="' + (iso === day) + '" class="' + kind.trim() + '">' +
+      if (items.length) kind += ' has-items';
+      cells.push('<div class="cal-day' + kind + '" data-cal="' + iso + '" tabindex="0" role="gridcell" aria-label="' + esc(heading(iso)) + '">' +
         '<b>' + i + '</b>' +
-        (count ? '<span>' + count + '</span>' : '') +
-        '</button>');
+        (items.length ? '<ul class="cal-peek">' + peekNames(items) + '</ul>' : '') +
+        '</div>');
     }
+    while (cells.length % 7) cells.push('<span class="cal-blank"></span>');
     return cells.join('');
+  }
+  function placePop(cell){
+    var pop = document.getElementById('cal-pop');
+    var box = cell.getBoundingClientRect();
+    var width = Math.min(384, window.innerWidth - 16);
+    var left = Math.min(Math.max(8, box.left), window.innerWidth - width - 8);
+    pop.style.width = width + 'px';
+    pop.style.left = left + 'px';
+    pop.style.top = (box.bottom + 8) + 'px';
+    var frame = pop.getBoundingClientRect();
+    if (frame.bottom > window.innerHeight - 8) pop.style.top = Math.max(8, box.top - frame.height - 8) + 'px';
+  }
+  function showPop(cell){
+    if (!cell) return;
+    var iso = cell.getAttribute('data-cal');
+    var items = dayGroups[iso] || [];
+    var pop = document.getElementById('cal-pop');
+    pop.innerHTML = '<h3>' + esc(heading(iso)) + '</h3>' +
+      (items.length ? '<ul class="action-list">' + listHtml(items) + '</ul>' : '<p class="action-empty">Nothing on this day.</p>');
+    pop.hidden = false;
+    pop.dataset.day = iso;
+    placePop(cell);
+  }
+  function hidePop(next){
+    var pop = document.getElementById('cal-pop');
+    if (next && (next.closest && (next.closest('#cal-pop') || next.closest('[data-cal="' + (pop.dataset.day || '') + '"]')))) return;
+    pop.hidden = true;
   }
   function render(){
     var y = window.scrollY;
@@ -364,18 +398,11 @@
         groups[item.date].push(item);
       }
     });
-    var counts = {};
-    Object.keys(groups).forEach(function(iso){ counts[iso] = groups[iso].length; });
+    dayGroups = groups;
     document.getElementById('month-label').textContent = monthTitle(viewMonth);
-    document.getElementById('cal-grid').innerHTML = calendarHtml(now, counts);
-    var items = groups[day] || [];
-    var kind = day < now ? ' is-past' : (day === now ? ' is-today' : '');
-    var title = (day === now ? 'Today · ' : '') + heading(day);
-    var body = items.length
-      ? '<ul class="action-list">' + listHtml(items) + '</ul>'
-      : '<p class="action-empty">Nothing on this day.</p>';
-    document.getElementById('day-groups').innerHTML =
-      '<section class="action-day' + kind + '" id="day-' + day + '" data-day="' + day + '"><h2>' + esc(title) + '</h2>' + body + '</section>';
+    document.getElementById('cal-grid').innerHTML = calendarHtml(now);
+    document.getElementById('day-groups').innerHTML = '';
+    document.getElementById('cal-pop').hidden = true;
     var past = calls.filter(function(item){ return item.date && item.date < now; }).length;
     var due = calls.filter(function(item){ return item.date === now; }).length;
     var future = calls.filter(function(item){ return item.date && item.date > now; }).length;
@@ -930,9 +957,19 @@
     render();
   });
   document.getElementById('day-today').addEventListener('click', function(){ selectDay(today()); });
-  document.getElementById('cal-grid').addEventListener('click', function(event){
-    var button = event.target.closest('[data-cal]');
-    if (button) selectDay(button.getAttribute('data-cal'));
+  document.getElementById('cal-grid').addEventListener('mouseover', function(event){
+    var cell = event.target.closest('[data-cal]');
+    if (cell) showPop(cell);
+  });
+  document.getElementById('cal-grid').addEventListener('mouseout', function(event){
+    hidePop(event.relatedTarget);
+  });
+  document.getElementById('cal-grid').addEventListener('focusin', function(event){
+    var cell = event.target.closest('[data-cal]');
+    if (cell) showPop(cell);
+  });
+  document.getElementById('cal-pop').addEventListener('mouseout', function(event){
+    hidePop(event.relatedTarget);
   });
   document.getElementById('day-count').addEventListener('click', function(event){
     var button = event.target.closest('[data-span]');
