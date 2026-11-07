@@ -177,7 +177,11 @@
     if (digits.length > 11) return '+' + digits;
     return '';
   }
-  function contacts(row){
+  function profileName(profile){
+    if (!profile) return '';
+    return [profile.first_name, profile.last_name].filter(function(part){ return part; }).join(' ');
+  }
+  function contacts(row, profile){
     var list = [];
     function add(person){
       if (!person) return;
@@ -189,7 +193,11 @@
       if (list.some(function(item){ return item.key === key; })) return;
       list.push({key:key, name:name, phone:phone, email:email});
     }
-    add({name:row.name, phone:row.phone, email:row.email});
+    add({
+      name: row.name || profileName(profile),
+      phone: row.phone || (profile && profile.cell_phone),
+      email: row.email || (profile && profile.email)
+    });
     add({name:row.guest_name, phone:row.guest_phone, email:row.guest_email});
     parseList(row.guests).forEach(add);
     return list;
@@ -585,15 +593,17 @@
   function hasRecord(family){
     var profile = family.profile;
     if (!profile) return false;
-    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || profile.opt_in_sms || family.row.email || family.row.phone);
+    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || profile.opt_in_sms || profile.cell_phone || profile.email || family.row.email || family.row.phone);
   }
   function recordPanel(family){
     var profile = family.profile || {};
     var lines = [];
     var address = addressLine(profile);
     if (address) lines.push('<p><b>Address</b> ' + esc(address) + '</p>');
-    if (family.row.email) lines.push('<p><b>Email</b> ' + esc(family.row.email) + '</p>');
-    if (family.row.phone) lines.push('<p><b>Cell</b> ' + esc(family.row.phone) + '</p>');
+    var email = family.row.email || profile.email;
+    var phone = family.row.phone || profile.cell_phone;
+    if (email) lines.push('<p><b>Email</b> ' + esc(email) + '</p>');
+    if (phone) lines.push('<p><b>Cell</b> ' + esc(phone) + '</p>');
     if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
@@ -752,7 +762,7 @@
     var showingCall = dial.registrationId === family.id && dial.phase && (reachMode === 'call' || callLive() || dial.phase === 'ended' || dial.phase === 'error');
     if (showingCall && dial.phase !== '') return dialerHtml();
     if (!reachMode) return '';
-    var people = contacts(family.row);
+    var people = contacts(family.row, family.profile);
     if (reachMode === 'call' || reachMode === 'text') {
       var phones = choiceList(people, 'phone');
       if (!phones) return '<form class="composer" data-reach="' + reachMode + '"><p>There is no number on file.</p><button type="button" data-act="close">Close</button></form>';
@@ -1162,7 +1172,7 @@
       if (status) status.textContent = 'Choose who to call.';
       return;
     }
-    var person = contacts(family.row).filter(function(item){ return (e164(item.phone) || item.phone) === picked.value; })[0];
+    var person = contacts(family.row, family.profile).filter(function(item){ return (e164(item.phone) || item.phone) === picked.value; })[0];
     dial.registrationId = family.id;
     dial.name = person && person.name ? person.name : family.row.name;
     dial.number = picked.value;
