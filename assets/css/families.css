@@ -227,6 +227,8 @@
 .reach button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .reach button:hover{background:var(--amber-wash)}
 .reach button[aria-pressed="true"]:hover{background:var(--ink);color:var(--paper)}
+.reach button.is-missing{color:var(--clay);border-color:var(--clay)}
+.reach button.is-missing[aria-pressed="true"]{background:var(--clay);color:var(--paper);border-color:var(--clay)}
 .on-call{
   display:flex;flex-wrap:wrap;gap:.5rem .75rem;align-items:center;
   margin:-.2rem 0 1rem;padding:.75rem .85rem;background:var(--dark);color:var(--on-dark)}

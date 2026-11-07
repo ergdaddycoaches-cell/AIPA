@@ -181,6 +181,12 @@
     if (!profile) return '';
     return [profile.first_name, profile.last_name].filter(function(part){ return part; }).join(' ');
   }
+  function cellOf(row, profile){
+    return String((row && row.phone) || (profile && profile.cell_phone) || '').trim();
+  }
+  function landlineOf(profile){
+    return String(profile && profile.landline || '').trim();
+  }
   function contacts(row, profile){
     var list = [];
     function add(person){
@@ -188,15 +194,22 @@
       var phone = String(person.phone || '').trim();
       var email = String(person.email || '').trim();
       var name = String(person.name || '').trim();
+      var kind = String(person.kind || '').trim();
       if (!phone && !email && !name) return;
-      var key = (phone || email || name).toLowerCase();
+      var key = ((kind ? kind + ':' : '') + (phone || email || name)).toLowerCase();
       if (list.some(function(item){ return item.key === key; })) return;
-      list.push({key:key, name:name, phone:phone, email:email});
+      list.push({key:key, name:name, phone:phone, email:email, kind:kind});
     }
     add({
       name: row.name || profileName(profile),
-      phone: row.phone || (profile && profile.cell_phone),
-      email: row.email || (profile && profile.email)
+      phone: cellOf(row, profile),
+      email: row.email || (profile && profile.email),
+      kind: 'Cell'
+    });
+    add({
+      name: row.name || profileName(profile),
+      phone: landlineOf(profile),
+      kind: 'Landline'
     });
     add({name:row.guest_name, phone:row.guest_phone, email:row.guest_email});
     parseList(row.guests).forEach(add);
@@ -593,7 +606,7 @@
   function hasRecord(family){
     var profile = family.profile;
     if (!profile) return false;
-    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || profile.opt_in_sms || profile.cell_phone || profile.email || family.row.email || family.row.phone);
+    return !!(addressLine(profile) || profile.notes || profile.originated_at || profile.opt_in_call || profile.opt_in_email || profile.opt_in_sms || profile.cell_phone || profile.landline || profile.email || family.row.email || family.row.phone);
   }
   function recordPanel(family){
     var profile = family.profile || {};
@@ -601,9 +614,11 @@
     var address = addressLine(profile);
     if (address) lines.push('<p><b>Address</b> ' + esc(address) + '</p>');
     var email = family.row.email || profile.email;
-    var phone = family.row.phone || profile.cell_phone;
+    var phone = cellOf(family.row, profile);
+    var landline = landlineOf(profile);
     if (email) lines.push('<p><b>Email</b> ' + esc(email) + '</p>');
     lines.push('<p><b>Cell</b> ' + (phone ? esc(phone) : 'None') + '</p>');
+    lines.push('<p><b>Landline</b> ' + (landline ? esc(landline) : 'None') + '</p>');
     if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
@@ -635,8 +650,9 @@
   function choiceList(people, field){
     return people.filter(function(person){ return person[field]; }).map(function(person, index){
       var value = field === 'phone' ? (e164(person.phone) || person.phone) : person.email;
+      var label = person.kind ? person.kind + ' · ' + value : value;
       return '<label class="who-choice"><input type="radio" name="reach-who" value="' + esc(value) + '"' + (index === 0 ? ' checked' : '') + '>' +
-        '<span><b>' + esc(person.name || value) + '</b><small>' + esc(value) + '</small></span></label>';
+        '<span><b>' + esc(person.name || value) + '</b><small>' + esc(label) + '</small></span></label>';
     }).join('');
   }
   function dialLabel(){
@@ -762,7 +778,10 @@
     if (!reachMode) return '';
     var people = contacts(family.row, family.profile);
     if (reachMode === 'call' || reachMode === 'text') {
-      var phones = choiceList(people, 'phone');
+      var phonePeople = reachMode === 'text'
+        ? people.filter(function(person){ return person.kind !== 'Landline'; })
+        : people;
+      var phones = choiceList(phonePeople, 'phone');
       if (!phones) return '<form class="composer" data-reach="' + reachMode + '"><p>There is no number on file.</p><button type="button" data-act="close">Close</button></form>';
     }
     if (reachMode === 'email') {
@@ -1000,7 +1019,7 @@
       inviteButton(family) +
       '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
-      '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
+      '<button type="button" data-act="text"' + (cellOf(family.row, family.profile) ? '' : ' class="is-missing"') + ' aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
       '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
@@ -1568,6 +1587,7 @@
     'city':'city', 'state':'state', 'zip':'zip', 'zip code':'zip',
     'email':'email', 'email address':'email',
     'cell phone':'cell_phone', 'cell':'cell_phone', 'phone':'cell_phone',
+    'landline':'landline', 'land line':'landline', 'home phone':'landline',
     'opt in for phone call':'opt_in_call', 'opt in for phone call flag':'opt_in_call',
     'opt in call':'opt_in_call', 'opt in phone':'opt_in_call',
     'opt in for email':'opt_in_email', 'opt in for email flag':'opt_in_email', 'opt in email':'opt_in_email',
@@ -1599,6 +1619,7 @@
       CSV_REQUIRED.forEach(function(pair){
         item[pair[0]] = cells[index[pair[0]]] == null ? '' : cells[index[pair[0]]];
       });
+      if (index.landline != null) item.landline = cells[index.landline] == null ? '' : cells[index.landline];
       out.push(item);
     }
     if (!out.length) return {error:'The file has a header and no families.'};
@@ -1669,6 +1690,7 @@
       zip: form.zip.value,
       email: form.email.value,
       cell_phone: form.cell_phone.value,
+      landline: form.landline.value,
       opt_in_call: form.opt_in_call.checked ? 'yes' : 'no',
       opt_in_email: form.opt_in_email.checked ? 'yes' : 'no',
       originated_at: form.originated_at.value,

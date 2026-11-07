@@ -125,6 +125,7 @@
           <label>ZIP <input name="zip" type="text" maxlength="20" autocomplete="off"></label>
           <label>Email address <input name="email" type="email" maxlength="120" autocomplete="off"></label>
           <label>Cell phone <input name="cell_phone" type="tel" maxlength="40" autocomplete="off"></label>
+          <label>Landline <input name="landline" type="tel" maxlength="40" autocomplete="off"></label>
           <label>Originating date <input name="originated_at" type="date"></label>
           <label class="wide">Contractor <select name="contractor_id"><option value="0">No contractor</option></select></label>
           <label class="check"><input name="opt_in_call" type="checkbox"> Opted in to calls</label>
@@ -138,7 +139,7 @@
       </form>
       <div class="csv-box">
         <h3>Upload a CSV</h3>
-        <p>One header row, then one family per line. Column names: first_name, last_name, address_1, address_2, city, state, zip, email, cell_phone, opt_in_call, opt_in_email, originated_at, notes, contractor_id. The same columns can be written as first name, last name, address 1, address 2, city, state, zip, email address, cell phone, opt in for phone call, opt in for email, date of originating record creation, notes, and contractor internal id. Opt in is yes or no. Dates are YYYY-MM-DD. Leave contractor id blank when there is not one. Up to 200 families at a time.</p>
+        <p>One header row, then one family per line. Column names: first_name, last_name, address_1, address_2, city, state, zip, email, cell_phone, landline, opt_in_call, opt_in_email, originated_at, notes, contractor_id. The same columns can be written as first name, last name, address 1, address 2, city, state, zip, email address, cell phone, landline, opt in for phone call, opt in for email, date of originating record creation, notes, and contractor internal id. Landline is optional. Opt in is yes or no. Dates are YYYY-MM-DD. Leave contractor id blank when there is not one. Up to 200 families at a time.</p>
         <div class="stage-actions">
           <label class="file-pick">CSV file <input id="family-csv" type="file" accept=".csv,text/csv"></label>
           <button type="button" id="family-upload">Upload</button>
