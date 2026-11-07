@@ -657,6 +657,8 @@
     jump.querySelectorAll('[role="tab"]').forEach(function(tab){
       tab.setAttribute('aria-selected', tab.getAttribute('aria-controls') === id ? 'true' : 'false');
     });
+    var send = document.getElementById('send-message');
+    if (send) send.hidden = id === 'panel-delay';
   }
   if (jump) jump.addEventListener('click', function(event){
     var tab = event.target.closest('[role="tab"]');
