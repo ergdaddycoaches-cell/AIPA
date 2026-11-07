@@ -980,7 +980,7 @@
   function stageField(family){
     if (!stages.length) return '';
     var current = stageFor(family);
-    return '<label class="stage-pick">Stage <select id="stage-select">' + stages.map(function(stage){
+    return '<label class="stage-pick"><select id="stage-select" aria-label="Stage">' + stages.map(function(stage){
       return '<option value="' + stage.id + '"' + (stage.id === current ? ' selected' : '') + '>' + esc(stage.name) + '</option>';
     }).join('') + '</select></label>';
   }
