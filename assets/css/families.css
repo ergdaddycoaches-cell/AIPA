@@ -224,11 +224,11 @@
 .detail .waiting{color:var(--ink-2);margin:.15rem 0;font-size:.9rem}
 .detail .kicker{margin-bottom:0;font-size:.68rem;letter-spacing:.1em}
 .detail h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:.15rem .55rem;font-size:calc(1.2rem + 2px);line-height:1.15;max-width:none}
-.detail h2 .name-pipe{font-size:.85rem;font-weight:400;color:var(--ink-2)}
-.detail h2 .with-contractor{font-size:calc(.85rem + 1px);font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-2)}
+.detail h2 .name-pipe{font-size:calc(.85rem + 1px);font-weight:400;color:var(--ink-2)}
+.detail h2 .with-contractor{font-size:calc(.85rem + 2px);font-weight:500;letter-spacing:0;text-transform:none;color:var(--ink-2)}
 .detail h2 select.with-contractor{
   width:auto;max-width:14rem;min-height:0;margin:0;padding:0 .2rem;
-  font-size:calc(.85rem + 1px);font-weight:500;color:var(--ink-2);background:transparent;border:0}
+  font-size:calc(.85rem + 2px);font-weight:500;color:var(--ink-2);background:transparent;border:0}
 .detail .session{margin-top:0;font-size:.82rem}
 .detail .retired-banner{margin:.15rem 0 0;font-size:.72rem}
 .detail .callback-banner{
