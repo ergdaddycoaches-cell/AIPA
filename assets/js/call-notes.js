@@ -88,17 +88,35 @@
     });
   }
   var dialer = {device:null, token:'', call:null};
-  function designatedNumber(){
-    return e164((row && row.phone) || (profile && profile.cell_phone) || '');
+  function phoneLines(){
+    return {
+      cell: e164((row && row.phone) || (profile && profile.cell_phone) || ''),
+      landline: e164((profile && profile.landline) || '')
+    };
+  }
+  function chosenLine(){
+    var lines = phoneLines();
+    var pick = document.getElementById('dial-which');
+    var want = pick && pick.value === 'landline' ? 'landline' : 'cell';
+    if (want === 'landline' && lines.landline) return {which:'landline', number:lines.landline};
+    if (lines.cell) return {which:'cell', number:lines.cell};
+    if (lines.landline) return {which:'landline', number:lines.landline};
+    return {which:'', number:''};
   }
   function paintDial(message, live){
     var status = document.getElementById('dial-status');
     var hangup = document.getElementById('dial-hangup');
     var button = document.getElementById('dial-call');
     var shown = document.getElementById('dial-number');
-    var number = designatedNumber();
-    if (shown) shown.textContent = number || 'No cell number on file.';
-    if (button) button.disabled = !number || !!live;
+    var pick = document.getElementById('dial-which');
+    var label = document.getElementById('dial-which-label');
+    var lines = phoneLines();
+    var both = !!(lines.cell && lines.landline);
+    if (label) label.hidden = !both;
+    if (pick) pick.disabled = !!live;
+    var chosen = chosenLine();
+    if (shown) shown.textContent = chosen.number || 'No number on file.';
+    if (button) button.disabled = !chosen.number || !!live;
     if (hangup) hangup.hidden = !live;
     if (status && message != null) status.textContent = message;
   }
@@ -108,10 +126,10 @@
     paintDial('Call ended.', false);
   }
   function placeDial(){
-    var number = designatedNumber();
+    var chosen = chosenLine();
     var status = document.getElementById('dial-status');
-    if (!number) {
-      if (status) status.textContent = 'No cell number on file.';
+    if (!chosen.number) {
+      if (status) status.textContent = 'No number on file.';
       return;
     }
     paintDial('Starting the dialer…', true);
@@ -127,7 +145,7 @@
           paintDial((err && err.message) || 'The dialer hit a problem.', false);
         });
       }
-      return dialer.device.connect({params:{To:number, registration_id:String(familyId)}});
+      return dialer.device.connect({params:{To:chosen.number, Line:chosen.which, registration_id:String(familyId)}});
     }).then(function(call){
       if (!call) return;
       dialer.call = call;
@@ -670,6 +688,8 @@
     var dialCall = document.getElementById('dial-call');
     var dialHangup = document.getElementById('dial-hangup');
     if (dialCall) dialCall.addEventListener('click', placeDial);
+    var dialWhich = document.getElementById('dial-which');
+    if (dialWhich) dialWhich.addEventListener('change', function(){ paintDial(null, !!dialer.call); });
     if (dialHangup) dialHangup.addEventListener('click', hangupDial);
     if (token()) { showLogin(false); load(); }
     else showLogin(true);

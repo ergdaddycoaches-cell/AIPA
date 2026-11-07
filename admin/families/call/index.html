@@ -56,6 +56,12 @@
     <h1 id="who">Call notes</h1>
     <p class="dial-line">
       <button class="btn" type="button" id="dial-call">Call</button>
+      <label class="dial-which" id="dial-which-label" hidden>Line
+        <select id="dial-which">
+          <option value="cell">Cell</option>
+          <option value="landline">Landline</option>
+        </select>
+      </label>
       <span id="dial-number"></span>
       <button class="btn quiet" type="button" id="dial-hangup" hidden>Hang up</button>
     </p>
@@ -131,6 +137,6 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/message-copy.js"></script>
-<script src="/assets/js/call-notes.js?v=dial"></script>
+<script src="/assets/js/call-notes.js?v=line"></script>
 </body>
 </html>
