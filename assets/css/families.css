@@ -184,6 +184,15 @@
   color:var(--ink-2);font:inherit;font-weight:700;font-size:1rem;letter-spacing:.02em;
   min-height:36px;padding:.15rem .55rem;cursor:pointer}
 .band-tabs button:first-child{padding-left:0}
+.band-tabs .info-caret{width:1.6rem;min-height:32px;padding:0}
+.band-tabs .info-caret::before{
+  content:"";display:block;width:0;height:0;
+  border-style:solid;border-width:.32rem 0 .32rem .48rem;
+  border-color:transparent transparent transparent var(--ink)}
+.band-tabs .info-caret[aria-expanded="true"]::before{
+  border-width:.48rem .32rem 0 .32rem;
+  border-color:var(--ink) transparent transparent transparent}
+.detail-body .info-record{margin-top:.65rem}
 .band-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--clay)}
 .band-tabs button[data-tab="summary"],.band-tabs button[data-tab="record"]{font-weight:400}
 .detail-body{

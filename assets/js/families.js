@@ -12,7 +12,8 @@
   var stages = [];
   var places = {};
   var stageDraft = [];
-  var detailTab = 'summary';
+  var detailTab = '';
+  var infoOpen = false;
   var detailTabFor = 0;
   var contractors = [];
   var profiles = {};
@@ -626,26 +627,36 @@
     if (profile.notes) lines.push('<p><b>Notes</b> ' + esc(profile.notes) + '</p>');
     return lines.join('') || '<p class="band-empty">No address or notes yet.</p>';
   }
+  function infoBlock(family){
+    var summary = summaryPanel(family);
+    var record = recordPanel(family);
+    var summaryEmpty = summary.indexOf('band-empty') !== -1;
+    var recordEmpty = record.indexOf('band-empty') !== -1;
+    if (summaryEmpty && recordEmpty) return '<p class="band-empty">Nothing recorded yet.</p>';
+    return (summaryEmpty ? '' : '<div class="info-summary">' + summary + '</div>') +
+      (recordEmpty ? '' : '<div class="info-record">' + record + '</div>');
+  }
   function band(family){
     if (detailTabFor !== family.id) {
-      detailTab = 'summary';
+      detailTab = '';
+      infoOpen = false;
       detailTabFor = family.id;
     }
-    var tabs = [{id:'summary', label:'Summary'}];
+    var tabs = [];
     if (family.events.length) tabs.push({id:'timeline', label:'Timeline'});
     if (hasConversation(family)) tabs.push({id:'conversation', label:'Conversation'});
     if (family.reads.length) tabs.push({id:'showed', label:'Showed up'});
-    if (hasRecord(family)) tabs.push({id:'record', label:'Record'});
-    if (!tabs.some(function(tab){ return tab.id === detailTab; })) detailTab = 'summary';
-    var panel = summaryPanel(family);
-    if (detailTab === 'timeline') panel = timeline(family);
+    if (!tabs.some(function(tab){ return tab.id === detailTab; })) detailTab = '';
+    var panel = '';
+    if (infoOpen) panel = infoBlock(family);
+    else if (detailTab === 'timeline') panel = timeline(family);
     else if (detailTab === 'conversation') panel = conversationPanel(family);
     else if (detailTab === 'showed') panel = reads(family);
-    else if (detailTab === 'record') panel = recordPanel(family);
-    if (tabs.length === 1 && panel.indexOf('band-empty') !== -1) return '';
-    return '<div class="band-tabs" role="tablist">' + tabs.map(function(tab){
-      return '<button type="button" role="tab" data-tab="' + tab.id + '" aria-selected="' + (detailTab === tab.id) + '">' + tab.label + '</button>';
-    }).join('') + '</div><div class="detail-body" role="tabpanel">' + panel + '</div>';
+    var caret = '<button type="button" class="info-caret" data-act="info-toggle" aria-expanded="' + (infoOpen ? 'true' : 'false') + '" aria-label="' + (infoOpen ? 'Hide the record' : 'Show the record') + '"></button>';
+    return '<div class="band-tabs">' + caret + tabs.map(function(tab){
+      return '<button type="button" role="tab" data-tab="' + tab.id + '" aria-selected="' + (detailTab === tab.id && !infoOpen) + '">' + tab.label + '</button>';
+    }).join('') + '</div>' +
+      (panel ? '<div class="detail-body" role="region">' + panel + '</div>' : '');
   }
   function choiceList(people, field){
     return people.filter(function(person){ return person[field]; }).map(function(person, index){
@@ -1358,6 +1369,7 @@
     var tabBtn = event.target.closest('[data-tab]');
     if (tabBtn && tabBtn.closest('.band-tabs')) {
       detailTab = tabBtn.dataset.tab;
+      infoOpen = false;
       detailTabFor = selectedId;
       render();
       return;
@@ -1366,6 +1378,13 @@
     if (!button) return;
     var act = button.dataset.act;
     var family = selectedFamily();
+    if (act === 'info-toggle') {
+      infoOpen = !infoOpen;
+      if (infoOpen) detailTab = '';
+      detailTabFor = selectedId;
+      render();
+      return;
+    }
     if (act === 'start-lead') {
       if (!family) return;
       startLead(family);
