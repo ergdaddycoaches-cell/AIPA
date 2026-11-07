@@ -580,7 +580,6 @@
       lines.push('<p><b>Latest</b> ' + esc(pretty(event.occurred_at)) + ' · ' + esc(eventLabel(event)) + (note ? '. ' + esc(note) : '') + '</p>');
     }
     if (family.row.summary) lines.push('<p><b>Conversation</b> ' + esc(firstSentence(family.row.summary)) + '</p>');
-    if (family.profile && family.profile.notes) lines.push('<p>' + esc(firstSentence(family.profile.notes)) + '</p>');
     family.reads.forEach(function(person, index){
       lines.push('<p' + (index ? ' class="sum-next"' : '') + '>' + (index ? '' : '<b>Showed up</b> ') + esc(showedLine(person)) + '</p>');
     });
@@ -624,16 +623,20 @@
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
     if (flagLine(profile.opt_in_sms)) lines.push('<p><b>Texts</b> ' + flagLine(profile.opt_in_sms) + '</p>');
-    if (profile.notes) lines.push('<p><b>Notes</b> ' + esc(profile.notes) + '</p>');
     return lines.join('') || '<p class="band-empty">No address or notes yet.</p>';
   }
   function infoBlock(family){
+    var profile = family.profile || {};
+    var notes = profile.notes
+      ? '<div class="info-notes"><p><b>Notes</b> ' + esc(profile.notes) + '</p></div>'
+      : '';
     var summary = summaryPanel(family);
     var record = recordPanel(family);
     var summaryEmpty = summary.indexOf('band-empty') !== -1;
     var recordEmpty = record.indexOf('band-empty') !== -1;
-    if (summaryEmpty && recordEmpty) return '<p class="band-empty">Nothing recorded yet.</p>';
-    return (summaryEmpty ? '' : '<div class="info-summary">' + summary + '</div>') +
+    if (!notes && summaryEmpty && recordEmpty) return '<p class="band-empty">Nothing recorded yet.</p>';
+    return notes +
+      (summaryEmpty ? '' : '<div class="info-summary">' + summary + '</div>') +
       (recordEmpty ? '' : '<div class="info-record">' + record + '</div>');
   }
   function band(family){
