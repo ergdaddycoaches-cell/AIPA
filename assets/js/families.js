@@ -64,7 +64,6 @@
       body: options.body ? JSON.stringify(options.body) : undefined
     }).then(function(r){
       return r.json().catch(function(){ return {}; }).then(function(data){
-        if (r.status === 401) { window.AIPA_OFFICE.clear(); showLogin(true); }
         if (!r.ok) throw new Error(data.message || data.error || 'Something went wrong.');
         return data;
       });
