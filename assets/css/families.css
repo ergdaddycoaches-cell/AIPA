@@ -443,9 +443,6 @@
 .page-preview a{font-weight:700;text-decoration:underline;text-underline-offset:.2em}
 .page-preview a:hover{color:var(--clay)}
 .contractor-board .pulse{grid-template-columns:repeat(4,minmax(0,1fr))}
-.contractor-board .stage-col{flex-basis:13.5rem}
-.contractor-board .stage-col h2{align-items:flex-start}
-.contractor-board .stage-col h2 span{flex:1 1 auto;min-width:0;font-size:.82rem}
 .contractor-board .family.lost{border-left-color:var(--rule-strong);color:var(--ink-2)}
 .contractor-board .callback-chip{display:inline-flex;align-items:center;gap:.15rem;flex:0 0 auto;margin-top:.05rem}
 .contractor-board .callback-mark{width:1.15rem;height:1.15rem}
