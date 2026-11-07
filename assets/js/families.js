@@ -655,7 +655,7 @@
       detailTabFor = family.id;
     }
     var tabs = [];
-    if (family.events.length) tabs.push({id:'timeline', label:'Timeline'});
+    if (family.events.length) tabs.push({id:'timeline', label:'Details'});
     if (hasConversation(family)) tabs.push({id:'conversation', label:'Conversation'});
     if (family.reads.length) tabs.push({id:'showed', label:'Showed up'});
     if (!tabs.some(function(tab){ return tab.id === detailTab; })) detailTab = '';
