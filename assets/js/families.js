@@ -1018,7 +1018,6 @@
       return;
     }
     var retired = isRetired(family);
-    ensureCadence(family.id);
     var away = callLive() && dial.registrationId !== family.id
       ? '<div class="on-call"><p>On a call with ' + esc(dial.name) + '</p><button type="button" data-act="return-call">Return</button><button type="button" class="hangup" data-act="hangup">Hang up</button></div>'
       : '';
