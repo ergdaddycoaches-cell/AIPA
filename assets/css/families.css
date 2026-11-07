@@ -169,7 +169,7 @@
   font-size:.85rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
 .detail .stage-pick select{
   width:14rem;max-width:100%;min-height:32px;margin:0;padding:.1rem .4rem;
-  font-size:.85rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
+  font-size:calc(.85rem + 1px);font-weight:600;letter-spacing:0;text-transform:none;color:var(--ink)}
 .detail-tools{
   display:flex;flex-wrap:wrap;gap:.4rem .7rem;align-items:center;
   margin-top:.55rem;padding-top:.5rem;border-top:1px solid var(--rule)}
@@ -235,9 +235,9 @@
   display:inline-flex;width:auto;margin:.35rem 0 0;padding:.2rem .45rem;gap:.45rem;align-items:center;
   font-size:.98rem;line-height:1.3;font-weight:700}
 .detail .callback-banner button{min-height:32px;padding:.15rem .5rem;font-size:.9rem}
-.detail .reach button,.detail .call-notes{min-height:30px;padding:.15rem .5rem;font-size:.78rem}
+.detail .reach button,.detail .call-notes{min-height:30px;padding:.15rem .5rem;font-size:calc(.78rem + 1px)}
 .detail .call-notes{
-  appearance:none;display:inline-flex;align-items:center;font:inherit;font-weight:700;font-size:.78rem;
+  appearance:none;display:inline-flex;align-items:center;font:inherit;font-weight:700;font-size:calc(.78rem + 1px);
   color:var(--ink);border:1px solid var(--ink);background:transparent;cursor:pointer}
 .detail .call-notes[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .retired-banner{margin:.7rem 0 0;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.92rem;color:var(--ink-2)}
