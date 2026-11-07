@@ -54,6 +54,12 @@
   <section class="call-sheet wrap" id="sheet" hidden>
     <p><a class="call-back" href="/admin/families/">Pipeline</a></p>
     <h1 id="who">Call notes</h1>
+    <p class="dial-line">
+      <button class="btn" type="button" id="dial-call">Call</button>
+      <span id="dial-number"></span>
+      <button class="btn quiet" type="button" id="dial-hangup" hidden>Hang up</button>
+    </p>
+    <p class="status-line" id="dial-status" role="status"></p>
     <nav class="call-jump" aria-label="Sections">
       <a href="#showed-up">Who showed up</a>
       <a href="#said-heading">What was said</a>
@@ -123,7 +129,8 @@
     </form>
   </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/message-copy.js"></script>
-<script src="/assets/js/call-notes.js"></script>
+<script src="/assets/js/call-notes.js?v=dial"></script>
 </body>
 </html>

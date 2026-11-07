@@ -87,6 +87,61 @@
       });
     });
   }
+  var dialer = {device:null, token:'', call:null};
+  function designatedNumber(){
+    return e164((row && row.phone) || (profile && profile.cell_phone) || '');
+  }
+  function paintDial(message, live){
+    var status = document.getElementById('dial-status');
+    var hangup = document.getElementById('dial-hangup');
+    var button = document.getElementById('dial-call');
+    var shown = document.getElementById('dial-number');
+    var number = designatedNumber();
+    if (shown) shown.textContent = number || 'No cell number on file.';
+    if (button) button.disabled = !number || !!live;
+    if (hangup) hangup.hidden = !live;
+    if (status && message != null) status.textContent = message;
+  }
+  function hangupDial(){
+    if (dialer.call) dialer.call.disconnect();
+    dialer.call = null;
+    paintDial('Call ended.', false);
+  }
+  function placeDial(){
+    var number = designatedNumber();
+    var status = document.getElementById('dial-status');
+    if (!number) {
+      if (status) status.textContent = 'No cell number on file.';
+      return;
+    }
+    paintDial('Starting the dialer…', true);
+    api('/office/voice-token', {method:'POST', body:{}}).then(function(data){
+      if (!data.configured || !data.token) throw new Error(data.message || 'Twilio voice is not connected yet.');
+      if (!window.Twilio || !window.Twilio.Device) throw new Error('The dialer did not load.');
+      if (!dialer.device || dialer.token !== data.token) {
+        if (dialer.device) dialer.device.destroy();
+        dialer.device = new window.Twilio.Device(data.token, {closeProtection:true});
+        dialer.token = data.token;
+        dialer.device.on('error', function(err){
+          dialer.call = null;
+          paintDial((err && err.message) || 'The dialer hit a problem.', false);
+        });
+      }
+      return dialer.device.connect({params:{To:number, registration_id:String(familyId)}});
+    }).then(function(call){
+      if (!call) return;
+      dialer.call = call;
+      call.on('ringing', function(){ paintDial('Ringing…', true); });
+      call.on('accept', function(){ paintDial('On the call.', true); });
+      call.on('disconnect', function(){ dialer.call = null; paintDial('Call ended.', false); });
+      call.on('cancel', function(){ dialer.call = null; paintDial('Call canceled.', false); });
+      call.on('reject', function(){ dialer.call = null; paintDial('The call was declined.', false); });
+      call.on('error', function(err){ dialer.call = null; paintDial((err && err.message) || 'The call could not start.', false); });
+    }).catch(function(err){
+      dialer.call = null;
+      paintDial(err.message || 'The call could not start.', false);
+    });
+  }
   function e164(value){
     var digits = String(value || '').replace(/\D/g, '');
     if (digits.length === 10) return '+1' + digits;
@@ -327,6 +382,7 @@
       return;
     }
     document.getElementById('who').textContent = family.name || 'Call notes';
+    paintDial('', false);
     document.getElementById('summary').value = family.summary || '';
     document.getElementById('follow').value = family.follow_up_note || '';
     var listed = articles.filter(function(article){
@@ -611,6 +667,10 @@
       window.AIPA_OFFICE.clear();
       showLogin(true);
     });
+    var dialCall = document.getElementById('dial-call');
+    var dialHangup = document.getElementById('dial-hangup');
+    if (dialCall) dialCall.addEventListener('click', placeDial);
+    if (dialHangup) dialHangup.addEventListener('click', hangupDial);
     if (token()) { showLogin(false); load(); }
     else showLogin(true);
   } else {
