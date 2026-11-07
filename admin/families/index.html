@@ -184,11 +184,11 @@
           </div>
           <div class="call-panel" id="panel-send" role="tabpanel" aria-labelledby="tab-send" hidden>
           <h2 id="send-heading">What to send</h2>
-          <label for="guide">Guide</label>
-          <select id="guide" name="guide"><option value="">No guide</option></select>
+          <label for="guide">Article</label>
+          <select id="guide" name="guide"><option value="">No article</option></select>
           <label for="follow">Message</label>
           <textarea id="follow" name="follow_up_note" rows="5" maxlength="20000"></textarea>
-          <p class="send-note" id="guide-token-note"><button type="button" id="insert-guide">{{guide}}</button> is the guide title. <button type="button" id="insert-library">{{library}}</button> is the link to the guide we send.</p>
+          <p class="send-note" id="guide-token-note"><button type="button" id="insert-guide">{{guide}}</button> is the article title. <button type="button" id="insert-library">{{library}}</button> is the link to the article we send.</p>
           <div class="send-channels" role="group" aria-label="How to send">
             <button type="button" id="channel-email" aria-pressed="true">Email</button>
             <button type="button" id="channel-text" aria-pressed="false">Text</button>
@@ -222,11 +222,11 @@
           <input id="delay-date" type="date">
           <label for="delay-subject">Subject</label>
           <input id="delay-subject" type="text" maxlength="200">
-          <label for="delay-guide">Guide title</label>
+          <label for="delay-guide">Article title</label>
           <input id="delay-guide" type="text" maxlength="200">
           <label for="delay-body">Email</label>
           <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
-          <p class="send-note">{{guide}} is the guide title. {{library}} is the link to the guide we send, filled in when you approve this on Actions.</p>
+          <p class="send-note">{{guide}} is the article title. {{library}} is the link to the article we send, filled in when you approve this on Actions.</p>
           <button type="button" id="delay-insert">Insert {{guide}}</button>
           </div>
           <div class="call-actions">
@@ -245,6 +245,6 @@
 <script src="/assets/js/recording.js"></script>
 <script src="/assets/js/message-copy.js"></script>
 <script src="/assets/js/families.js?v=phones"></script>
-<script src="/assets/js/call-notes.js?v=tokens"></script>
+<script src="/assets/js/call-notes.js?v=article"></script>
 </body>
 </html>

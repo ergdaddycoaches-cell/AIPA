@@ -32,7 +32,7 @@
     'family'
   ];
   var GUIDE_TOKEN = '{{guide}}';
-  var GUIDE_LINE = /This is the guide for that:\s*(?:\{\{guide\}\}|\[[^\]]*\]|[^.\n]*)\.?/;
+  var GUIDE_LINE = /This is the (?:guide|article) for that:\s*(?:\{\{guide\}\}|\[[^\]]*\]|[^.\n]*)\.?/;
 
   function token(){ return sessionStorage.getItem(KEY) || ''; }
   function esc(value){
@@ -233,14 +233,14 @@
       if (!pdf) mail.body = note || '';
       else if (note && note.indexOf(pdf) !== -1) mail.body = note;
       else if (slug && mail.body.indexOf('/library/sent/') === -1) {
-        mail.body += '\n\nRead this guide:\n' + link;
+        mail.body += '\n\nRead this article:\n' + link;
       }
       return mail;
     }
     if (!guide.title) return {subject: 'Following up on our conversation', body: note || ''};
-    if (!pdf) return {subject: 'A guide: ' + guide.title, body: note || ''};
-    if (note && note.indexOf(pdf) !== -1) return {subject: 'A guide: ' + guide.title, body: note};
-    var handout = 'Read this guide:\n' + link + '\n\nPrint this guide:\n' + pdf + '\n\nOr call 833-AIPA-HUB.';
+    if (!pdf) return {subject: 'An article: ' + guide.title, body: note || ''};
+    if (note && note.indexOf(pdf) !== -1) return {subject: 'An article: ' + guide.title, body: note};
+    var handout = 'Read this article:\n' + link + '\n\nPrint this article:\n' + pdf + '\n\nOr call 833-AIPA-HUB.';
     return {subject: 'A guide: ' + guide.title, body: note ? note + '\n\n' + handout : handout};
   }
   function defaultSubject(){
@@ -329,7 +329,7 @@
     }).trim();
     if (!hadPhrase && text) return;
     if (!hadPhrase && !seedEmpty) return;
-    var sentence = 'This is the guide for that: ' + GUIDE_TOKEN + '.';
+    var sentence = 'This is the article for that: ' + GUIDE_TOKEN + '.';
     if (!text) box.value = sentence;
     else box.value = text + (/[.!?]$/.test(text) ? ' ' : '. ') + sentence;
   }
@@ -361,7 +361,7 @@
       if (ia !== ib) return ia - ib;
       return String(groups[a].name).localeCompare(String(groups[b].name));
     });
-    var html = '<option value="">No guide</option>';
+    var html = '<option value="">No article</option>';
     var placed = false;
     slugs.forEach(function(slug){
       var group = groups[slug];
@@ -584,7 +584,7 @@
     }
     var guide = chosenGuide();
     if (document.getElementById('follow').value.indexOf(GUIDE_TOKEN) !== -1 && !guide.title) {
-      status.textContent = 'Pick a guide so {{guide}} has a title.';
+      status.textContent = 'Pick an article so {{guide}} has a title.';
       return;
     }
     var subject = channel === 'email' ? document.getElementById('subject').value.trim() : '';
