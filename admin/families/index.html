@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="stylesheet" href="/assets/css/families.css?v=gap">
+<link rel="stylesheet" href="/assets/css/families.css?v=flush">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -60,18 +60,18 @@
         <option value="0">No contractor</option>
       </select>
     </label>
+    <div class="board-tools">
+      <div class="tool-row">
+        <button type="button" id="family-open" data-office-admin>Add a family</button>
+        <button type="button" id="stages-open" data-office-admin>Edit stages</button>
+      </div>
+    </div>
     <div class="pulse" role="group" aria-label="Time since last touch">
       <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
       <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Quiet 7 days</span></button>
       <button type="button" data-age="14" aria-pressed="false"><b id="count-14">0</b><span>Quiet 14 days</span></button>
       <button type="button" data-age="30" aria-pressed="false"><b id="count-30">0</b><span>Quiet 30 days</span></button>
       <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
-    </div>
-    <div class="board-tools">
-      <div class="tool-row">
-        <button type="button" id="family-open" data-office-admin>Add a family</button>
-        <button type="button" id="stages-open" data-office-admin>Edit stages</button>
-      </div>
     </div>
     </div>
     <section id="job-ask" class="stage-editor" hidden>
