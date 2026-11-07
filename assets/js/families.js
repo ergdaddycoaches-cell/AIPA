@@ -853,8 +853,13 @@
   }
   function lastContactWhen(family){
     var when = '';
+    var meeting = '';
     (family.events || []).forEach(function(event){
-      if (!countsAsTouch(event) || event.kind === 'meeting') return;
+      if (!countsAsTouch(event)) return;
+      if (event.kind === 'meeting') {
+        if (!meeting || event.occurred_at > meeting) meeting = event.occurred_at;
+        return;
+      }
       if (!when || event.occurred_at > when) when = event.occurred_at;
     });
     var bag = cadenceRuns[family.id];
@@ -864,7 +869,10 @@
         if (at && (!when || at > when)) when = at;
       });
     }
-    return when;
+    return when || meeting;
+  }
+  function contactLabel(value){
+    return pretty(value) || dateLabel(value);
   }
   function contractorBesideName(family){
     var current = contractorIdOf(family);
@@ -1018,6 +1026,7 @@
       return;
     }
     var retired = isRetired(family);
+    ensureCadence(family.id);
     var away = callLive() && dial.registrationId !== family.id
       ? '<div class="on-call"><p>On a call with ' + esc(dial.name) + '</p><button type="button" data-act="return-call">Return</button><button type="button" class="hangup" data-act="hangup">Hang up</button></div>'
       : '';
@@ -1025,7 +1034,7 @@
     var callbackWhen = wantsCallback(family) ? callbackPhrase(family) : '';
     var callbackBanner = wantsCallback(family) ? '<p class="callback-banner">Asked for a call back' + (callbackWhen ? ' · ' + esc(callbackWhen) : '') + ' <button type="button" data-act="clear-callback">Callback done</button></p>' : '';
     var when = lastContactWhen(family);
-    var contact = when ? '<span class="name-pipe" aria-hidden="true">|</span><span class="with-contractor">' + esc(pretty(when)) + '</span>' : '';
+    var contact = when ? '<span class="name-pipe" aria-hidden="true">|</span><span class="with-contractor">' + esc(contactLabel(when)) + '</span>' : '';
     document.getElementById('detail').innerHTML =
       away +
       '<div class="detail-head">' +
