@@ -151,8 +151,11 @@
 .detail{
   position:relative;background:var(--card);border:1px solid var(--ink);
   padding:.4rem .7rem .45rem;
-  font-family:"Newsreader",Georgia,"Times New Roman",serif}
-.detail button,.detail select,.detail input,.detail textarea{font-family:"Newsreader",Georgia,"Times New Roman",serif}
+  font-family:"Atkinson Hyperlegible","Segoe UI",Helvetica,Arial,sans-serif}
+.detail h1,.detail h2,.detail h3,.detail h4,
+.detail button,.detail select,.detail input,.detail textarea,
+.detail .who-choice b,.detail .dial-who,.detail .reads strong{
+  font-family:"Atkinson Hyperlegible","Segoe UI",Helvetica,Arial,sans-serif}
 .detail-head{min-width:0}
 .detail-assign{
   display:flex;flex-wrap:wrap;gap:.45rem .75rem;margin-top:.45rem;align-items:flex-end}
