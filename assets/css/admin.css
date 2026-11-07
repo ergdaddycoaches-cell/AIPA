@@ -199,8 +199,9 @@ html:has(.mast .mast-actions){scroll-padding-top:calc(env(safe-area-inset-top,0p
   position:sticky;top:var(--mast-h,10rem);z-index:11;background:var(--paper);
   padding:.65rem 0 .85rem;margin-bottom:.25rem;border-bottom:1px solid var(--rule)}
 .dial-line{display:flex;flex-wrap:wrap;gap:.55rem;align-items:flex-end;margin:.35rem 0 .15rem}
-.dial-line #dial-number{font-variant-numeric:tabular-nums;padding-bottom:.35rem}
-.dial-which{display:inline-flex;align-items:flex-end;gap:.35rem;margin:0}
+.dial-line .btn{min-height:40px;padding:.63rem 1.25rem}
+.dial-line #dial-number{font-variant-numeric:tabular-nums;line-height:1;padding:0}
+.dial-which{display:inline-flex;align-items:flex-end;margin:0}
 .dial-which select{font:inherit}
 .action-cal{margin:.85rem 0 1rem}
 .action-cal-nav{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:0 0 .55rem}
