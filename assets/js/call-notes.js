@@ -470,41 +470,31 @@
     return match ? match[1] : '';
   }
   function setCallback(on, date){
-    var yes = document.getElementById('callback-yes');
-    var no = document.getElementById('callback-no');
     var box = document.getElementById('callback-date');
-    if (!yes || !no || !box) return;
-    yes.setAttribute('aria-pressed', on ? 'true' : 'false');
-    no.setAttribute('aria-pressed', on ? 'false' : 'true');
-    box.disabled = !on;
+    if (!box) return;
+    box.value = on && date ? date : (date || '');
     if (!on) box.value = '';
-    else if (date != null) box.value = date;
   }
   function setDelay(on, date, subject, body, guide) {
-    var yes = document.getElementById('delay-yes');
-    var no = document.getElementById('delay-no');
     var fields = ['delay-date', 'delay-subject', 'delay-guide', 'delay-body'].map(function(id){
       return document.getElementById(id);
     });
-    var insert = document.getElementById('delay-insert');
-    var insertLibrary = document.getElementById('delay-insert-library');
-    if (!yes || !no || fields.some(function(field){ return !field; })) return;
-    yes.setAttribute('aria-pressed', on ? 'true' : 'false');
-    no.setAttribute('aria-pressed', on ? 'false' : 'true');
-    fields.forEach(function(field){ field.disabled = !on; });
-    if (insert) insert.disabled = !on;
-    if (insertLibrary) insertLibrary.disabled = !on;
-    if (!on) fields.forEach(function(field){ field.value = ''; });
-    else {
-      if (date != null) document.getElementById('delay-date').value = date;
-      if (subject != null) document.getElementById('delay-subject').value = subject;
-      if (body != null) document.getElementById('delay-body').value = body;
-      if (guide != null) document.getElementById('delay-guide').value = guide;
+    if (fields.some(function(field){ return !field; })) return;
+    if (!on) {
+      fields.forEach(function(field){ field.value = ''; });
+      return;
     }
+    if (date != null) document.getElementById('delay-date').value = date;
+    if (subject != null) document.getElementById('delay-subject').value = subject;
+    if (body != null) document.getElementById('delay-body').value = body;
+    if (guide != null) document.getElementById('delay-guide').value = guide;
   }
   function delayOn(){
-    var yes = document.getElementById('delay-yes');
-    return !!(yes && yes.getAttribute('aria-pressed') === 'true');
+    var ids = ['delay-date', 'delay-subject', 'delay-guide', 'delay-body'];
+    return ids.some(function(id){
+      var field = document.getElementById(id);
+      return !!(field && String(field.value || '').trim());
+    });
   }
   function collectedPeople(){
     return Array.prototype.map.call(peopleBox.children, function(block){
@@ -585,11 +575,10 @@
       follow_up_note: document.getElementById('follow').value,
       attendee_reads: JSON.stringify(collectedPeople())
     }}).then(function(){
-      var yes = document.getElementById('callback-yes');
-      var wants = yes && yes.getAttribute('aria-pressed') === 'true';
+      var wants = !!document.getElementById('callback-date').value;
       return api('/office/callback', {method:'POST', body:{
         registration_id: row.id,
-        requested: !!wants,
+        requested: wants,
         callback_at: wants ? document.getElementById('callback-date').value : ''
       }});
     }).then(function(){
@@ -652,14 +641,6 @@
   }
 
   document.getElementById('add-person').addEventListener('click', function(){ addPerson(); });
-  document.getElementById('callback-yes').addEventListener('click', function(){ setCallback(true); });
-  document.getElementById('callback-no').addEventListener('click', function(){ setCallback(false); });
-  document.getElementById('delay-yes').addEventListener('click', function(){
-    var guide = document.getElementById('delay-guide');
-    var fillGuide = guide && !guide.value ? chosenGuide().title : null;
-    setDelay(true, document.getElementById('delay-date').value, document.getElementById('delay-subject').value, document.getElementById('delay-body').value, fillGuide);
-  });
-  document.getElementById('delay-no').addEventListener('click', function(){ setDelay(false); });
   setDelay(false);
   document.getElementById('delay-insert').addEventListener('click', function(){
     insertInto(document.getElementById('delay-body'), GUIDE_TOKEN);
