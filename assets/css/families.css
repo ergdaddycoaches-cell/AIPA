@@ -13,9 +13,12 @@
 .pulse button[aria-pressed="true"]{background:#243028;box-shadow:inset 0 -4px 0 var(--clay)}
 .pulse button[aria-pressed="true"] b{color:#F3E2BC}
 .pulse button:hover{background:#314038}
-.clock:not(.contractor-board) .pulse button{padding:.38rem .7rem .42rem}
-.clock:not(.contractor-board) .pulse b{font-size:clamp(1.35rem,2vw,1.7rem);line-height:1}
-.clock:not(.contractor-board) .pulse span{margin-top:.12rem;font-size:.72rem;font-weight:600}
+.clock:not(.contractor-board) .pulse-row{display:flex;align-items:flex-end;gap:.7rem}
+.clock:not(.contractor-board) .pulse-row .contractor-filter{margin:0;flex:0 0 auto}
+.clock:not(.contractor-board) .pulse-row .pulse{flex:1 1 auto;min-width:0}
+.clock:not(.contractor-board) .pulse button{padding:.22rem .35rem .26rem}
+.clock:not(.contractor-board) .pulse b{font-size:1.15rem;line-height:1}
+.clock:not(.contractor-board) .pulse span{margin-top:.08rem;font-size:.64rem;font-weight:600;white-space:nowrap}
 
 .unmatched{margin:1.25rem 0 0;padding:1rem 1.15rem 1.15rem;background:var(--card);border:1px dashed var(--rule-strong)}
 .unmatched h2{font-size:1.45rem}
@@ -30,7 +33,6 @@
 .board-tools .eyebrow{margin:0}
 .tool-row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:flex-end;justify-content:flex-end;padding:0;border:0}
 .contractor-filter{display:block;font-weight:700;font-size:.78rem}
-.clock:not(.contractor-board) .contractor-filter{margin:0 0 .55rem}
 .contractor-filter select{
   display:block;margin-top:.15rem;min-width:11rem;font:inherit;font-weight:500;font-size:.85rem;color:inherit;
   background:var(--paper);border:1px solid var(--rule-strong);min-height:36px;padding:.2rem .4rem}
@@ -418,8 +420,10 @@
   .stage-editor li{grid-template-columns:minmax(0,1fr) auto auto}
   .stage-editor li button[data-stage-remove]{grid-column:1 / -1}
   .pulse{grid-template-columns:1fr 1fr}
+  .clock:not(.contractor-board) .pulse{grid-template-columns:repeat(5,minmax(0,1fr))}
   .pulse button:nth-child(odd){border-right:1px solid rgba(247,242,232,.16)}
   .pulse button:nth-child(5){grid-column:1 / -1;border-right:0;border-top:1px solid rgba(247,242,232,.16)}
+  .clock:not(.contractor-board) .pulse button:nth-child(5){grid-column:auto;border-top:0}
   .detail-body{display:block}
   .detail-assign{display:block}
   .detail .stage-pick,.detail .stage-pick select{width:100%}

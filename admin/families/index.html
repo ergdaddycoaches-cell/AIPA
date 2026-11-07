@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="stylesheet" href="/assets/css/families.css?v=cols">
+<link rel="stylesheet" href="/assets/css/families.css?v=row">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -53,6 +53,7 @@
   </section>
 
   <section class="clock wrap" id="dash" hidden>
+    <div class="pulse-row">
     <label class="contractor-filter">Contractor
       <select id="contractor-filter">
         <option value="">All contractors</option>
@@ -65,6 +66,7 @@
       <button type="button" data-age="14" aria-pressed="false"><b id="count-14">0</b><span>Quiet 14 days</span></button>
       <button type="button" data-age="30" aria-pressed="false"><b id="count-30">0</b><span>Quiet 30 days</span></button>
       <button type="button" data-age="never" aria-pressed="false"><b id="count-never">0</b><span>Never after the 1:1</span></button>
+    </div>
     </div>
 
     <div class="board-tools">
