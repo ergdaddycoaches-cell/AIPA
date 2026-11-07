@@ -352,8 +352,8 @@ section.call-sheet.wrap{max-width:none}
 .who-line .dial-line{margin:0}
 .call-sheet h1{font-size:clamp(2rem,4vw,2.8rem);line-height:1.1;margin:0}
 .call-sheet h2{font-size:1.35rem;margin:1.5rem 0 .2rem}
-.call-sheet .dial-which{display:inline-flex;width:auto}
-.call-sheet .dial-which select{width:auto;height:40px;min-height:40px;padding:0 .55rem}
+.call-sheet .dial-which{display:inline-flex;width:auto;margin:0;align-items:center}
+.call-sheet .dial-which select{width:auto;height:40px;min-height:40px;padding:0 1.7rem 0 .7rem}
 .call-back{font-weight:700}
 .call-sheet label{display:block;font-weight:700;font-size:.78rem;margin:.75rem 0 .2rem}
 .call-sheet textarea,.call-sheet input,.call-sheet select{
