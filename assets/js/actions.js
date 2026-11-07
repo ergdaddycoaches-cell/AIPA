@@ -602,14 +602,15 @@
         });
       });
       sessionItems(meetings, signups).forEach(function(item){ calls.push(item); });
+      var sample = signups.filter(function(row){ return /^zip t test$/i.test(String(row.name || '').trim()); })[0];
       calls.push({
         group: 'call',
         kind: 'Family',
-        name: 'Sample household',
-        phone: '',
-        email: '',
+        name: sample && sample.name ? sample.name : 'Zip T Test',
+        phone: sample && sample.phone ? sample.phone : '',
+        email: sample && sample.email ? sample.email : '',
         note: 'Sample callback for the calendar.',
-        href: '/admin/families/',
+        href: sample ? '/admin/families/call/?id=' + sample.id : '/admin/families/',
         date: '2026-11-21'
       });
       summary.households = householdRows.length;
