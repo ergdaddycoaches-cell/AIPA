@@ -199,10 +199,16 @@ html:has(.mast .mast-actions){scroll-padding-top:calc(env(safe-area-inset-top,0p
   position:sticky;top:var(--mast-h,10rem);z-index:11;background:var(--paper);
   padding:.65rem 0 .85rem;margin-bottom:.25rem;border-bottom:1px solid var(--rule)}
 .dial-line{display:flex;flex-wrap:wrap;gap:.55rem;align-items:flex-end;margin:.35rem 0 .15rem}
-.dial-line .btn{min-height:40px;padding:.63rem 1.25rem}
-.dial-line #dial-number{font-variant-numeric:tabular-nums;line-height:1;padding:0}
+.dial-line .btn{height:40px;min-height:40px;padding:0 1.25rem}
+.dial-line #dial-number{
+  display:inline-flex;align-items:center;height:40px;margin:0;padding:0 .9rem;
+  border-radius:999px;background:var(--sage-wash);color:var(--ink);
+  font-variant-numeric:tabular-nums;line-height:1;max-width:none}
+.dial-line #dial-number.is-land{background:var(--clay-wash)}
+.dial-line #dial-number.is-empty{background:var(--paper-2)}
 .dial-which{display:inline-flex;align-items:flex-end;margin:0}
-.dial-which select{font:inherit}
+.dial-which select{height:40px;min-height:40px;padding:0 .55rem;background:var(--sage-wash)}
+.dial-which select.is-land{background:var(--clay-wash)}
 .action-cal{margin:.85rem 0 1rem}
 .action-cal-nav{display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;margin:0 0 .55rem}
 .action-cal-nav h2{margin:0;flex:1 1 12rem;font-size:1.45rem}

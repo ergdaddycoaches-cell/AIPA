@@ -115,7 +115,12 @@
     if (label) label.hidden = !both;
     if (pick) pick.disabled = !!live;
     var chosen = chosenLine();
-    if (shown) shown.textContent = chosen.number || 'No number on file.';
+    if (shown) {
+      shown.textContent = chosen.number || 'No number on file.';
+      shown.classList.toggle('is-land', chosen.which === 'landline');
+      shown.classList.toggle('is-empty', !chosen.number);
+    }
+    if (pick) pick.classList.toggle('is-land', chosen.which === 'landline');
     if (button) button.disabled = !chosen.number || !!live;
     if (hangup) hangup.hidden = !live;
     if (status && message != null) status.textContent = message;
