@@ -192,7 +192,11 @@
 .band-tabs .info-caret[aria-expanded="true"]::before{
   border-width:.48rem .32rem 0 .32rem;
   border-color:var(--ink) transparent transparent transparent}
-.detail-body .info-record{margin-top:.65rem}
+.detail-body .info-record{margin-top:.3rem}
+.detail-body .info-summary p,.detail-body .info-record p{
+  margin:0;max-width:none;font-size:1.05rem;line-height:1.25}
+.detail-body .info-summary p:has(> b),.detail-body .info-record p:has(> b){
+  display:grid;grid-template-columns:8.5rem minmax(0,1fr);column-gap:.35rem;align-items:baseline}
 .band-tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--clay)}
 .band-tabs button[data-tab="summary"],.band-tabs button[data-tab="record"]{font-weight:400}
 .detail-body{
