@@ -602,6 +602,16 @@
         });
       });
       sessionItems(meetings, signups).forEach(function(item){ calls.push(item); });
+      calls.push({
+        group: 'call',
+        kind: 'Family',
+        name: 'Sample household',
+        phone: '',
+        email: '',
+        note: 'Sample callback for the calendar.',
+        href: '/admin/families/',
+        date: '2026-11-21'
+      });
       summary.households = householdRows.length;
       summary.sessions = calls.filter(function(item){ return item.group === 'session'; }).length;
       summary.callbacks = calls.filter(function(item){ return item.group === 'call'; }).length;
