@@ -613,12 +613,6 @@
     var lines = [];
     var address = addressLine(profile);
     if (address) lines.push('<p><b>Address</b> ' + esc(address) + '</p>');
-    var email = family.row.email || profile.email;
-    var phone = cellOf(family.row, profile);
-    var landline = landlineOf(profile);
-    if (email) lines.push('<p><b>Email</b> ' + esc(email) + '</p>');
-    lines.push('<p><b>Cell</b> ' + (phone ? esc(phone) : 'None') + '</p>');
-    lines.push('<p><b>Landline</b> ' + (landline ? esc(landline) : 'None') + '</p>');
     if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
@@ -984,6 +978,18 @@
       return '<option value="' + stage.id + '"' + (stage.id === current ? ' selected' : '') + '>' + esc(stage.name) + '</option>';
     }).join('') + '</select></label>';
   }
+  function reachFacts(family){
+    var profile = family.profile || {};
+    var email = family.row.email || profile.email;
+    var items = [
+      ['Cell', cellOf(family.row, profile)],
+      ['Landline', landlineOf(profile)],
+      ['Email', email]
+    ];
+    return '<p class="reach-facts">' + items.map(function(item){
+      return '<span><b>' + item[0] + '</b> ' + esc(item[1] || 'None') + '</span>';
+    }).join('') + '</p>';
+  }
   function detail(family){
     if (!family) {
       document.getElementById('detail').innerHTML = '<p class="waiting">No one is in this view.</p>';
@@ -1000,22 +1006,24 @@
       away +
       '<div class="detail-head">' +
       '<h2>' + esc(family.row.name) + '</h2>' +
+      contractorField(family) +
       (family.row.readiness_note ? '<p class="split-note"><b>Readiness</b> ' + esc(family.row.readiness_note) + '</p>' : '') +
       banner +
       callbackBanner +
       '</div>' +
-      '<div class="detail-assign">' +
-      contractorField(family) +
-      stageField(family) +
-      '<div class="reach" role="group" aria-label="Reach this person">' +
-      inviteButton(family) +
-      '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
+      reachFacts(family) +
+      '<div class="detail-stage">' + stageField(family) + '</div>' +
+      '<div class="reach reach-main" role="group" aria-label="Reach this person">' +
       '<button type="button" data-act="call"' + (cellOf(family.row, family.profile) || landlineOf(family.profile) ? '' : ' class="is-missing"') + ' aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text"' + (cellOf(family.row, family.profile) ? '' : ' class="is-missing"') + ' aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
       '<button type="button" data-act="email" aria-pressed="' + (reachMode === 'email') + '">Email</button>' +
+      '</div>' +
+      '<div class="reach reach-quiet" role="group" aria-label="More actions">' +
+      inviteButton(family) +
+      '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
-      '</div></div>' +
+      '</div>' +
       holdLine(family) +
       cadencePanel(family) +
       reachPanel(family) +
