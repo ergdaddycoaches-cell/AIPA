@@ -30,6 +30,7 @@
 .board-tools .eyebrow{margin:0}
 .tool-row{display:flex;flex-wrap:wrap;gap:.45rem;align-items:flex-end;justify-content:flex-end;padding:0;border:0}
 .contractor-filter{display:block;font-weight:700;font-size:.78rem}
+.clock:not(.contractor-board) .contractor-filter{margin:0 0 .55rem}
 .contractor-filter select{
   display:block;margin-top:.15rem;min-width:11rem;font:inherit;font-weight:500;font-size:.85rem;color:inherit;
   background:var(--paper);border:1px solid var(--rule-strong);min-height:36px;padding:.2rem .4rem}

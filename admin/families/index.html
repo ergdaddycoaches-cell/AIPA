@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css">
-<link rel="stylesheet" href="/assets/css/families.css?v=pulse">
+<link rel="stylesheet" href="/assets/css/families.css?v=filter">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -53,6 +53,12 @@
   </section>
 
   <section class="clock wrap" id="dash" hidden>
+    <label class="contractor-filter">Contractor
+      <select id="contractor-filter">
+        <option value="">All contractors</option>
+        <option value="0">No contractor</option>
+      </select>
+    </label>
     <div class="pulse" role="group" aria-label="Time since last touch">
       <button type="button" data-age="all" aria-pressed="true"><b id="count-all">0</b><span>All</span></button>
       <button type="button" data-age="7" aria-pressed="false"><b id="count-7">0</b><span>Quiet 7 days</span></button>
@@ -63,14 +69,7 @@
 
     <div class="board-tools">
       <div class="tool-row">
-        <label class="contractor-filter">Contractor
-          <select id="contractor-filter">
-            <option value="">All contractors</option>
-            <option value="0">No contractor</option>
-          </select>
-        </label>
         <button type="button" id="family-open" data-office-admin>Add a family</button>
-        <button type="button" id="contractors-open" data-office-admin>Contractors</button>
         <button type="button" id="stages-open" data-office-admin>Edit stages</button>
       </div>
     </div>
@@ -234,7 +233,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/recording.js"></script>
 <script src="/assets/js/message-copy.js"></script>
-<script src="/assets/js/families.js?v=details"></script>
+<script src="/assets/js/families.js?v=filter"></script>
 <script src="/assets/js/call-notes.js"></script>
 </body>
 </html>

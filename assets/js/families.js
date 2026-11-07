@@ -1715,7 +1715,8 @@
   document.getElementById('family-cancel').addEventListener('click', function(){
     document.getElementById('family-editor').hidden = true;
   });
-  document.getElementById('contractors-open').addEventListener('click', function(){
+  var contractorsOpen = document.getElementById('contractors-open');
+  if (contractorsOpen) contractorsOpen.addEventListener('click', function(){
     document.getElementById('contractor-status').textContent = '';
     document.getElementById('contractor-editor').hidden = false;
     drawContractors();
