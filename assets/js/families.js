@@ -717,8 +717,12 @@
     var space = name.indexOf(' ');
     return space > 0 ? name.slice(0, space) : name;
   }
+  function stageLabel(family){
+    var stage = stages.filter(function(item){ return item.id === stageFor(family); })[0];
+    return stage ? String(stage.name || '').trim().toLowerCase() : '';
+  }
   function inviteCopy(family){
-    var visit = family.row.attended_1_1 === 'yes';
+    var visit = stageLabel(family).indexOf('1:1') !== -1;
     if (window.AIPA_MESSAGES) {
       var tokens = messageTokens(family);
       var email = AIPA_MESSAGES.compose(visit ? 'invite_visit' : 'invite_qa', tokens);
@@ -732,7 +736,7 @@
     }
     var who = firstName(family);
     var hello = who ? 'Hello ' + who + ',' : 'Hello,';
-    if (family.row.attended_1_1 === 'yes') {
+    if (visit) {
       return {
         next: 'a home visit',
         subject: 'A home visit',
@@ -747,16 +751,10 @@
       sms: (who ? 'Hi ' + who + ', ' : 'Hi, ') + 'it\'s {{host_name}}. Thanks for joining the Live Q&A. If you\'d like a private chat about your own home, you can book a 1:1 here: https://goaipa.com/ask-anything/ Reply STOP to opt out.'
     };
   }
-  function attendHtml(family){
-    var seminar = family.row.attended_seminar === 'yes';
-    var one = family.row.attended_1_1 === 'yes';
-    var invite = (seminar || one)
-      ? '<button type="button" data-act="invite" aria-pressed="' + (reachMode === 'invite') + '">Invite to the next step</button>'
-      : '';
-    return '<div class="attend" role="group" aria-label="Attendance">' +
-      '<button type="button" data-act="attend" data-kind="seminar" aria-pressed="' + seminar + '">Attended Q&A</button>' +
-      '<button type="button" data-act="attend" data-kind="1_1" aria-pressed="' + one + '">Attended 1:1</button>' +
-      invite + '</div>';
+  function inviteButton(family){
+    var name = stageLabel(family);
+    if (name.indexOf('attended') === -1) return '';
+    return '<button type="button" data-act="invite" aria-pressed="' + (reachMode === 'invite') + '">Invite to the next step</button>';
   }
   function reachPanel(family){
     var showingCall = dial.registrationId === family.id && dial.phase && (reachMode === 'call' || callLive() || dial.phase === 'ended' || dial.phase === 'error');
@@ -998,8 +996,8 @@
       '</div>' +
       holdLine(family) +
       '<div class="detail-tools">' +
-      attendHtml(family) +
       '<div class="reach" role="group" aria-label="Reach this person">' +
+      inviteButton(family) +
       '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
       '<button type="button" data-act="call" aria-pressed="' + (reachMode === 'call') + '">Call</button>' +
       '<button type="button" data-act="text" aria-pressed="' + (reachMode === 'text') + '">Text</button>' +
@@ -1387,19 +1385,6 @@
     if (!family) return;
     if (act === 'call-notes') {
       if (window.AIPA_CALL_NOTES) window.AIPA_CALL_NOTES.open(family.id);
-      return;
-    }
-    if (act === 'attend') {
-      var kind = button.getAttribute('data-kind');
-      var turningOn = button.getAttribute('aria-pressed') !== 'true';
-      api('/office/attendance', {method:'POST', body:{registration_id: family.id, kind: kind, attended: turningOn}}).then(function(){
-        reachMode = turningOn ? 'invite' : (reachMode === 'invite' ? '' : reachMode);
-        if (!turningOn) pendingInvite = null;
-        return load();
-      }).catch(function(err){
-        var line = document.getElementById('dash-status');
-        if (line) line.textContent = err.message;
-      });
       return;
     }
     if (act === 'invite-email' || act === 'invite-text') {
