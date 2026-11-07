@@ -603,7 +603,7 @@
     var email = family.row.email || profile.email;
     var phone = family.row.phone || profile.cell_phone;
     if (email) lines.push('<p><b>Email</b> ' + esc(email) + '</p>');
-    if (phone) lines.push('<p><b>Cell</b> ' + esc(phone) + '</p>');
+    lines.push('<p><b>Cell</b> ' + (phone ? esc(phone) : 'None') + '</p>');
     if (profile.originated_at) lines.push('<p><b>Opened</b> ' + esc(dateLabel(profile.originated_at)) + '</p>');
     if (flagLine(profile.opt_in_call)) lines.push('<p><b>Calls</b> ' + flagLine(profile.opt_in_call) + '</p>');
     if (flagLine(profile.opt_in_email)) lines.push('<p><b>Emails</b> ' + flagLine(profile.opt_in_email) + '</p>');
