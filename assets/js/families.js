@@ -579,7 +579,7 @@
       lines.push('<p><b>Latest</b> ' + esc(pretty(event.occurred_at)) + ' · ' + esc(eventLabel(event)) + (note ? '. ' + esc(note) : '') + '</p>');
     }
     if (family.row.summary) lines.push('<p><b>Conversation</b> ' + esc(firstSentence(family.row.summary)) + '</p>');
-    if (family.profile && family.profile.notes) lines.push('<p><b>Notes</b> ' + esc(firstSentence(family.profile.notes)) + '</p>');
+    if (family.profile && family.profile.notes) lines.push('<p>' + esc(firstSentence(family.profile.notes)) + '</p>');
     family.reads.forEach(function(person, index){
       lines.push('<p' + (index ? ' class="sum-next"' : '') + '>' + (index ? '' : '<b>Showed up</b> ') + esc(showedLine(person)) + '</p>');
     });
