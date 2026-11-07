@@ -75,8 +75,8 @@
 .stage-actions .btn{width:auto}
 #stage-add,#stage-cancel{
   appearance:none;background:transparent;border:0;font:inherit;font-weight:700;min-height:44px;cursor:pointer;color:var(--ink)}
-.pipeline{display:flex;gap:.7rem;overflow-x:auto;align-items:flex-start;padding-bottom:.35rem}
-.stage-col{flex:0 0 12.25rem;background:var(--paper);border:1px solid var(--rule);min-height:4.5rem;padding:.4rem .4rem .5rem}
+.pipeline{display:flex;gap:.45rem;overflow-x:auto;align-items:flex-start;padding-bottom:.35rem}
+.stage-col{flex:0 0 8.75rem;background:var(--paper);border:1px solid var(--rule);min-height:4.5rem;padding:.35rem .35rem .4rem}
 .stage-col.drop{border-color:var(--clay);box-shadow:inset 0 0 0 2px var(--clay)}
 .stage-col h2{display:flex;justify-content:space-between;gap:.4rem;align-items:baseline;font-size:.95rem;line-height:1.2;margin:0 0 .4rem}
 .stage-col h2 b{font-family:"Newsreader",Georgia,serif;font-weight:400;font-size:1.05rem;line-height:1}
