@@ -14,6 +14,9 @@
 .pulse button[aria-pressed="true"] b{color:#F3E2BC}
 .pulse button:hover{background:#314038}
 .clock:not(.contractor-board) .pulse-row{display:flex;align-items:flex-end;gap:.7rem}
+.clock:not(.contractor-board) .pulse-row .board-tools{margin-top:0;flex:0 0 auto}
+.clock:not(.contractor-board) #dash-status{min-height:0;margin:0}
+.clock:not(.contractor-board) .board{margin-top:10px}
 .clock:not(.contractor-board) .pulse{color:#fff}
 .clock:not(.contractor-board) .pulse-row .contractor-filter{margin:0;flex:0 0 auto}
 .clock:not(.contractor-board) .pulse-row .pulse{flex:1 1 auto;min-width:0}
