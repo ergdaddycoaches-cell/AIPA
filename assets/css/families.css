@@ -154,6 +154,7 @@
 .detail-head{min-width:0}
 .detail-assign{
   display:flex;flex-wrap:wrap;gap:.45rem .75rem;margin-top:.45rem;align-items:flex-end}
+.detail-assign .reach{margin-left:auto}
 .detail .stage-pick{
   display:flex;flex-direction:column;gap:.1rem;margin:0;min-width:0;
   font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}

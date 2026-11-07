@@ -1012,9 +1012,6 @@
       '<div class="detail-assign">' +
       contractorField(family) +
       stageField(family) +
-      '</div>' +
-      holdLine(family) +
-      '<div class="detail-tools">' +
       '<div class="reach" role="group" aria-label="Reach this person">' +
       inviteButton(family) +
       '<button type="button" class="call-notes" data-act="call-notes" aria-pressed="' + (window.AIPA_CALL_NOTES && window.AIPA_CALL_NOTES.current() === family.id ? 'true' : 'false') + '">Call notes</button>' +
@@ -1024,6 +1021,7 @@
       '<button type="button" data-act="sms-agree" aria-pressed="' + (reachMode === 'sms-agree') + '">Text agreement</button>' +
       '<button type="button" data-act="' + (retired ? 'restore' : 'retire') + '" aria-pressed="' + (reachMode === 'retire' || reachMode === 'restore') + '">' + (retired ? 'Bring back' : 'Retire') + '</button>' +
       '</div></div>' +
+      holdLine(family) +
       cadencePanel(family) +
       reachPanel(family) +
       band(family);
