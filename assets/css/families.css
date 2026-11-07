@@ -178,7 +178,7 @@
 .detail .split-note b{
   display:inline-block;margin-right:.25rem;
   font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
-.band-tabs{display:flex;flex-wrap:wrap;gap:.1rem;margin-top:.35rem}
+.band-tabs{display:flex;flex-wrap:wrap;gap:.1rem;margin-top:.7rem;padding-top:.55rem;border-top:1px solid var(--rule)}
 .band-tabs button{
   appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;
   color:var(--ink-2);font:inherit;font-weight:700;font-size:1rem;letter-spacing:.02em;
@@ -188,7 +188,7 @@
 .band-tabs button[data-tab="summary"],.band-tabs button[data-tab="record"]{font-weight:400}
 .detail-body{
   display:block;margin-top:.25rem;max-height:16rem;overflow:auto;
-  padding-top:.3rem;border-top:1px solid var(--rule)}
+  padding-top:.3rem}
 .detail-body > p{margin:.2rem 0;max-width:none;font-size:1.2rem;line-height:1.35}
 .detail-body > p:has(> b){
   display:grid;grid-template-columns:8.5rem minmax(0,1fr);column-gap:.35rem;align-items:start}
