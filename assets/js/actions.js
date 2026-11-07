@@ -388,7 +388,15 @@
     var y = window.scrollY;
     var now = today();
     if (!day) day = now;
-    if (!viewMonth) viewMonth = day.slice(0, 7);
+    if (!viewMonth) {
+      viewMonth = now.slice(0, 7);
+      var callbackDays = calls.filter(function(item){ return item.group === 'call' && item.date; }).map(function(item){ return item.date; }).sort();
+      var shown = callbackDays.some(function(iso){ return iso.slice(0, 7) === viewMonth; });
+      if (callbackDays.length && !shown) {
+        var upcoming = callbackDays.filter(function(iso){ return iso >= now; })[0];
+        viewMonth = (upcoming || callbackDays[callbackDays.length - 1]).slice(0, 7);
+      }
+    }
     var groups = {};
     var open = [];
     calls.forEach(function(item){
@@ -559,7 +567,7 @@
           who: '',
           note: row.engagement === 'retired' ? 'Retired' : '',
           href: '/admin/families/call/?id=' + row.id,
-          date: due(row)
+          date: due(row) || today()
         });
       });
       signups.filter(function(row){ return wantsEmail(row) && isFamily(row, meetings) && isOwned(row); }).forEach(function(row){
@@ -590,7 +598,7 @@
           submitted: row.submitted_at || '',
           note: '',
           href: '/admin/contractors/?id=' + row.id + '#detail',
-          date: due(row)
+          date: due(row) || today()
         });
       });
       sessionItems(meetings, signups).forEach(function(item){ calls.push(item); });
@@ -614,7 +622,6 @@
         });
       });
       render();
-      if (!options.keep) reveal(today(), false);
     }).catch(function(err){
       document.getElementById('day-count').textContent = err.message;
     });
