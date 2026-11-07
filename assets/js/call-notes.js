@@ -636,21 +636,22 @@
     if (box.setSelectionRange) box.setSelectionRange(caret, caret);
   });
   var jump = document.querySelector('.call-jump');
+  function showPanel(id){
+    document.querySelectorAll('.call-panel').forEach(function(panel){
+      panel.hidden = panel.id !== id;
+    });
+    if (!jump) return;
+    jump.querySelectorAll('[role="tab"]').forEach(function(tab){
+      tab.setAttribute('aria-selected', tab.getAttribute('aria-controls') === id ? 'true' : 'false');
+    });
+  }
   if (jump) jump.addEventListener('click', function(event){
-    var link = event.target.closest('a');
-    if (!link) return;
-    var target = document.getElementById((link.getAttribute('href') || '').replace('#', ''));
-    var scroller = document.querySelector('.call-window-body');
-    if (!target) return;
+    var tab = event.target.closest('[role="tab"]');
+    if (!tab) return;
     event.preventDefault();
-    if (scroller) {
-      var top = target.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - 8;
-      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      scroller.scrollTo({top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth'});
-    } else {
-      target.scrollIntoView({block: 'start'});
-    }
+    showPanel(tab.getAttribute('aria-controls'));
   });
+  if (document.getElementById('panel-showed')) showPanel('panel-showed');
   document.getElementById('channel-email').addEventListener('click', function(){ channel = 'email'; drawSend(); });
   document.getElementById('channel-text').addEventListener('click', function(){ channel = 'sms'; drawSend(); });
   document.getElementById('subject').addEventListener('input', function(){ subjectTouched = true; });

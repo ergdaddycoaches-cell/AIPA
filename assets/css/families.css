@@ -401,10 +401,14 @@ section.call-sheet.wrap{max-width:none}
   appearance:none;background:transparent;color:inherit;border:1.5px solid rgba(247,242,232,.55);
   font:inherit;font-weight:700;font-size:.75rem;min-height:30px;padding:.1rem .55rem;cursor:pointer}
 .call-jump{
-  display:flex;flex-wrap:wrap;gap:.2rem .7rem;padding:.4rem .75rem;
-  background:var(--paper);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:2}
-.call-jump a{font-size:.72rem;font-weight:700;text-decoration:none;border-bottom:2px solid transparent}
-.call-jump a:hover,.call-jump a:focus-visible{border-bottom-color:var(--clay)}
+  display:flex;flex-wrap:wrap;gap:.15rem .9rem;padding:.55rem 0;
+  background:var(--paper);border-bottom:1px solid var(--rule)}
+.call-jump button{
+  appearance:none;background:transparent;color:inherit;border:0;border-bottom:2px solid transparent;
+  font:inherit;font-weight:700;font-size:1rem;line-height:1.2;padding:.35rem 0;cursor:pointer}
+.call-jump button[aria-selected="true"]{border-bottom-color:var(--ink)}
+.call-jump button:hover,.call-jump button:focus-visible{border-bottom-color:var(--clay)}
+.call-panel[hidden]{display:none}
 .call-window-body{overflow:auto;padding:0 .75rem .7rem}
 .call-window #callback-label,.call-sheet #callback-label{display:block;font-weight:700;font-size:.68rem;margin:.55rem 0 .15rem}
 .call-window #callback-date:disabled{opacity:.55}

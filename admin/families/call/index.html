@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/assets/css/site.css">
 <script src="/assets/js/outbound.js" defer></script>
 <link rel="stylesheet" href="/assets/css/admin.css?v=dial-row">
-<link rel="stylesheet" href="/assets/css/families.css?v=sheet4">
+<link rel="stylesheet" href="/assets/css/families.css?v=sheet5">
 <link rel="icon" href="/favicon.ico">
 <script src="/assets/js/config.js"></script>
 <script src="/assets/js/office-session.js"></script>
@@ -67,21 +67,26 @@
     </p>
     </div>
     <p class="status-line" id="dial-status" role="status"></p>
-    <nav class="call-jump" aria-label="Sections">
-      <a href="#showed-up">Who showed up</a>
-      <a href="#said-heading">What was said</a>
-      <a href="#send-heading">What to send</a>
-      <a href="#callback-heading">Call back</a>
-      <a href="#delay-heading">Delayed email</a>
+    <nav class="call-jump" role="tablist" aria-label="Sections">
+      <button type="button" role="tab" id="tab-showed" aria-controls="panel-showed" aria-selected="true">Who showed up</button>
+      <button type="button" role="tab" id="tab-said" aria-controls="panel-said" aria-selected="false">What was said</button>
+      <button type="button" role="tab" id="tab-send" aria-controls="panel-send" aria-selected="false">What to send</button>
+      <button type="button" role="tab" id="tab-callback" aria-controls="panel-callback" aria-selected="false">Call back</button>
+      <button type="button" role="tab" id="tab-delay" aria-controls="panel-delay" aria-selected="false">Delayed email</button>
     </nav>
     <form id="notes-form">
+      <div class="call-panel" id="panel-showed" role="tabpanel" aria-labelledby="tab-showed">
       <h2 id="showed-up">Who showed up</h2>
       <div id="people"></div>
       <button type="button" id="add-person">Add a person</button>
+      </div>
 
+      <div class="call-panel" id="panel-said" role="tabpanel" aria-labelledby="tab-said" hidden>
       <h2 id="said-heading">What was said</h2>
       <textarea id="summary" name="summary" rows="8" maxlength="20000" aria-labelledby="said-heading"></textarea>
+      </div>
 
+      <div class="call-panel" id="panel-send" role="tabpanel" aria-labelledby="tab-send" hidden>
       <h2 id="send-heading">What to send</h2>
       <label for="guide">Guide</label>
       <select id="guide" name="guide"><option value="">No guide</option></select>
@@ -99,7 +104,9 @@
       <p class="send-note" id="send-empty" hidden></p>
       <label for="subject" id="subject-label">Subject</label>
       <input id="subject" type="text" maxlength="200">
+      </div>
 
+      <div class="call-panel" id="panel-callback" role="tabpanel" aria-labelledby="tab-callback" hidden>
       <h2 id="callback-heading">Call back</h2>
       <span id="callback-label">Wants a call back</span>
       <div class="send-channels" role="group" aria-labelledby="callback-label">
@@ -108,7 +115,9 @@
       </div>
       <label for="callback-date">Date</label>
       <input id="callback-date" type="date">
+      </div>
 
+      <div class="call-panel" id="panel-delay" role="tabpanel" aria-labelledby="tab-delay" hidden>
       <h2 id="delay-heading">Send delayed email</h2>
       <p class="send-note">This is not sent on its own. It shows on Actions on the date you pick, so you can approve it, change it, delay it, or kill it.</p>
       <span id="delay-label">Send a delayed email</span>
@@ -126,6 +135,7 @@
       <textarea id="delay-body" rows="6" maxlength="20000"></textarea>
       <p class="send-note">{{guide}} is the guide title. {{library}} is the link to the guide we send, filled in when you approve this on Actions.</p>
       <button type="button" id="delay-insert">Insert {{guide}}</button>
+      </div>
 
       <div class="call-actions">
         <button class="btn" type="submit">Save</button>
@@ -138,6 +148,6 @@
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@twilio/voice-sdk@2.12.1/dist/twilio.min.js"></script>
 <script src="/assets/js/message-copy.js"></script>
-<script src="/assets/js/call-notes.js?v=pill"></script>
+<script src="/assets/js/call-notes.js?v=tabs"></script>
 </body>
 </html>
